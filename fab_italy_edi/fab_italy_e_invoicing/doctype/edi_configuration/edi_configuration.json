@@ -1,0 +1,291 @@
+{
+ "actions": [],
+ "allow_import": 1,
+ "allow_rename": 1,
+ "autoname": "field:company",
+ "creation": "2026-04-24 16:25:00.000000",
+ "doctype": "DocType",
+ "document_type": "Setup",
+ "engine": "InnoDB",
+ "field_order": [
+  "company",
+  "enabled",
+  "default_channel",
+  "default_provider",
+  "automatic_refresh_section",
+  "auto_refresh_enabled",
+  "outbound_status_polling_interval_mins",
+  "incoming_invoice_polling_interval_mins",
+  "column_break_automatic_refresh",
+  "notification_polling_interval_mins",
+  "automatic_refresh_status_section",
+  "last_outbound_status_polling_at",
+  "last_incoming_invoice_polling_at",
+  "column_break_automatic_refresh_status",
+  "last_notification_polling_at",
+  "sender_details_section",
+  "sender_vat_id",
+  "sender_fiscal_code",
+  "column_break_pwop",
+  "sender_pec_address",
+  "sender_email",
+  "recipient_code_fallback",
+  "inbound_purchase_tax_mapping_section",
+  "inbound_tax_mappings",
+  "autofattura_naming_series",
+  "pec_section",
+  "pec_username",
+  "pec_password",
+  "column_break_yhgl",
+  "pec_imap_host",
+  "pec_imap_port",
+  "pec_use_ssl_for_imap",
+  "pec_smtp_host",
+  "pec_smtp_port",
+  "pec_use_ssl_for_smtp",
+  "notes"
+ ],
+ "fields": [
+  {
+   "fieldname": "company",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Company",
+   "options": "Company",
+   "reqd": 1,
+   "unique": 1
+  },
+  {
+   "default": "1",
+   "fieldname": "enabled",
+   "fieldtype": "Check",
+   "label": "Enabled"
+  },
+  {
+   "fieldname": "default_channel",
+   "fieldtype": "Link",
+   "label": "Default Channel",
+   "options": "EDI Channel"
+  },
+  {
+   "fieldname": "default_provider",
+   "fieldtype": "Link",
+   "label": "Default Provider",
+   "options": "EDI Provider"
+  },
+  {
+   "fieldname": "automatic_refresh_section",
+   "fieldtype": "Section Break",
+   "label": "Automatic Refresh"
+  },
+  {
+   "default": "1",
+   "description": "Enable background polling for outbound statuses, supplier invoices, and provider notifications.",
+   "fieldname": "auto_refresh_enabled",
+   "fieldtype": "Check",
+   "label": "Enable Automatic Refresh"
+  },
+  {
+   "default": "15",
+   "description": "How often outbound invoice status should be refreshed. Minimum 5 minutes, in 5-minute steps.",
+   "fieldname": "outbound_status_polling_interval_mins",
+   "fieldtype": "Int",
+   "label": "Outbound Status Polling Interval (mins)",
+   "reqd": 1
+  },
+  {
+   "default": "60",
+   "description": "How often supplier invoices should be fetched from SDI or the selected provider. Minimum 5 minutes, in 5-minute steps.",
+   "fieldname": "incoming_invoice_polling_interval_mins",
+   "fieldtype": "Int",
+   "label": "Incoming Supplier Invoice Polling Interval (mins)",
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_automatic_refresh",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "15",
+   "description": "How often provider notifications should be synchronized when webhook-only delivery is not used. Minimum 5 minutes, in 5-minute steps.",
+   "fieldname": "notification_polling_interval_mins",
+   "fieldtype": "Int",
+   "label": "Notification Polling Interval (mins)",
+   "reqd": 1
+  },
+  {
+   "fieldname": "automatic_refresh_status_section",
+   "fieldtype": "Section Break",
+   "label": "Automatic Refresh Status"
+  },
+  {
+   "fieldname": "last_outbound_status_polling_at",
+   "fieldtype": "Datetime",
+   "label": "Last Outbound Status Polling At",
+   "read_only": 1
+  },
+  {
+   "fieldname": "last_incoming_invoice_polling_at",
+   "fieldtype": "Datetime",
+   "label": "Last Incoming Supplier Invoice Polling At",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_automatic_refresh_status",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "last_notification_polling_at",
+   "fieldtype": "Datetime",
+   "label": "Last Notification Polling At",
+   "read_only": 1
+  },
+  {
+   "fieldname": "sender_details_section",
+   "fieldtype": "Section Break",
+   "label": "Sender Details"
+  },
+  {
+   "fieldname": "sender_vat_id",
+   "fieldtype": "Data",
+   "label": "Sender VAT ID"
+  },
+  {
+   "fieldname": "sender_fiscal_code",
+   "fieldtype": "Data",
+   "label": "Sender Fiscal Code"
+  },
+  {
+   "fieldname": "column_break_pwop",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "sender_pec_address",
+   "fieldtype": "Data",
+   "label": "Sender PEC Address"
+  },
+  {
+   "fieldname": "sender_email",
+   "fieldtype": "Data",
+   "label": "Sender Email"
+  },
+  {
+   "default": "0000000",
+   "fieldname": "recipient_code_fallback",
+   "fieldtype": "Data",
+   "label": "Recipient Code Fallback"
+  },
+  {
+   "fieldname": "inbound_purchase_tax_mapping_section",
+   "fieldtype": "Section Break",
+   "label": "Inbound Purchase Tax Mapping"
+  },
+  {
+   "description": "Map each FatturaPA tax bucket (rate + optional Natura) to the ERPNext tax account that should receive the imported amount.",
+   "fieldname": "inbound_tax_mappings",
+   "fieldtype": "Table",
+   "label": "Inbound Tax Mappings",
+   "options": "EDI Inbound Tax Mapping"
+  },
+  {
+   "description": "Dedicated naming series to use for autofattura documents created from foreign supplier purchases.",
+   "fieldname": "autofattura_naming_series",
+   "fieldtype": "Data",
+   "label": "Autofattura Naming Series"
+  },
+  {
+   "fieldname": "pec_section",
+   "fieldtype": "Section Break",
+   "label": "PEC Mailbox"
+  },
+  {
+   "fieldname": "pec_username",
+   "fieldtype": "Data",
+   "label": "PEC Username"
+  },
+  {
+   "fieldname": "pec_password",
+   "fieldtype": "Password",
+   "label": "PEC Password"
+  },
+  {
+   "fieldname": "column_break_yhgl",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "pec_imap_host",
+   "fieldtype": "Data",
+   "label": "PEC IMAP Host"
+  },
+  {
+   "fieldname": "pec_imap_port",
+   "fieldtype": "Int",
+   "label": "PEC IMAP Port"
+  },
+  {
+   "default": "1",
+   "fieldname": "pec_use_ssl_for_imap",
+   "fieldtype": "Check",
+   "label": "Use SSL for IMAP"
+  },
+  {
+   "fieldname": "pec_smtp_host",
+   "fieldtype": "Data",
+   "label": "PEC SMTP Host"
+  },
+  {
+   "fieldname": "pec_smtp_port",
+   "fieldtype": "Int",
+   "label": "PEC SMTP Port"
+  },
+  {
+   "default": "1",
+   "fieldname": "pec_use_ssl_for_smtp",
+   "fieldtype": "Check",
+   "label": "Use SSL for SMTP"
+  },
+  {
+   "fieldname": "notes",
+   "fieldtype": "Small Text",
+   "label": "Notes"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2026-04-24 16:25:00.000000",
+ "modified_by": "Administrator",
+ "module": "FAB Italy E-Invoicing",
+ "name": "EDI Configuration",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Accounts Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "search_fields": "company,default_provider",
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "title_field": "company",
+ "track_changes": 1
+}

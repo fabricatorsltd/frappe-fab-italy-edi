@@ -1,0 +1,2376 @@
+#
+msgid ""
+msgstr ""
+"Project-Id-Version:  fab_italy_edi\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2026-04-26 10:37+0000\n"
+"PO-Revision-Date: 2026-04-26 12:02+0200\n"
+"Last-Translator: FAB Team\n"
+"Language: it\n"
+"Language-Team: Italian\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.16.0\n"
+
+#: fab_italy_edi/public/js/sales_invoice.js:138
+msgid "1 day overdue"
+msgstr "1 giorno di ritardo"
+
+#: fab_italy_edi/public/js/sales_invoice.js:146
+msgid "1 day remaining"
+msgstr "1 giorno rimanente"
+
+#: fab_italy_edi/channels/sdi_pec/base.py:212
+msgid "A company EDI Configuration is required for PEC transmission."
+msgstr "Per la trasmissione PEC è richiesta una Configurazione EDI aziendale."
+
+#: fab_italy_edi/public/js/supplier.js:23
+msgid "A default supplier bank account will be created from IBAN {0} when you save."
+msgstr "Al salvataggio verrà creato un conto bancario predefinito del fornitore dall'IBAN {0}."
+
+#. Label of the endpoint_url (Data) field in DocType 'EDI Provider'
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/edi_provider/edi_provider.json
+msgid "API Base URL"
+msgstr ""
+
+#. Option for the 'Auth Mode' (Select) field in DocType 'EDI Provider'
+#. Label of the api_key (Password) field in DocType 'EDI Provider'
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/edi_provider/edi_provider.json
+msgid "API Key"
+msgstr ""
+
+#. Description of the 'API Key' (Password) field in DocType 'EDI Provider'
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/edi_provider/edi_provider.json
+msgid "API key from the OpenAPI console."
+msgstr ""
+
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/autofattura/autofattura.js:165
+msgid "Accepted"
+msgstr "Accettata"
+
+#. Label of the password (Password) field in DocType 'EDI Provider'
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/edi_provider/edi_provider.json
+msgid "Access Token"
+msgstr ""
+
+#: fab_italy_edi/fab_italy_e_invoicing/page/autofatture/autofatture.js:408
+msgid "Account"
+msgstr "Conto"
+
+#. Label of the username (Data) field in DocType 'EDI Provider'
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/edi_provider/edi_provider.json
+msgid "Account Email"
+msgstr ""
+
+#. Label of the account_head (Link) field in DocType 'EDI Inbound Tax Mapping'
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/edi_inbound_tax_mapping/edi_inbound_tax_mapping.json
+msgid "Account Head"
+msgstr ""
+
+#. Name of a role
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/autofattura/autofattura.json
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/edi_channel/edi_channel.json
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/edi_configuration/edi_configuration.json
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/edi_document/edi_document.json
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/edi_provider/edi_provider.json
+msgid "Accounts Manager"
+msgstr ""
+
+#. Name of a role
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/autofattura/autofattura.json
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/edi_document/edi_document.json
+msgid "Accounts User"
+msgstr ""
+
+#. Label of the adapter_key (Data) field in DocType 'EDI Provider'
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/edi_provider/edi_provider.json
+msgid "Adapter Key"
+msgstr ""
+
+#: fab_italy_edi/autofattura.py:490
+msgid "Add at least one autofattura line in the autofattura editor."
+msgstr "Aggiungi almeno una riga di autofattura nell'editor autofattura."
+
+#: fab_italy_edi/autofattura.py:420
+msgid "Add at least one autofattura line in the editor before confirming this draft."
+msgstr "Aggiungi almeno una riga di autofattura nell'editor prima di confermare questa bozza."
+
+#: fab_italy_edi/fatturapa/autofattura.py:73
+msgid "Add at least one item row before sending an autofattura to SDI."
+msgstr "Aggiungi almeno una riga articolo prima di inviare un'autofattura a SDI."
+
+#. Label of the additional_settings (JSON) field in DocType 'EDI Provider'
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/edi_provider/edi_provider.json
+msgid "Additional Settings"
+msgstr ""
+
+#: fab_italy_edi/fatturapa/autofattura.py:438
+#, python-brace-format
+msgid "Address {0} is missing a postal code."
+msgstr "All'indirizzo {0} manca il CAP."
+
+#: fab_italy_edi/fatturapa/autofattura.py:444
+#, python-brace-format
+msgid "Address {0} is missing a province/state code."
+msgstr "All'indirizzo {0} manca il codice provincia/stato."
+
+#: fab_italy_edi/purchase_invoice_import.py:691
+#, python-brace-format
+msgid "Administrative Reference: {0}"
+msgstr "Riferimento amministrativo: {0}"
+
+#: fab_italy_edi/fab_italy_e_invoicing/page/autofatture/autofatture.js:527
+msgid "Already Sent to SDI"
+msgstr "Già inviata a SDI"
+
+#: fab_italy_edi/fab_italy_e_invoicing/page/autofatture/autofatture.js:396
+#: fab_italy_edi/public/js/edi_document.js:221
+msgid "Amount"
+msgstr "Importo"
+
+#: fab_italy_edi/channels/sdi_pec/base.py:265
+#, python-brace-format
+msgid ""
+"Attached is the FatturaPA XML generated by FAB EDI for {0}.\n"
+"\n"
+"Filename: {1}"
+msgstr ""
+"In allegato trovi l'XML FatturaPA generato da FAB EDI per {0}.\n"
+"\n"
+"Nome file: {1}"
+
+#: fab_italy_edi/public/js/edi_document.js:176
+msgid "Attachment"
+msgstr "Allegato"
+
+#: fab_italy_edi/public/js/edi_document.js:239
+msgid "Attachments"
+msgstr "Allegati"
+
+#. Label of the attempt_number (Int) field in DocType 'EDI Transmission
+#. Attempt'
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/edi_transmission_attempt/edi_transmission_attempt.json
+msgid "Attempt Number"
+msgstr ""
+
+#. Label of the auth_mode (Select) field in DocType 'EDI Provider'
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/edi_provider/edi_provider.json
+msgid "Auth Mode"
+msgstr ""
+
+#. Name of a DocType
+#: fab_italy_edi/autofattura.py:86
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/autofattura/autofattura.json
+#: fab_italy_edi/fab_italy_e_invoicing/page/autofatture/autofatture.js:193
+#: fab_italy_edi/install.py:483 fab_italy_edi/public/js/edi_document.js:261
+msgid "Autofattura"
+msgstr "Autofattura"
+
+#: fab_italy_edi/fab_italy_e_invoicing/page/autofatture/autofatture.js:347
+msgid "Autofattura Currency"
+msgstr "Valuta autofattura"
+
+#. Label of the document_date (Date) field in DocType 'Autofattura'
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/autofattura/autofattura.json
+#: fab_italy_edi/fab_italy_e_invoicing/page/autofatture/autofatture.js:112
+#: fab_italy_edi/fab_italy_e_invoicing/page/autofatture/autofatture.js:345
+#: fab_italy_edi/public/js/purchase_invoice.js:151
+msgid "Autofattura Date"
+msgstr "Data autofattura"
+
+#. Label of the autofattura_document_date (Date) field in DocType 'EDI
+#. Document'
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/edi_document/edi_document.json
+msgid "Autofattura Document Date"
+msgstr ""
+
+#. Label of the autofattura_document_number (Data) field in DocType 'EDI
+#. Document'
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/edi_document/edi_document.json
+msgid "Autofattura Document Number"
+msgstr ""
+
+#. Label of the autofattura_document_type (Select) field in DocType 'EDI
+#. Document'
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/edi_document/edi_document.json
+msgid "Autofattura Document Type"
+msgstr ""
+
+#: fab_italy_edi/install.py:474
+msgid "Autofattura EDI Document"
+msgstr "Documento EDI autofattura"
+
+#. Label of the autofattura_editor_section (Section Break) field in DocType
+#. 'EDI Document'
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/edi_document/edi_document.json
+msgid "Autofattura Editor"
+msgstr ""
+
+#: fab_italy_edi/fab_italy_e_invoicing/page/autofatture/autofatture.js:359
+msgid "Autofattura Editor Lines"
+msgstr "Righe editor autofattura"
+
+#: fab_italy_edi/fab_italy_e_invoicing/page/autofatture/autofatture.js:352
+msgid "Autofattura Grand Total"
+msgstr "Totale complessivo autofattura"
+
+#. Label of the autofattura_reference_section (Section Break) field in DocType
+#. 'EDI Document'
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/edi_document/edi_document.json
+msgid "Autofattura Legal Reference"
+msgstr ""
+
+#. Label of the autofattura_lines (Table) field in DocType 'EDI Document'
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/edi_document/edi_document.json
+msgid "Autofattura Lines"
+msgstr ""
+
+#. Label of the autofattura_naming_series (Data) field in DocType 'EDI
+#. Configuration'
+#. Document'
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/edi_configuration/edi_configuration.json
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/edi_document/edi_document.json
+msgid "Autofattura Naming Series"
+msgstr ""
+
+#: fab_italy_edi/fab_italy_e_invoicing/page/autofatture/autofatture.js:350
+msgid "Autofattura Net Total"
+msgstr "Totale netto autofattura"
+
+#. Label of the document_number (Data) field in DocType 'Autofattura'
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/autofattura/autofattura.json
+#: fab_italy_edi/fab_italy_e_invoicing/page/autofatture/autofatture.js:346
+msgid "Autofattura Number"
+msgstr "Numero autofattura"
+
+#: fab_italy_edi/api.py:368
+#, python-brace-format
+msgid "Autofattura SDI send failed: {0}"
+msgstr "Invio autofattura a SDI non riuscito: {0}"
+
+#: fab_italy_edi/fab_italy_e_invoicing/page/autofatture/autofatture.js:351
+msgid "Autofattura Tax Total"
+msgstr "Totale imposte autofattura"
+
+#: fab_italy_edi/autofattura.py:752
+msgid "Autofattura preparation is only available for companies based in Italy."
+msgstr "La preparazione dell'autofattura è disponibile solo per aziende con sede in Italia."
+
+#: fab_italy_edi/autofattura.py:143
+msgid "Autofattura preparation is only supported for Italian companies."
+msgstr "La preparazione dell'autofattura è supportata solo per aziende italiane."
+
+#: fab_italy_edi/fab_italy_e_invoicing/page/autofatture/autofatture.js:91
+msgid "Autofattura queued to SDI"
+msgstr "Autofattura accodata a SDI"
+
+#: fab_italy_edi/fab_italy_e_invoicing/page/autofatture/autofatture.js:75
+msgid "Autofattura review confirmed"
+msgstr "Revisione autofattura confermata"
+
+#: fab_italy_edi/fab_italy_e_invoicing/page/autofatture/autofatture.js:89
+msgid "Autofattura send failed"
+msgstr "Invio autofattura non riuscito"
+
+#: fab_italy_edi/fatturapa/autofattura.py:462
+#, python-brace-format
+msgid "Autofattura {0} for supplier invoice {1}"
+msgstr "Autofattura {0} per la fattura fornitore {1}"
+
+#: fab_italy_edi/fatturapa/autofattura.py:463
+#, python-brace-format
+msgid "Autofattura {0} generated from Purchase Invoice {1}"
+msgstr "Autofattura {0} generata dalla Fattura di Acquisto {1}"
+
+#: fab_italy_edi/autofattura.py:250
+#, python-brace-format
+msgid "Autofattura {0} is missing a source Purchase Invoice."
+msgstr "All'autofattura {0} manca la Fattura di Acquisto di origine."
+
+#: fab_italy_edi/fab_italy_e_invoicing/page/autofatture/autofatture.js:18
+#: fab_italy_edi/fab_italy_e_invoicing/page/autofatture/autofatture.js:181
+msgid "Autofatture"
+msgstr "Autofatture"
+
+#. Label of the automatic_refresh_section (Section Break) field in DocType 'EDI
+#. Configuration'
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/edi_configuration/edi_configuration.json
+msgid "Automatic Refresh"
+msgstr ""
+
+#. Label of the automatic_refresh_status_section (Section Break) field in
+#. DocType 'EDI Configuration'
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/edi_configuration/edi_configuration.json
+msgid "Automatic Refresh Status"
+msgstr ""
+
+#. Option for the 'Auth Mode' (Select) field in DocType 'EDI Provider'
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/edi_provider/edi_provider.json
+msgid "Basic"
+msgstr ""
+
+#. Option for the 'Auth Mode' (Select) field in DocType 'EDI Provider'
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/edi_provider/edi_provider.json
+msgid "Bearer Token"
+msgstr ""
+
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/autofattura/autofattura.js:9
+msgid "Business autofattura for foreign purchases. Purchase Invoice accounting stays on the source document."
+msgstr "Autofattura gestionale per acquisti esteri. La contabilizzazione della Fattura di Acquisto resta sul documento di origine."
+
+#: fab_italy_edi/install.py:405 fab_italy_edi/install.py:460
+msgid "CIG"
+msgstr "CIG"
+
+#: fab_italy_edi/install.py:412 fab_italy_edi/install.py:467
+msgid "CUP"
+msgstr "CUP"
+
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/autofattura/autofattura.js:168
+msgid "Cancelled"
+msgstr "Annullata"
+
+#. Label of the canonical_identifier (Data) field in DocType 'EDI Document'
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/edi_document/edi_document.json
+msgid "Canonical Identifier"
+msgstr ""
+
+#. Label of the capabilities (JSON) field in DocType 'EDI Channel'
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/edi_channel/edi_channel.json
+msgid "Capabilities"
+msgstr ""
+
+#. Label of the channel (Link) field in DocType 'EDI Document'
+#. Label of the channel (Link) field in DocType 'EDI Provider'
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/edi_document/edi_document.json
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/edi_provider/edi_provider.json
+msgid "Channel"
+msgstr ""
+
+#. Label of the channel_key (Data) field in DocType 'EDI Channel'
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/edi_channel/edi_channel.json
+msgid "Channel Key"
+msgstr ""
+
+#. Label of the channel_name (Data) field in DocType 'EDI Channel'
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/edi_channel/edi_channel.json
+msgid "Channel Name"
+msgstr ""
+
+#: fab_italy_edi/config/fab_italy_e_invoicing.py:13
+msgid "Channel families such as SDI proxy or PEC."
+msgstr "Famiglie di canali come proxy SDI o PEC."
+
+#: fab_italy_edi/fab_italy_e_invoicing/page/autofatture/autofatture.js:409
+msgid "Charge Type"
+msgstr "Tipo addebito"
+
+#. Label of the company (Link) field in DocType 'Autofattura'
+#. Label of the company (Link) field in DocType 'EDI Configuration'
+#. Label of the company (Link) field in DocType 'EDI Document'
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/autofattura/autofattura.json
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/edi_configuration/edi_configuration.json
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/edi_document/edi_document.json
+#: fab_italy_edi/fab_italy_e_invoicing/page/autofatture/autofatture.js:349
+#: fab_italy_edi/fab_italy_e_invoicing/page/autofatture/autofatture.js:456
+msgid "Company"
+msgstr "Azienda"
+
+#: fab_italy_edi/config/fab_italy_e_invoicing.py:23
+msgid "Company-specific transport and sender settings."
+msgstr "Impostazioni di trasporto e mittente specifiche dell'azienda."
+
+#: fab_italy_edi/autofattura.py:428
+msgid "Complete the VAT rate or Natura on every autofattura line before confirming this draft."
+msgstr "Completa l'aliquota IVA o la Natura su ogni riga autofattura prima di confermare questa bozza."
+
+#. Label of a Card Break in the FAB Italy E-Invoicing Workspace
+#: fab_italy_edi/config/fab_italy_e_invoicing.py:7
+#: fab_italy_edi/fab_italy_e_invoicing/workspace/fab_italy_e_invoicing/fab_italy_e_invoicing.json
+msgid "Configuration"
+msgstr "Configurazione"
+
+#: fab_italy_edi/public/js/purchase_invoice.js:55
+msgid "Configure Autofattura Sequence"
+msgstr "Configura sequenza autofattura"
+
+#: fab_italy_edi/autofattura.py:761
+#, python-brace-format
+msgid "Configure a dedicated Autofattura Naming Series on EDI Configuration {0} before preparing this document."
+msgstr "Configura una serie di denominazione dedicata per Autofattura nella Configurazione EDI {0} prima di preparare questo documento."
+
+#: fab_italy_edi/public/js/purchase_invoice.js:90
+msgid "Configure inbound tax mappings for {0} before submitting so ERPNext matches the supplier total."
+msgstr "Configura le mappature fiscali in ingresso per {0} prima dell'invio, così ERPNext corrisponderà al totale del fornitore."
+
+#: fab_italy_edi/purchase_invoice_import.py:805
+#, python-brace-format
+msgid "Configure inbound tax mappings in EDI Configuration for: {0}."
+msgstr "Configura nella Configurazione EDI le mappature fiscali in ingresso per: {0}."
+
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/autofattura/autofattura.js:26
+#: fab_italy_edi/fab_italy_e_invoicing/page/autofatture/autofatture.js:517
+msgid "Confirm Review"
+msgstr "Conferma revisione"
+
+#: fab_italy_edi/autofattura.py:85
+msgid "Confirm autofattura review before sending this draft to SDI."
+msgstr "Conferma la revisione dell'autofattura prima di inviare questa bozza a SDI."
+
+#: fab_italy_edi/autofattura.py:470
+msgid "Confirm autofattura review before sending to SDI."
+msgstr "Conferma la revisione dell'autofattura prima dell'invio a SDI."
+
+#: fab_italy_edi/fab_italy_e_invoicing/page/autofatture/autofatture.js:542
+msgid "Confirmed"
+msgstr "Confermata"
+
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/autofattura/autofattura.js:31
+#: fab_italy_edi/fab_italy_e_invoicing/page/autofatture/autofatture.js:73
+msgid "Confirming autofattura review..."
+msgstr "Conferma della revisione autofattura..."
+
+#: fab_italy_edi/channels/sdi_pec/base.py:312
+#, python-brace-format
+msgid "Could not fetch PEC mailbox message {0}."
+msgstr "Impossibile recuperare il messaggio {0} dalla casella PEC."
+
+#: fab_italy_edi/channels/sdi_pec/base.py:116
+#, python-brace-format
+msgid "Could not open PEC mailbox folder {0}."
+msgstr "Impossibile aprire la cartella {0} della casella PEC."
+
+#: fab_italy_edi/channels/sdi_pec/base.py:122
+msgid "Could not search the PEC mailbox."
+msgstr "Impossibile cercare nella casella PEC."
+
+#: fab_italy_edi/public/js/edi_document.js:56
+msgid "Create"
+msgstr "Crea"
+
+#: fab_italy_edi/public/js/edi_document.js:25
+#: fab_italy_edi/public/js/edi_document.js:56
+msgid "Create Purchase Invoice Draft"
+msgstr "Crea bozza Fattura di Acquisto"
+
+#: fab_italy_edi/public/js/edi_document.js:18
+msgid "Create Supplier"
+msgstr "Crea fornitore"
+
+#: fab_italy_edi/public/js/purchase_invoice.js:31
+msgid "Create Supplier from EDI"
+msgstr "Crea fornitore da EDI"
+
+#: fab_italy_edi/api.py:252
+#, python-brace-format
+msgid "Create an EDI Configuration for company {0} before sending invoices to SDI."
+msgstr "Crea una Configurazione EDI per l'azienda {0} prima di inviare fatture a SDI."
+
+#: fab_italy_edi/public/js/purchase_invoice.js:84
+msgid "Create or select the Supplier before posting this invoice."
+msgstr "Crea o seleziona il fornitore prima di contabilizzare questa fattura."
+
+#: fab_italy_edi/purchase_invoice_import.py:125
+#, python-brace-format
+msgid "Created Purchase Invoice draft {0} from this inbound supplier invoice."
+msgstr "Creata la bozza di Fattura di Acquisto {0} da questa fattura fornitore EDI in ingresso."
+
+#. Label of the currency (Link) field in DocType 'Autofattura'
+#. Label of the autofattura_currency (Link) field in DocType 'EDI Document'
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/autofattura/autofattura.json
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/edi_document/edi_document.json
+#: fab_italy_edi/fab_italy_e_invoicing/page/autofatture/autofatture.js:339
+msgid "Currency"
+msgstr "Valuta"
+
+#: fab_italy_edi/fab_italy_e_invoicing/page/autofatture/autofatture.js:198
+#: fab_italy_edi/fab_italy_e_invoicing/page/autofatture/autofatture.js:455
+#: fab_italy_edi/public/js/edi_document.js:200
+msgid "Date"
+msgstr "Data"
+
+#. Description of the 'Autofattura Naming Series' (Data) field in DocType 'EDI
+#. Configuration'
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/edi_configuration/edi_configuration.json
+msgid "Dedicated naming series to use for autofattura documents created from foreign supplier purchases."
+msgstr ""
+
+#. Label of the default_channel (Link) field in DocType 'EDI Configuration'
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/edi_configuration/edi_configuration.json
+msgid "Default Channel"
+msgstr ""
+
+#. Label of the default_provider (Link) field in DocType 'EDI Configuration'
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/edi_configuration/edi_configuration.json
+msgid "Default Provider"
+msgstr ""
+
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/autofattura/autofattura.js:164
+msgid "Delivered"
+msgstr "Consegnata"
+
+#: fab_italy_edi/fab_italy_e_invoicing/page/autofatture/autofatture.js:374
+msgid "Derived VAT Summary"
+msgstr "Riepilogo IVA derivato"
+
+#. Label of the description (Small Text) field in DocType 'EDI Autofattura
+#. Line'
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/edi_autofattura_line/edi_autofattura_line.json
+#: fab_italy_edi/fab_italy_e_invoicing/page/autofatture/autofatture.js:363
+#: fab_italy_edi/fab_italy_e_invoicing/page/autofatture/autofatture.js:392
+#: fab_italy_edi/fab_italy_e_invoicing/page/autofatture/autofatture.js:407
+#: fab_italy_edi/public/js/edi_document.js:217
+#: fab_italy_edi/public/js/edi_document.js:230
+msgid "Description"
+msgstr "Descrizione"
+
+#. Label of the document_kind (Select) field in DocType 'EDI Document'
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/edi_document/edi_document.json
+msgid "Document Kind"
+msgstr ""
+
+#: fab_italy_edi/fab_italy_e_invoicing/page/autofatture/autofatture.js:204
+msgid "Document Number"
+msgstr "Numero documento"
+
+#. Label of the document_type (Select) field in DocType 'Autofattura'
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/autofattura/autofattura.json
+#: fab_italy_edi/fab_italy_e_invoicing/page/autofatture/autofatture.js:104
+#: fab_italy_edi/public/js/edi_document.js:202
+#: fab_italy_edi/public/js/purchase_invoice.js:143
+msgid "Document Type"
+msgstr "Tipo documento"
+
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/autofattura/autofattura.js:155
+msgid "Draft"
+msgstr "Bozza"
+
+#: fab_italy_edi/public/js/edi_document.js:201
+msgid "Due Date"
+msgstr "Data di scadenza"
+
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/edi_configuration/edi_configuration.py:95
+#, python-brace-format
+msgid "Duplicate inbound tax mapping for rate {0} and nature {1}."
+msgstr "Mappatura fiscale in ingresso duplicata per aliquota {0} e Natura {1}."
+
+#: fab_italy_edi/install.py:368 fab_italy_edi/install.py:424
+msgid "E-Invoicing"
+msgstr "Fatturazione elettronica"
+
+#. Name of a DocType
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/edi_autofattura_line/edi_autofattura_line.json
+msgid "EDI Autofattura Line"
+msgstr ""
+
+#. Name of a DocType
+#. Label of a Link in the FAB Italy E-Invoicing Workspace
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/edi_channel/edi_channel.json
+#: fab_italy_edi/fab_italy_e_invoicing/workspace/fab_italy_e_invoicing/fab_italy_e_invoicing.json
+msgid "EDI Channel"
+msgstr ""
+
+#. Label of a shortcut in the FAB Italy E-Invoicing Workspace
+#: fab_italy_edi/fab_italy_e_invoicing/workspace/fab_italy_e_invoicing/fab_italy_e_invoicing.json
+msgid "EDI Channels"
+msgstr ""
+
+#. Name of a DocType
+#. Label of a Link in the FAB Italy E-Invoicing Workspace
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/edi_configuration/edi_configuration.json
+#: fab_italy_edi/fab_italy_e_invoicing/workspace/fab_italy_e_invoicing/fab_italy_e_invoicing.json
+msgid "EDI Configuration"
+msgstr ""
+
+#: fab_italy_edi/api.py:255
+#, python-brace-format
+msgid "EDI Configuration {0} is disabled."
+msgstr "La Configurazione EDI {0} è disabilitata."
+
+#: fab_italy_edi/api.py:258
+#, python-brace-format
+msgid "EDI Configuration {0} must define a default provider before sending to SDI."
+msgstr "La Configurazione EDI {0} deve definire un provider predefinito prima dell'invio a SDI."
+
+#. Label of a shortcut in the FAB Italy E-Invoicing Workspace
+#: fab_italy_edi/fab_italy_e_invoicing/workspace/fab_italy_e_invoicing/fab_italy_e_invoicing.json
+msgid "EDI Configurations"
+msgstr ""
+
+#. Name of a DocType
+#. Label of a Link in the FAB Italy E-Invoicing Workspace
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/edi_document/edi_document.json
+#: fab_italy_edi/fab_italy_e_invoicing/workspace/fab_italy_e_invoicing/fab_italy_e_invoicing.json
+#: fab_italy_edi/install.py:374 fab_italy_edi/install.py:430
+#: fab_italy_edi/public/js/sales_invoice.js:87
+msgid "EDI Document"
+msgstr "Documento EDI"
+
+#: fab_italy_edi/purchase_invoice_import.py:234
+#, python-brace-format
+msgid "EDI Document {0} does not contain an inbound payload that can be reviewed or imported."
+msgstr "Il Documento EDI {0} non contiene un payload in ingresso che possa essere revisionato o importato."
+
+#: fab_italy_edi/purchase_invoice_import.py:134
+#, python-brace-format
+msgid "EDI Document {0} is not an inbound supplier invoice."
+msgstr "Il Documento EDI {0} non è una fattura fornitore in ingresso."
+
+#. Label of a shortcut in the FAB Italy E-Invoicing Workspace
+#: fab_italy_edi/fab_italy_e_invoicing/workspace/fab_italy_e_invoicing/fab_italy_e_invoicing.json
+msgid "EDI Documents"
+msgstr ""
+
+#. Name of a DocType
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/edi_inbound_tax_mapping/edi_inbound_tax_mapping.json
+msgid "EDI Inbound Tax Mapping"
+msgstr ""
+
+#. Name of a DocType
+#. Label of a Link in the FAB Italy E-Invoicing Workspace
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/edi_provider/edi_provider.json
+#: fab_italy_edi/fab_italy_e_invoicing/workspace/fab_italy_e_invoicing/fab_italy_e_invoicing.json
+msgid "EDI Provider"
+msgstr ""
+
+#: fab_italy_edi/api.py:282
+#, python-brace-format
+msgid "EDI Provider {0} does not exist."
+msgstr "Il provider EDI {0} non esiste."
+
+#: fab_italy_edi/api.py:284
+#, python-brace-format
+msgid "EDI Provider {0} is disabled."
+msgstr "Il provider EDI {0} è disabilitato."
+
+#. Label of a shortcut in the FAB Italy E-Invoicing Workspace
+#: fab_italy_edi/fab_italy_e_invoicing/workspace/fab_italy_e_invoicing/fab_italy_e_invoicing.json
+msgid "EDI Providers"
+msgstr ""
+
+#. Name of a DocType
+#. Label of a Link in the FAB Italy E-Invoicing Workspace
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/edi_receipt/edi_receipt.json
+#: fab_italy_edi/fab_italy_e_invoicing/workspace/fab_italy_e_invoicing/fab_italy_e_invoicing.json
+msgid "EDI Receipt"
+msgstr ""
+
+#: fab_italy_edi/install.py:397
+msgid "EDI Receipt State"
+msgstr "Stato ricevuta EDI"
+
+#. Name of a DocType
+#. Label of a Link in the FAB Italy E-Invoicing Workspace
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/edi_transmission_attempt/edi_transmission_attempt.json
+#: fab_italy_edi/fab_italy_e_invoicing/workspace/fab_italy_e_invoicing/fab_italy_e_invoicing.json
+msgid "EDI Transmission Attempt"
+msgstr ""
+
+#: fab_italy_edi/install.py:388
+msgid "EDI Transmission State"
+msgstr "Stato trasmissione EDI"
+
+#: fab_italy_edi/purchase_invoice_import.py:744
+#, python-brace-format
+msgid "EDI totals - Net: {0}, Tax: {1}, Gross: {2}"
+msgstr "Totali EDI - Netto: {0}, Imposte: {1}, Lordo: {2}"
+
+#: fab_italy_edi/fab_italy_e_invoicing/page/autofatture/autofatture.js:220
+#: fab_italy_edi/fab_italy_e_invoicing/page/autofatture/autofatture.js:497
+msgid "Edit Draft Settings"
+msgstr "Modifica impostazioni bozza"
+
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/edi_document/edi_document.js:8
+msgid "Edit the legal autofattura content here. Purchase Invoice tax rows are kept separate from the autofattura VAT declaration."
+msgstr "Modifica qui il contenuto legale dell'autofattura. Le righe imposta della Fattura di Acquisto restano separate dalla dichiarazione IVA dell'autofattura."
+
+#: fab_italy_edi/public/js/edi_document.js:191
+msgid "Email"
+msgstr "Email"
+
+#. Description of the 'Account Email' (Data) field in DocType 'EDI Provider'
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/edi_provider/edi_provider.json
+msgid "Email address of the OpenAPI account used to manage SDI tokens and scopes."
+msgstr ""
+
+#. Label of the auto_refresh_enabled (Check) field in DocType 'EDI
+#. Configuration'
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/edi_configuration/edi_configuration.json
+msgid "Enable Automatic Refresh"
+msgstr ""
+
+#. Description of the 'Enable Automatic Refresh' (Check) field in DocType 'EDI
+#. Configuration'
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/edi_configuration/edi_configuration.json
+msgid "Enable background polling for outbound statuses, supplier invoices, and provider notifications."
+msgstr ""
+
+#. Label of the enabled (Check) field in DocType 'EDI Channel'
+#. Label of the enabled (Check) field in DocType 'EDI Configuration'
+#. Label of the enabled (Check) field in DocType 'EDI Provider'
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/edi_channel/edi_channel.json
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/edi_configuration/edi_configuration.json
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/edi_provider/edi_provider.json
+msgid "Enabled"
+msgstr ""
+
+#. Label of the environment (Select) field in DocType 'EDI Provider'
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/edi_provider/edi_provider.json
+msgid "Environment"
+msgstr ""
+
+#: fab_italy_edi/autofattura.py:395
+msgid "Every source item row should have an expense account before final generation."
+msgstr "Ogni riga articolo di origine deve avere un conto spese prima della generazione finale."
+
+#: fab_italy_edi/fab_italy_e_invoicing/page/autofatture/autofatture.js:397
+msgid "Expense Account"
+msgstr "Conto spese"
+
+#. Label of the external_message_id (Data) field in DocType 'EDI Receipt'
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/edi_receipt/edi_receipt.json
+msgid "External Message ID"
+msgstr ""
+
+#. Label of the external_reference_id (Data) field in DocType 'EDI Transmission
+#. Attempt'
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/edi_transmission_attempt/edi_transmission_attempt.json
+msgid "External Reference ID"
+msgstr ""
+
+#. Label of the external_status_code (Data) field in DocType 'EDI Transmission
+#. Attempt'
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/edi_transmission_attempt/edi_transmission_attempt.json
+msgid "External Status Code"
+msgstr ""
+
+#. Label of the external_status_message (Small Text) field in DocType 'EDI
+#. Transmission Attempt'
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/edi_transmission_attempt/edi_transmission_attempt.json
+msgid "External Status Message"
+msgstr ""
+
+#. Label of the external_submission_id (Data) field in DocType 'EDI Document'
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/edi_document/edi_document.json
+msgid "External Submission ID"
+msgstr ""
+
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/autofattura/autofattura.js:16
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/autofattura/autofattura.js:22
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/autofattura/autofattura.js:34
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/autofattura/autofattura.js:52
+#: fab_italy_edi/public/js/edi_document.js:16
+#: fab_italy_edi/public/js/edi_document.js:22
+#: fab_italy_edi/public/js/edi_document.js:58
+#: fab_italy_edi/public/js/edi_document.js:78
+#: fab_italy_edi/public/js/edi_document.js:84
+#: fab_italy_edi/public/js/edi_document.js:89
+#: fab_italy_edi/public/js/purchase_invoice.js:28
+#: fab_italy_edi/public/js/purchase_invoice.js:33
+#: fab_italy_edi/public/js/purchase_invoice.js:51
+#: fab_italy_edi/public/js/purchase_invoice.js:57
+#: fab_italy_edi/public/js/purchase_invoice.js:66
+#: fab_italy_edi/public/js/sales_invoice.js:77
+#: fab_italy_edi/public/js/sales_invoice.js:89
+msgid "FAB EDI"
+msgstr "FAB EDI"
+
+#: fab_italy_edi/channels/sdi_pec/base.py:261
+#, python-brace-format
+msgid "FAB EDI PEC submission {0}"
+msgstr "Invio PEC FAB EDI {0}"
+
+#: fab_italy_edi/install.py:506
+msgid "FAB EDI Payments Preview"
+msgstr "Anteprima pagamenti FAB EDI"
+
+#: fab_italy_edi/install.py:497
+msgid "FAB EDI Supplier Preview"
+msgstr "Anteprima fornitore FAB EDI"
+
+#. Name of a Workspace
+#: fab_italy_edi/fab_italy_e_invoicing/workspace/fab_italy_e_invoicing/fab_italy_e_invoicing.json
+msgid "FAB Italy E-Invoicing"
+msgstr "FAB Fatturazione Elettronica Italia"
+
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/autofattura/autofattura.js:167
+msgid "Failed"
+msgstr "Fallita"
+
+#: fab_italy_edi/public/js/edi_document.js:203
+msgid "File"
+msgstr "File"
+
+#: fab_italy_edi/fatturapa/autofattura.py:91
+#, python-brace-format
+msgid "Fiscal Regime is mandatory, kindly set the fiscal regime in the company {0}"
+msgstr "Il Regime Fiscale è obbligatorio, impostalo nell'azienda {0}"
+
+#. Label of the generated_xml (Attach) field in DocType 'Autofattura'
+#. Label of the generated_xml (Attach) field in DocType 'EDI Document'
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/autofattura/autofattura.json
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/edi_document/edi_document.json
+msgid "Generated XML"
+msgstr ""
+
+#: fab_italy_edi/api.py:387
+msgid "Generated XML is missing a file URL."
+msgstr "All'XML generato manca un URL file."
+
+#. Label of the grand_total (Currency) field in DocType 'Autofattura'
+#. Label of the autofattura_grand_total (Currency) field in DocType 'EDI
+#. Document'
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/autofattura/autofattura.json
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/edi_document/edi_document.json
+#: fab_italy_edi/public/js/edi_document.js:206
+msgid "Grand Total"
+msgstr "Totale complessivo"
+
+#. Label of the handler_path (Data) field in DocType 'EDI Channel'
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/edi_channel/edi_channel.json
+msgid "Handler Path"
+msgstr ""
+
+#. Description of the 'Outbound Status Polling Interval (mins)' (Int) field in
+#. DocType 'EDI Configuration'
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/edi_configuration/edi_configuration.json
+msgid "How often outbound invoice status should be refreshed. Minimum 5 minutes, in 5-minute steps."
+msgstr ""
+
+#. Description of the 'Notification Polling Interval (mins)' (Int) field in
+#. DocType 'EDI Configuration'
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/edi_configuration/edi_configuration.json
+msgid "How often provider notifications should be synchronized when webhook-only delivery is not used. Minimum 5 minutes, in 5-minute steps."
+msgstr ""
+
+#. Description of the 'Incoming Supplier Invoice Polling Interval (mins)' (Int)
+#. field in DocType 'EDI Configuration'
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/edi_configuration/edi_configuration.json
+msgid "How often supplier invoices should be fetched from SDI or the selected provider. Minimum 5 minutes, in 5-minute steps."
+msgstr ""
+
+#: fab_italy_edi/public/js/sales_invoice.js:170
+msgid "ID: {0}"
+msgstr "ID: {0}"
+
+#. Label of the idempotency_key (Data) field in DocType 'EDI Document'
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/edi_document/edi_document.json
+msgid "Idempotency Key"
+msgstr ""
+
+#: fab_italy_edi/install.py:444
+msgid "Imported from EDI"
+msgstr "Importato da EDI"
+
+#: fab_italy_edi/purchase_invoice_import.py:738
+msgid "Imported from inbound EDI supplier invoice."
+msgstr "Importato da fattura fornitore EDI in ingresso."
+
+#: fab_italy_edi/purchase_invoice_import.py:349
+#: fab_italy_edi/purchase_invoice_import.py:689
+#: fab_italy_edi/purchase_invoice_import.py:701
+msgid "Imported line"
+msgstr "Riga importata"
+
+#: fab_italy_edi/public/js/purchase_invoice.js:81
+msgid "Inbound EDI invoice from {0}. Supplier total: {1}."
+msgstr "Fattura EDI in ingresso da {0}. Totale fornitore: {1}."
+
+#. Label of the inbound_purchase_tax_mapping_section (Section Break) field in
+#. DocType 'EDI Configuration'
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/edi_configuration/edi_configuration.json
+msgid "Inbound Purchase Tax Mapping"
+msgstr ""
+
+#: fab_italy_edi/public/js/edi_document.js:117
+msgid "Inbound Supplier Invoice"
+msgstr "Fattura fornitore in ingresso"
+
+#. Label of the inbound_tax_mappings (Table) field in DocType 'EDI
+#. Configuration'
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/edi_configuration/edi_configuration.json
+msgid "Inbound Tax Mappings"
+msgstr ""
+
+#. Label of the incoming_invoice_polling_interval_mins (Int) field in DocType
+#. 'EDI Configuration'
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/edi_configuration/edi_configuration.json
+msgid "Incoming Supplier Invoice Polling Interval (mins)"
+msgstr ""
+
+#: fab_italy_edi/fab_italy_e_invoicing/page/autofatture/autofatture.js:205
+msgid "Internal Record"
+msgstr "Record interno"
+
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/autofattura/autofattura.js:158
+msgid "Invalid"
+msgstr "Non valido"
+
+#: fab_italy_edi/public/js/edi_document.js:197
+msgid "Invoice"
+msgstr "Fattura"
+
+#: fab_italy_edi/public/js/sales_invoice.js:203
+msgid "Invoice confirmed by SDI and delivered to the recipient."
+msgstr "Fattura confermata da SDI e consegnata al destinatario."
+
+#: fab_italy_edi/public/js/sales_invoice.js:210
+msgid "Invoice confirmed by SDI."
+msgstr "Fattura confermata da SDI."
+
+#: fab_italy_edi/public/js/sales_invoice.js:207
+msgid "Invoice confirmed with a final positive outcome."
+msgstr "Fattura confermata con esito finale positivo."
+
+#: fab_italy_edi/autofattura.py:38 fab_italy_edi/public/js/edi_document.js:267
+msgid "Italian taxonomy code for autofattura on goods purchased from EU suppliers."
+msgstr "Codice tassonomico italiano per autofattura su beni acquistati da fornitori UE."
+
+#: fab_italy_edi/autofattura.py:39 fab_italy_edi/public/js/edi_document.js:268
+msgid "Italian taxonomy code for autofattura on goods purchased from non-EU suppliers."
+msgstr "Codice tassonomico italiano per autofattura su beni acquistati da fornitori extra-UE."
+
+#: fab_italy_edi/autofattura.py:37 fab_italy_edi/public/js/edi_document.js:266
+msgid "Italian taxonomy code for autofattura on services purchased from abroad."
+msgstr "Codice tassonomico italiano per autofattura su servizi acquistati dall'estero."
+
+#: fab_italy_edi/fab_italy_e_invoicing/page/autofatture/autofatture.js:391
+msgid "Item"
+msgstr "Articolo"
+
+#: fab_italy_edi/fab_italy_e_invoicing/page/autofatture/autofatture.js:398
+msgid "Item Tax Template"
+msgstr "Modello imposte articolo"
+
+#: fab_italy_edi/public/js/edi_document.js:212
+msgid "Items"
+msgstr "Articoli"
+
+#. Label of the last_error (Small Text) field in DocType 'Autofattura'
+#. Label of the last_error (Small Text) field in DocType 'EDI Document'
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/autofattura/autofattura.json
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/edi_document/edi_document.json
+msgid "Last Error"
+msgstr ""
+
+#. Label of the last_incoming_invoice_polling_at (Datetime) field in DocType
+#. 'EDI Configuration'
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/edi_configuration/edi_configuration.json
+msgid "Last Incoming Supplier Invoice Polling At"
+msgstr ""
+
+#. Label of the last_notification_polling_at (Datetime) field in DocType 'EDI
+#. Configuration'
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/edi_configuration/edi_configuration.json
+msgid "Last Notification Polling At"
+msgstr ""
+
+#. Label of the last_outbound_status_polling_at (Datetime) field in DocType
+#. 'EDI Configuration'
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/edi_configuration/edi_configuration.json
+msgid "Last Outbound Status Polling At"
+msgstr ""
+
+#. Label of the transport_error_section (Section Break) field in DocType
+#. 'Autofattura'
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/autofattura/autofattura.json
+msgid "Last SDI Error"
+msgstr ""
+
+#. Label of the latest_receipt_state (Select) field in DocType 'Autofattura'
+#. Label of the latest_receipt_state (Select) field in DocType 'EDI Document'
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/autofattura/autofattura.json
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/edi_document/edi_document.json
+msgid "Latest Receipt State"
+msgstr "Stato ultima ricevuta"
+
+#: fab_italy_edi/public/js/edi_document.js:216
+msgid "Line"
+msgstr "Riga"
+
+#. Label of the editor_section (Section Break) field in DocType 'Autofattura'
+#. Label of the lines (Table) field in DocType 'Autofattura'
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/autofattura/autofattura.json
+msgid "Lines"
+msgstr "Righe"
+
+#. Label of the linked_edi_document (Link) field in DocType 'Autofattura'
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/autofattura/autofattura.json
+msgid "Linked EDI Document"
+msgstr "Documento EDI collegato"
+
+#: fab_italy_edi/fab_italy_e_invoicing/page/autofatture/autofatture.js:141
+msgid "Loading autofatture..."
+msgstr "Caricamento autofatture..."
+
+#. Description of the 'Inbound Tax Mappings' (Table) field in DocType 'EDI
+#. Configuration'
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/edi_configuration/edi_configuration.json
+msgid "Map each FatturaPA tax bucket (rate + optional Natura) to the ERPNext tax account that should receive the imported amount."
+msgstr ""
+
+#. Label of the matched (Check) field in DocType 'EDI Receipt'
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/edi_receipt/edi_receipt.json
+msgid "Matched"
+msgstr ""
+
+#: fab_italy_edi/public/js/edi_document.js:210
+msgid "Matching Suppliers"
+msgstr "Fornitori corrispondenti"
+
+#. Label of the naming_series (Data) field in DocType 'Autofattura'
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/autofattura/autofattura.json
+#: fab_italy_edi/fab_italy_e_invoicing/page/autofatture/autofatture.js:348
+msgid "Naming Series"
+msgstr "Serie di denominazione"
+
+#. Label of the nature (Data) field in DocType 'EDI Autofattura Line'
+#. Label of the nature (Data) field in DocType 'EDI Inbound Tax Mapping'
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/edi_autofattura_line/edi_autofattura_line.json
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/edi_inbound_tax_mapping/edi_inbound_tax_mapping.json
+#: fab_italy_edi/fab_italy_e_invoicing/page/autofatture/autofatture.js:369
+#: fab_italy_edi/fab_italy_e_invoicing/page/autofatture/autofatture.js:381
+msgid "Nature"
+msgstr "Natura"
+
+#: fab_italy_edi/fab_italy_e_invoicing/page/autofatture/autofatture.js:549
+msgid "Needs changes"
+msgstr "Richiede modifiche"
+
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/autofattura/autofattura.js:156
+msgid "Needs review"
+msgstr "Da rivedere"
+
+#. Label of the total_price (Float) field in DocType 'EDI Autofattura Line'
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/edi_autofattura_line/edi_autofattura_line.json
+#: fab_italy_edi/fab_italy_e_invoicing/page/autofatture/autofatture.js:367
+msgid "Net Amount"
+msgstr "Importo netto"
+
+#. Label of the net_total (Currency) field in DocType 'Autofattura'
+#. Label of the autofattura_net_total (Currency) field in DocType 'EDI
+#. Document'
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/autofattura/autofattura.json
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/edi_document/edi_document.json
+#: fab_italy_edi/public/js/edi_document.js:204
+msgid "Net Total"
+msgstr "Totale netto"
+
+#: fab_italy_edi/api.py:211
+msgid "No OpenAPI backend is registered."
+msgstr "Nessun backend OpenAPI è registrato."
+
+#: fab_italy_edi/fab_italy_e_invoicing/page/autofatture/autofatture.js:290
+msgid "No VAT summaries generated yet."
+msgstr "Nessun riepilogo IVA ancora generato."
+
+#: fab_italy_edi/fab_italy_e_invoicing/page/autofatture/autofatture.js:276
+msgid "No autofattura lines defined yet."
+msgstr "Nessuna riga autofattura ancora definita."
+
+#: fab_italy_edi/fab_italy_e_invoicing/page/autofatture/autofatture.js:441
+msgid "No autofatture prepared yet."
+msgstr "Nessuna autofattura ancora preparata."
+
+#: fab_italy_edi/public/js/edi_document.js:224
+msgid "No importable lines found."
+msgstr "Nessuna riga importabile trovata."
+
+#: fab_italy_edi/public/js/edi_document.js:210
+msgid "No matching Supplier found yet. Use Create Supplier, then return here to import the draft."
+msgstr "Nessun fornitore corrispondente ancora trovato. Usa Crea fornitore, poi torna qui per importare la bozza."
+
+#: fab_italy_edi/fab_italy_e_invoicing/page/autofatture/autofatture.js:308
+msgid "No source item rows found."
+msgstr "Nessuna riga articolo di origine trovata."
+
+#: fab_italy_edi/fab_italy_e_invoicing/page/autofatture/autofatture.js:323
+msgid "No source tax rows found."
+msgstr "Nessuna riga imposta di origine trovata."
+
+#: fab_italy_edi/public/js/edi_document.js:236
+msgid "No tax rows found."
+msgstr "Nessuna riga imposta trovata."
+
+#. Option for the 'Auth Mode' (Select) field in DocType 'EDI Provider'
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/edi_provider/edi_provider.json
+msgid "None"
+msgstr ""
+
+#. Label of the normalized_state (Select) field in DocType 'EDI Receipt'
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/edi_receipt/edi_receipt.json
+msgid "Normalized State"
+msgstr ""
+
+#. Label of the notes (Small Text) field in DocType 'EDI Configuration'
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/edi_configuration/edi_configuration.json
+#: fab_italy_edi/public/js/edi_document.js:211
+msgid "Notes"
+msgstr "Note"
+
+#. Label of the notification_polling_interval_mins (Int) field in DocType 'EDI
+#. Configuration'
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/edi_configuration/edi_configuration.json
+msgid "Notification Polling Interval (mins)"
+msgstr ""
+
+#: fab_italy_edi/public/js/edi_document.js:199
+msgid "Number"
+msgstr "Numero"
+
+#. Option for the 'Auth Mode' (Select) field in DocType 'EDI Provider'
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/edi_provider/edi_provider.json
+msgid "OAuth2"
+msgstr ""
+
+#: fab_italy_edi/api.py:38
+msgid "Only submitted Sales Invoices can be sent to SDI."
+msgstr "Solo le Fatture di Vendita confermate possono essere inviate a SDI."
+
+#: fab_italy_edi/public/js/edi_document.js:75
+#: fab_italy_edi/public/js/purchase_invoice.js:49
+msgid "Open Autofattura"
+msgstr "Apri autofattura"
+
+#: fab_italy_edi/fab_italy_e_invoicing/page/autofatture/autofatture.js:223
+#: fab_italy_edi/fab_italy_e_invoicing/page/autofatture/autofatture.js:503
+msgid "Open Autofattura Editor"
+msgstr "Apri editor autofattura"
+
+#: fab_italy_edi/public/js/edi_document.js:87
+msgid "Open Autofatture"
+msgstr "Apri autofatture"
+
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/edi_document/edi_document.js:13
+msgid "Open Autofatture Dashboard"
+msgstr "Apri dashboard autofatture"
+
+#: fab_italy_edi/public/js/purchase_invoice.js:26
+msgid "Open EDI Document"
+msgstr "Apri Documento EDI"
+
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/autofattura/autofattura.js:20
+msgid "Open EDI Transport Record"
+msgstr "Apri record di trasporto EDI"
+
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/autofattura/autofattura.js:14
+#: fab_italy_edi/fab_italy_e_invoicing/page/autofatture/autofatture.js:212
+#: fab_italy_edi/fab_italy_e_invoicing/page/autofatture/autofatture.js:486
+#: fab_italy_edi/public/js/edi_document.js:25
+#: fab_italy_edi/public/js/edi_document.js:82
+msgid "Open Purchase Invoice"
+msgstr "Apri Fattura di Acquisto"
+
+#. Description of the 'Auth Mode' (Select) field in DocType 'EDI Provider'
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/edi_provider/edi_provider.json
+msgid "OpenAPI SDI is typically configured with account email and API key. A bearer token can be stored separately for direct API calls if needed."
+msgstr ""
+
+#: fab_italy_edi/api.py:206
+msgid "OpenAPI callbacks only accept POST requests."
+msgstr "I callback OpenAPI accettano solo richieste POST."
+
+#: fab_italy_edi/config/fab_italy_e_invoicing.py:34
+msgid "Operational record for outbound and inbound EDI flows."
+msgstr "Record operativo per i flussi EDI in uscita e in ingresso."
+
+#. Label of a Card Break in the FAB Italy E-Invoicing Workspace
+#: fab_italy_edi/config/fab_italy_e_invoicing.py:28
+#: fab_italy_edi/fab_italy_e_invoicing/workspace/fab_italy_e_invoicing/fab_italy_e_invoicing.json
+msgid "Operations"
+msgstr "Operazioni"
+
+#. Description of the 'Nature' (Data) field in DocType 'EDI Inbound Tax
+#. Mapping'
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/edi_inbound_tax_mapping/edi_inbound_tax_mapping.json
+msgid "Optional FatturaPA Natura code such as N2.1 or N3.5."
+msgstr ""
+
+#. Description of the 'Access Token' (Password) field in DocType 'EDI Provider'
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/edi_provider/edi_provider.json
+msgid "Optional bearer token cache or manual override for direct SDI API calls."
+msgstr ""
+
+#. Description of the 'Refresh Token / Secret' (Password) field in DocType 'EDI
+#. Provider'
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/edi_provider/edi_provider.json
+msgid "Optional provider-specific secret or refresh token."
+msgstr ""
+
+#: fab_italy_edi/fab_italy_e_invoicing/page/autofatture/autofatture.js:161
+msgid "Other Prepared Autofatture"
+msgstr "Altre autofatture preparate"
+
+#. Label of the outbound_status_polling_interval_mins (Int) field in DocType
+#. 'EDI Configuration'
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/edi_configuration/edi_configuration.json
+msgid "Outbound Status Polling Interval (mins)"
+msgstr ""
+
+#: fab_italy_edi/api.py:377
+msgid "PEC"
+msgstr "PEC"
+
+#. Label of the pec_imap_host (Data) field in DocType 'EDI Configuration'
+#: fab_italy_edi/channels/sdi_pec/base.py:30
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/edi_configuration/edi_configuration.json
+msgid "PEC IMAP Host"
+msgstr "Host IMAP PEC"
+
+#. Label of the pec_imap_port (Int) field in DocType 'EDI Configuration'
+#: fab_italy_edi/channels/sdi_pec/base.py:31
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/edi_configuration/edi_configuration.json
+msgid "PEC IMAP Port"
+msgstr "Porta IMAP PEC"
+
+#. Label of the pec_section (Section Break) field in DocType 'EDI
+#. Configuration'
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/edi_configuration/edi_configuration.json
+msgid "PEC Mailbox"
+msgstr ""
+
+#. Label of the pec_password (Password) field in DocType 'EDI Configuration'
+#: fab_italy_edi/channels/sdi_pec/base.py:29
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/edi_configuration/edi_configuration.json
+msgid "PEC Password"
+msgstr "Password PEC"
+
+#. Label of the pec_smtp_host (Data) field in DocType 'EDI Configuration'
+#: fab_italy_edi/channels/sdi_pec/base.py:32
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/edi_configuration/edi_configuration.json
+msgid "PEC SMTP Host"
+msgstr "Host SMTP PEC"
+
+#. Label of the pec_smtp_port (Int) field in DocType 'EDI Configuration'
+#: fab_italy_edi/channels/sdi_pec/base.py:33
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/edi_configuration/edi_configuration.json
+msgid "PEC SMTP Port"
+msgstr "Porta SMTP PEC"
+
+#. Label of the pec_username (Data) field in DocType 'EDI Configuration'
+#: fab_italy_edi/channels/sdi_pec/base.py:28
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/edi_configuration/edi_configuration.json
+msgid "PEC Username"
+msgstr "Nome utente PEC"
+
+#: fab_italy_edi/channels/sdi_pec/base.py:316
+#, python-brace-format
+msgid "PEC mailbox message {0} had no RFC822 payload."
+msgstr "Il messaggio {0} della casella PEC non aveva un payload RFC822."
+
+#. Label of the party_name (Data) field in DocType 'EDI Document'
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/edi_document/edi_document.json
+msgid "Party Name"
+msgstr ""
+
+#: fab_italy_edi/fab_italy_e_invoicing/page/autofatture/autofatture.js:340
+msgid "Payable Account"
+msgstr "Conto debiti"
+
+#. Label of the payload_file (Attach) field in DocType 'EDI Receipt'
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/edi_receipt/edi_receipt.json
+msgid "Payload File"
+msgstr ""
+
+#: fab_italy_edi/purchase_invoice_import.py:754
+#, python-brace-format
+msgid "Payment: {0}"
+msgstr "Pagamento: {0}"
+
+#: fab_italy_edi/public/js/edi_document.js:238
+msgid "Payments"
+msgstr "Pagamenti"
+
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/autofattura/autofattura.js:169
+msgid "Pending"
+msgstr "In attesa"
+
+#: fab_italy_edi/fab_italy_e_invoicing/page/autofatture/autofatture.js:337
+msgid "Posting Date"
+msgstr "Data registrazione"
+
+#: fab_italy_edi/public/js/purchase_invoice.js:64
+#: fab_italy_edi/public/js/purchase_invoice.js:138
+#: fab_italy_edi/public/js/purchase_invoice.js:164
+msgid "Prepare Autofattura"
+msgstr "Prepara autofattura"
+
+#: fab_italy_edi/fab_italy_e_invoicing/page/autofatture/autofatture.js:161
+#: fab_italy_edi/fab_italy_e_invoicing/page/autofatture/autofatture.js:446
+msgid "Prepared Autofatture"
+msgstr "Autofatture preparate"
+
+#: fab_italy_edi/autofattura.py:189
+#, python-brace-format
+msgid "Prepared autofattura draft {0} as {1} using series {2}."
+msgstr "Preparata la bozza autofattura {0} come {1} usando la serie {2}."
+
+#. Label of the processing_notes (Small Text) field in DocType 'EDI Receipt'
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/edi_receipt/edi_receipt.json
+msgid "Processing Notes"
+msgstr ""
+
+#. Option for the 'Environment' (Select) field in DocType 'EDI Provider'
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/edi_provider/edi_provider.json
+msgid "Production"
+msgstr ""
+
+#. Label of the provider (Link) field in DocType 'EDI Document'
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/edi_document/edi_document.json
+msgid "Provider"
+msgstr ""
+
+#. Label of the provider_name (Data) field in DocType 'EDI Provider'
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/edi_provider/edi_provider.json
+msgid "Provider Name"
+msgstr ""
+
+#: fab_italy_edi/config/fab_italy_e_invoicing.py:18
+msgid "Provider adapters and credential-bearing endpoints."
+msgstr "Adapter del provider ed endpoint con credenziali."
+
+#: fab_italy_edi/provider_sync.py:113
+msgid "Provider returned an incoming invoice without an external identifier."
+msgstr "Il provider ha restituito una fattura in ingresso senza identificatore esterno."
+
+#: fab_italy_edi/api.py:45 fab_italy_edi/api.py:109
+#: fab_italy_edi/autofattura.py:97
+#, python-brace-format
+msgid "Provider {0} does not support outbound SDI submission yet."
+msgstr "Il provider {0} non supporta ancora l'invio in uscita a SDI."
+
+#: fab_italy_edi/fab_italy_e_invoicing/page/autofatture/autofatture.js:197
+msgid "Purchase Invoice"
+msgstr "Fattura di Acquisto"
+
+#: fab_italy_edi/autofattura.py:402
+msgid "Purchase Invoice tax rows are not used to generate autofattura VAT. Edit the autofattura lines in the editor instead."
+msgstr "Le righe imposta della Fattura di Acquisto non vengono usate per generare l'IVA dell'autofattura. Modifica invece le righe autofattura nell'editor."
+
+#: fab_italy_edi/autofattura.py:528 fab_italy_edi/fatturapa/autofattura.py:189
+#: fab_italy_edi/fatturapa/autofattura.py:305
+msgid "Purchase item"
+msgstr "Articolo di acquisto"
+
+#: fab_italy_edi/fab_italy_e_invoicing/page/autofatture/autofatture.js:364
+#: fab_italy_edi/fab_italy_e_invoicing/page/autofatture/autofatture.js:393
+#: fab_italy_edi/public/js/edi_document.js:218
+msgid "Qty"
+msgstr "Qtà"
+
+#. Label of the quantity (Float) field in DocType 'EDI Autofattura Line'
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/edi_autofattura_line/edi_autofattura_line.json
+msgid "Quantity"
+msgstr ""
+
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/autofattura/autofattura.js:161
+msgid "Queued"
+msgstr "Accodata"
+
+#: fab_italy_edi/api.py:179
+msgid "Queued at provider"
+msgstr "Accodata presso il provider"
+
+#: fab_italy_edi/api.py:360
+#, python-brace-format
+msgid "Queued autofattura {0} to {1} as {2}."
+msgstr "Autofattura {0} accodata verso {1} come {2}."
+
+#: fab_italy_edi/public/js/sales_invoice.js:294
+msgid "Queued for SDI"
+msgstr "Accodata per SDI"
+
+#: fab_italy_edi/public/js/sales_invoice.js:293
+msgid "Queued for SDI as {0}"
+msgstr "Accodata per SDI come {0}"
+
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/autofattura/autofattura.js:48
+#: fab_italy_edi/fab_italy_e_invoicing/page/autofatture/autofatture.js:85
+msgid "Queueing autofattura for SDI..."
+msgstr "Accodamento autofattura per SDI..."
+
+#: fab_italy_edi/public/js/sales_invoice.js:269
+msgid "Queueing invoice for SDI..."
+msgstr "Accodamento fattura per SDI..."
+
+#: fab_italy_edi/fab_italy_e_invoicing/page/autofatture/autofatture.js:395
+#: fab_italy_edi/public/js/edi_document.js:220
+msgid "Rate"
+msgstr "Aliquota"
+
+#: fab_italy_edi/fab_italy_e_invoicing/page/autofatture/autofatture.js:410
+#: fab_italy_edi/public/js/edi_document.js:231
+msgid "Rate %"
+msgstr "Aliquota %"
+
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/autofattura/autofattura.js:160
+msgid "Ready"
+msgstr "Pronta"
+
+#: fab_italy_edi/fab_italy_e_invoicing/page/autofatture/autofatture.js:546
+msgid "Ready for confirmation"
+msgstr "Pronta per la conferma"
+
+#: fab_italy_edi/autofattura.py:306
+msgid "Ready to send to SDI."
+msgstr "Pronta per l'invio a SDI."
+
+#. Label of the receipt_type (Data) field in DocType 'EDI Receipt'
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/edi_receipt/edi_receipt.json
+msgid "Receipt Type"
+msgstr ""
+
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/autofattura/autofattura.js:144
+msgid "Receipt: {0}"
+msgstr "Ricevuta: {0}"
+
+#. Label of the receipts (Table) field in DocType 'EDI Document'
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/edi_document/edi_document.json
+msgid "Receipts"
+msgstr ""
+
+#. Label of the recipient_code_fallback (Data) field in DocType 'EDI
+#. Configuration'
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/edi_configuration/edi_configuration.json
+msgid "Recipient Code Fallback"
+msgstr ""
+
+#. Label of the reference_law (Small Text) field in DocType 'EDI Autofattura
+#. Line'
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/edi_autofattura_line/edi_autofattura_line.json
+#: fab_italy_edi/fab_italy_e_invoicing/page/autofatture/autofatture.js:382
+msgid "Reference Law"
+msgstr "Riferimento normativo"
+
+#: fab_italy_edi/fab_italy_e_invoicing/page/autofatture/autofatture.js:21
+msgid "Refresh"
+msgstr "Aggiorna"
+
+#. Label of the api_secret (Password) field in DocType 'EDI Provider'
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/edi_provider/edi_provider.json
+msgid "Refresh Token / Secret"
+msgstr ""
+
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/autofattura/autofattura.js:166
+msgid "Rejected"
+msgstr "Scartata"
+
+#. Label of the request_payload (Attach) field in DocType 'EDI Transmission
+#. Attempt'
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/edi_transmission_attempt/edi_transmission_attempt.json
+msgid "Request Payload"
+msgstr ""
+
+#: fab_italy_edi/autofattura.py:91
+msgid "Resolve the autofattura send blockers before sending this draft to SDI."
+msgstr "Risolvi i blocchi di invio dell'autofattura prima di inviare questa bozza a SDI."
+
+#: fab_italy_edi/autofattura.py:308
+msgid "Resolve the autofattura send blockers before sending to SDI."
+msgstr "Risolvi i blocchi di invio dell'autofattura prima dell'invio a SDI."
+
+#: fab_italy_edi/autofattura.py:64
+msgid "Resolve the remaining autofattura review items before confirming this draft."
+msgstr "Risolvi i restanti elementi di revisione dell'autofattura prima di confermare questa bozza."
+
+#: fab_italy_edi/fab_italy_e_invoicing/page/autofatture/autofatture.js:518
+msgid "Resolve the remaining review items first"
+msgstr "Risolvi prima i restanti elementi di revisione"
+
+#. Label of the response_payload (Attach) field in DocType 'EDI Transmission
+#. Attempt'
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/edi_transmission_attempt/edi_transmission_attempt.json
+msgid "Response Payload"
+msgstr ""
+
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/autofattura/autofattura.js:41
+#: fab_italy_edi/fab_italy_e_invoicing/page/autofatture/autofatture.js:533
+#: fab_italy_edi/public/js/sales_invoice.js:75
+msgid "Retry SDI Send"
+msgstr "Riprova invio a SDI"
+
+#. Label of the retryable (Check) field in DocType 'EDI Transmission Attempt'
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/edi_transmission_attempt/edi_transmission_attempt.json
+msgid "Retryable"
+msgstr ""
+
+#: fab_italy_edi/fab_italy_e_invoicing/page/autofatture/autofatture.js:202
+#: fab_italy_edi/fab_italy_e_invoicing/page/autofatture/autofatture.js:435
+msgid "Review"
+msgstr "Revisione"
+
+#: fab_italy_edi/fab_italy_e_invoicing/page/autofatture/autofatture.js:512
+msgid "Review Confirmed"
+msgstr "Revisione confermata"
+
+#: fab_italy_edi/public/js/edi_document.js:13
+msgid "Review Import Data"
+msgstr "Rivedi dati di importazione"
+
+#. Label of the validation_state (Select) field in DocType 'Autofattura'
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/autofattura/autofattura.json
+msgid "Review State"
+msgstr "Stato revisione"
+
+#: fab_italy_edi/public/js/purchase_invoice.js:94
+msgid "Review the imported tax rows before submitting so ERPNext matches the supplier total."
+msgstr "Rivedi le righe imposta importate prima dell'invio, così ERPNext corrisponderà al totale del fornitore."
+
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/autofattura/autofattura.js:135
+msgid "Review: {0}"
+msgstr "Revisione: {0}"
+
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/autofattura/autofattura.js:157
+msgid "Reviewed"
+msgstr "Revisionata"
+
+#: fab_italy_edi/api.py:378
+msgid "SDI"
+msgstr "SDI"
+
+#. Label of the transmission_state (Select) field in DocType 'Autofattura'
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/autofattura/autofattura.json
+msgid "SDI State"
+msgstr ""
+
+#: fab_italy_edi/public/js/sales_invoice.js:198
+msgid "SDI deadline: {0} ({1})"
+msgstr "Scadenza SDI: {0} ({1})"
+
+#: fab_italy_edi/api.py:375
+msgid "SDI proxy"
+msgstr "proxy SDI"
+
+#: fab_italy_edi/public/js/sales_invoice.js:285
+msgid "SDI send failed"
+msgstr "Invio a SDI non riuscito"
+
+#: fab_italy_edi/public/js/sales_invoice.js:163
+msgid "SDI status: {0}"
+msgstr "Stato SDI: {0}"
+
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/autofattura/autofattura.js:139
+msgid "SDI: {0}"
+msgstr "SDI: {0}"
+
+#: fab_italy_edi/api.py:51
+msgid "Sales Invoice"
+msgstr "Fattura di Vendita"
+
+#: fab_italy_edi/api.py:246
+msgid "Sales Invoice is missing a company."
+msgstr "Alla Fattura di Vendita manca l'azienda."
+
+#. Option for the 'Environment' (Select) field in DocType 'EDI Provider'
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/edi_provider/edi_provider.json
+msgid "Sandbox"
+msgstr ""
+
+#: fab_italy_edi/fab_italy_e_invoicing/page/autofatture/autofatture.js:117
+msgid "Save"
+msgstr "Salva"
+
+#: fab_italy_edi/autofattura.py:145 fab_italy_edi/autofattura.py:754
+msgid "Select a Supplier before preparing an autofattura."
+msgstr "Seleziona un fornitore prima di preparare un'autofattura."
+
+#: fab_italy_edi/autofattura.py:376 fab_italy_edi/autofattura.py:480
+msgid "Select a Supplier on the source Purchase Invoice."
+msgstr "Seleziona un fornitore sulla Fattura di Acquisto di origine."
+
+#: fab_italy_edi/autofattura.py:140
+msgid "Select a valid autofattura document type (TD17, TD18, or TD19)."
+msgstr "Seleziona un tipo documento autofattura valido (TD17, TD18 o TD19)."
+
+#: fab_italy_edi/purchase_invoice_import.py:66
+msgid "Select an existing Supplier before creating the Purchase Invoice draft."
+msgstr "Seleziona un fornitore esistente prima di creare la bozza di Fattura di Acquisto."
+
+#: fab_italy_edi/fab_italy_e_invoicing/page/autofatture/autofatture.js:253
+msgid "Send blockers"
+msgstr "Blocchi di invio"
+
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/autofattura/autofattura.js:42
+#: fab_italy_edi/fab_italy_e_invoicing/page/autofatture/autofatture.js:534
+#: fab_italy_edi/public/js/sales_invoice.js:75
+msgid "Send to SDI"
+msgstr "Invia a SDI"
+
+#. Label of the sender_details_section (Section Break) field in DocType 'EDI
+#. Configuration'
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/edi_configuration/edi_configuration.json
+msgid "Sender Details"
+msgstr ""
+
+#. Label of the sender_email (Data) field in DocType 'EDI Configuration'
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/edi_configuration/edi_configuration.json
+msgid "Sender Email"
+msgstr ""
+
+#. Label of the sender_fiscal_code (Data) field in DocType 'EDI Configuration'
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/edi_configuration/edi_configuration.json
+msgid "Sender Fiscal Code"
+msgstr ""
+
+#. Label of the sender_pec_address (Data) field in DocType 'EDI Configuration'
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/edi_configuration/edi_configuration.json
+msgid "Sender PEC Address"
+msgstr ""
+
+#. Label of the sender_vat_id (Data) field in DocType 'EDI Configuration'
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/edi_configuration/edi_configuration.json
+msgid "Sender VAT ID"
+msgstr ""
+
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/autofattura/autofattura.js:162
+msgid "Sending"
+msgstr "Invio in corso"
+
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/autofattura/autofattura.js:163
+msgid "Sent"
+msgstr "Inviata"
+
+#: fab_italy_edi/autofattura.py:150
+#, python-brace-format
+msgid "Set Autofattura Naming Series on EDI Configuration {0} before preparing autofattura documents."
+msgstr "Imposta la serie di denominazione Autofattura nella Configurazione EDI {0} prima di preparare i documenti autofattura."
+
+#: fab_italy_edi/purchase_invoice_import.py:1109
+#, python-brace-format
+msgid "Set Default Expense Account on Company {0} before importing inbound invoices."
+msgstr "Imposta il Conto spese predefinito sull'Azienda {0} prima di importare fatture in ingresso."
+
+#: fab_italy_edi/autofattura.py:598 fab_italy_edi/fatturapa/autofattura.py:205
+#, python-brace-format
+msgid "Set Natura for autofattura line {0} when VAT rate is 0."
+msgstr "Imposta la Natura per la riga autofattura {0} quando l'aliquota IVA è 0."
+
+#: fab_italy_edi/channels/sdi_pec/base.py:247
+msgid "Set Sender PEC Address or Sender Email before sending via PEC."
+msgstr "Imposta l'indirizzo PEC del mittente o l'email del mittente prima dell'invio via PEC."
+
+#: fab_italy_edi/fatturapa/autofattura.py:173
+msgid "Set Sender VAT ID or Company Tax ID before sending an autofattura to SDI."
+msgstr "Imposta la VAT ID del mittente o il Tax ID dell'azienda prima di inviare un'autofattura a SDI."
+
+#: fab_italy_edi/fatturapa/autofattura.py:94
+msgid "Set Sender VAT ID or Sender Fiscal Code on EDI Configuration before sending to SDI."
+msgstr "Imposta la VAT ID del mittente o il Codice Fiscale del mittente nella Configurazione EDI prima dell'invio a SDI."
+
+#: fab_italy_edi/fatturapa/autofattura.py:105
+msgid "Set Supplier Invoice Number and Supplier Invoice Date on the autofattura editor before sending."
+msgstr "Imposta Numero Fattura Fornitore e Data Fattura Fornitore nell'editor autofattura prima dell'invio."
+
+#: fab_italy_edi/fatturapa/autofattura.py:201
+#, python-brace-format
+msgid "Set a VAT rate or Natura for autofattura line {0} before sending."
+msgstr "Imposta un'aliquota IVA o la Natura per la riga autofattura {0} prima dell'invio."
+
+#: fab_italy_edi/autofattura.py:593
+#, python-brace-format
+msgid "Set a VAT rate or Natura for autofattura line {0}."
+msgstr "Imposta un'aliquota IVA o la Natura per la riga autofattura {0}."
+
+#: fab_italy_edi/autofattura.py:756
+msgid "Set a foreign supplier country or a non-Italian supplier Tax ID before preparing an autofattura."
+msgstr "Imposta un paese estero del fornitore o un Tax ID del fornitore non italiano prima di preparare un'autofattura."
+
+#: fab_italy_edi/fatturapa/autofattura.py:147
+msgid "Set a primary Company address before sending an autofattura to SDI."
+msgstr "Imposta un indirizzo principale dell'Azienda prima di inviare un'autofattura a SDI."
+
+#: fab_italy_edi/autofattura.py:488
+#, python-brace-format
+msgid "Set a primary Company address on {0}."
+msgstr "Imposta un indirizzo principale dell'Azienda su {0}."
+
+#: fab_italy_edi/fatturapa/autofattura.py:154
+msgid "Set a primary Supplier address before sending an autofattura to SDI."
+msgstr "Imposta un indirizzo principale del fornitore prima di inviare un'autofattura a SDI."
+
+#: fab_italy_edi/autofattura.py:486
+#, python-brace-format
+msgid "Set a primary Supplier address on {0}."
+msgstr "Imposta un indirizzo principale del fornitore su {0}."
+
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/edi_configuration/edi_configuration.py:115
+#, python-brace-format
+msgid "Set the PEC mailbox fields before using SDI via PEC: {0}."
+msgstr "Imposta i campi della casella PEC prima di usare SDI via PEC: {0}."
+
+#: fab_italy_edi/channels/sdi_pec/base.py:237
+#, python-brace-format
+msgid "Set the PEC mailbox fields on EDI Configuration before using SDI via PEC: {0}."
+msgstr "Imposta i campi della casella PEC nella Configurazione EDI prima di usare SDI via PEC: {0}."
+
+#: fab_italy_edi/fatturapa/autofattura.py:75
+msgid "Set the VAT rate or Natura on the autofattura lines before sending to SDI."
+msgstr "Imposta l'aliquota IVA o la Natura sulle righe autofattura prima dell'invio a SDI."
+
+#: fab_italy_edi/autofattura.py:494
+msgid "Set the VAT rate or Natura on the autofattura lines so FAB can generate VAT totals."
+msgstr "Imposta l'aliquota IVA o la Natura sulle righe autofattura così FAB può generare i totali IVA."
+
+#: fab_italy_edi/autofattura.py:412
+msgid "Set the autofattura document date before final generation."
+msgstr "Imposta la data documento autofattura prima della generazione finale."
+
+#: fab_italy_edi/autofattura.py:474
+msgid "Set the autofattura document date."
+msgstr "Imposta la data documento autofattura."
+
+#: fab_italy_edi/purchase_invoice_import.py:1091
+msgid "Set the default Stock UOM before importing supplier invoices."
+msgstr "Imposta la UOM di magazzino predefinita prima di importare le fatture fornitore."
+
+#: fab_italy_edi/fatturapa/autofattura.py:82
+msgid "Set the foreign supplier Tax ID before sending an autofattura to SDI."
+msgstr "Imposta il Tax ID del fornitore estero prima di inviare un'autofattura a SDI."
+
+#: fab_italy_edi/autofattura.py:484
+#, python-brace-format
+msgid "Set the foreign supplier Tax ID on Supplier {0}."
+msgstr "Imposta il Tax ID del fornitore estero sul Fornitore {0}."
+
+#: fab_italy_edi/autofattura.py:384
+msgid "Set the payable account on the source Purchase Invoice."
+msgstr "Imposta il conto debiti sulla Fattura di Acquisto di origine."
+
+#: fab_italy_edi/autofattura.py:444 fab_italy_edi/autofattura.py:478
+msgid "Set the supplier invoice date on the autofattura editor."
+msgstr "Imposta la data fattura fornitore nell'editor autofattura."
+
+#: fab_italy_edi/autofattura.py:436 fab_italy_edi/autofattura.py:476
+msgid "Set the supplier invoice number on the autofattura editor."
+msgstr "Imposta il numero fattura fornitore nell'editor autofattura."
+
+#. Label of the source_doctype (Link) field in DocType 'EDI Document'
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/edi_document/edi_document.json
+msgid "Source DocType"
+msgstr ""
+
+#. Label of the source_name (Dynamic Link) field in DocType 'EDI Document'
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/edi_document/edi_document.json
+msgid "Source Document"
+msgstr ""
+
+#: fab_italy_edi/fab_italy_e_invoicing/page/autofatture/autofatture.js:387
+msgid "Source Item Rows"
+msgstr "Righe articolo di origine"
+
+#. Label of the source_purchase_invoice (Link) field in DocType 'Autofattura'
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/autofattura/autofattura.json
+#: fab_italy_edi/fab_italy_e_invoicing/page/autofatture/autofatture.js:335
+#: fab_italy_edi/fab_italy_e_invoicing/page/autofatture/autofatture.js:454
+msgid "Source Purchase Invoice"
+msgstr "Fattura di Acquisto di origine"
+
+#: fab_italy_edi/fab_italy_e_invoicing/page/autofatture/autofatture.js:328
+msgid "Source Purchase Invoice Preview"
+msgstr "Anteprima Fattura di Acquisto di origine"
+
+#: fab_italy_edi/fab_italy_e_invoicing/page/autofatture/autofatture.js:353
+msgid "Source Purchase Total"
+msgstr "Totale acquisto di origine"
+
+#: fab_italy_edi/fab_italy_e_invoicing/page/autofatture/autofatture.js:403
+msgid "Source Tax Rows"
+msgstr "Righe imposta di origine"
+
+#. Label of the source_xml (Attach) field in DocType 'EDI Document'
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/edi_document/edi_document.json
+#: fab_italy_edi/install.py:452
+msgid "Source XML"
+msgstr "XML di origine"
+
+#. Label of the status_url (Data) field in DocType 'EDI Provider'
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/edi_provider/edi_provider.json
+msgid "Status Base URL"
+msgstr ""
+
+#. Label of the supplier (Link) field in DocType 'Autofattura'
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/autofattura/autofattura.json
+#: fab_italy_edi/fab_italy_e_invoicing/page/autofatture/autofatture.js:334
+#: fab_italy_edi/fab_italy_e_invoicing/page/autofatture/autofatture.js:453
+#: fab_italy_edi/public/js/edi_document.js:36
+#: fab_italy_edi/public/js/edi_document.js:187
+msgid "Supplier"
+msgstr "Fornitore"
+
+#. Label of the supplier_invoice_date (Date) field in DocType 'Autofattura'
+#. Label of the autofattura_reference_invoice_date (Date) field in DocType 'EDI
+#. Document'
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/autofattura/autofattura.json
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/edi_document/edi_document.json
+#: fab_italy_edi/fab_italy_e_invoicing/page/autofatture/autofatture.js:338
+msgid "Supplier Invoice Date"
+msgstr "Data fattura fornitore"
+
+#: fab_italy_edi/purchase_invoice_import.py:742
+#, python-brace-format
+msgid "Supplier Invoice No: {0}"
+msgstr "N. fattura fornitore: {0}"
+
+#. Label of the supplier_invoice_number (Data) field in DocType 'Autofattura'
+#. Label of the autofattura_reference_invoice_number (Data) field in DocType
+#. 'EDI Document'
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/autofattura/autofattura.json
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/edi_document/edi_document.json
+#: fab_italy_edi/fab_italy_e_invoicing/page/autofatture/autofatture.js:336
+msgid "Supplier Invoice Number"
+msgstr "Numero fattura fornitore"
+
+#. Label of the supplier_name (Data) field in DocType 'Autofattura'
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/autofattura/autofattura.json
+msgid "Supplier Name"
+msgstr ""
+
+#: fab_italy_edi/purchase_invoice_import.py:739
+#, python-brace-format
+msgid "Supplier: {0}"
+msgstr "Fornitore: {0}"
+
+#. Label of the supports_inbound (Check) field in DocType 'EDI Channel'
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/edi_channel/edi_channel.json
+msgid "Supports Inbound"
+msgstr ""
+
+#. Label of the supports_outbound (Check) field in DocType 'EDI Channel'
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/edi_channel/edi_channel.json
+msgid "Supports Outbound"
+msgstr ""
+
+#. Label of the supports_polling (Check) field in DocType 'EDI Channel'
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/edi_channel/edi_channel.json
+msgid "Supports Polling"
+msgstr ""
+
+#. Label of the supports_webhooks (Check) field in DocType 'EDI Channel'
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/edi_channel/edi_channel.json
+msgid "Supports Webhooks"
+msgstr ""
+
+#. Name of a role
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/autofattura/autofattura.json
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/edi_channel/edi_channel.json
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/edi_configuration/edi_configuration.json
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/edi_document/edi_document.json
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/edi_provider/edi_provider.json
+msgid "System Manager"
+msgstr ""
+
+#. Option for the 'Document Type' (Select) field in DocType 'Autofattura'
+#. Option for the 'Autofattura Document Type' (Select) field in DocType 'EDI
+#. Document'
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/autofattura/autofattura.json
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/edi_document/edi_document.json
+msgid "TD17"
+msgstr ""
+
+#: fab_italy_edi/autofattura.py:32 fab_italy_edi/public/js/edi_document.js:258
+msgid "TD17 - Purchase of services from abroad"
+msgstr "TD17 - Acquisto di servizi dall'estero"
+
+#. Option for the 'Document Type' (Select) field in DocType 'Autofattura'
+#. Option for the 'Autofattura Document Type' (Select) field in DocType 'EDI
+#. Document'
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/autofattura/autofattura.json
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/edi_document/edi_document.json
+msgid "TD18"
+msgstr ""
+
+#: fab_italy_edi/autofattura.py:33 fab_italy_edi/public/js/edi_document.js:259
+msgid "TD18 - Purchase of goods from EU suppliers"
+msgstr "TD18 - Acquisto di beni da fornitori UE"
+
+#. Option for the 'Document Type' (Select) field in DocType 'Autofattura'
+#. Option for the 'Autofattura Document Type' (Select) field in DocType 'EDI
+#. Document'
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/autofattura/autofattura.json
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/edi_document/edi_document.json
+msgid "TD19"
+msgstr ""
+
+#: fab_italy_edi/autofattura.py:34 fab_italy_edi/public/js/edi_document.js:260
+msgid "TD19 - Purchase of goods from non-EU suppliers"
+msgstr "TD19 - Acquisto di beni da fornitori extra-UE"
+
+#: fab_italy_edi/public/js/edi_document.js:233
+msgid "Tax"
+msgstr "Imposta"
+
+#: fab_italy_edi/fab_italy_e_invoicing/page/autofatture/autofatture.js:380
+#: fab_italy_edi/fab_italy_e_invoicing/page/autofatture/autofatture.js:411
+msgid "Tax Amount"
+msgstr "Importo imposta"
+
+#: fab_italy_edi/public/js/edi_document.js:190
+msgid "Tax ID"
+msgstr "Tax ID"
+
+#. Label of the tax_rate (Float) field in DocType 'EDI Inbound Tax Mapping'
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/edi_inbound_tax_mapping/edi_inbound_tax_mapping.json
+msgid "Tax Rate"
+msgstr ""
+
+#: fab_italy_edi/public/js/edi_document.js:226
+msgid "Tax Summary"
+msgstr "Riepilogo imposte"
+
+#. Label of the tax_total (Currency) field in DocType 'Autofattura'
+#. Label of the autofattura_tax_total (Currency) field in DocType 'EDI
+#. Document'
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/autofattura/autofattura.json
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/edi_document/edi_document.json
+#: fab_italy_edi/public/js/edi_document.js:205
+msgid "Tax Total"
+msgstr "Totale imposte"
+
+#: fab_italy_edi/purchase_invoice_import.py:384
+msgid "Tax exempt"
+msgstr "Esente IVA"
+
+#: fab_italy_edi/purchase_invoice_import.py:757
+#, python-brace-format
+msgid "Tax rows were not loaded automatically because inbound tax mappings are missing for: {0}."
+msgstr "Le righe imposta non sono state caricate automaticamente perché mancano le mappature fiscali in ingresso per: {0}."
+
+#: fab_italy_edi/public/js/edi_document.js:232
+msgid "Taxable"
+msgstr "Imponibile"
+
+#: fab_italy_edi/fab_italy_e_invoicing/page/autofatture/autofatture.js:379
+msgid "Taxable Amount"
+msgstr "Importo imponibile"
+
+#: fab_italy_edi/public/js/sales_invoice.js:286
+msgid "The SDI proxy rejected the invoice."
+msgstr "Il proxy SDI ha scartato la fattura."
+
+#: fab_italy_edi/purchase_invoice_import.py:169
+msgid "The inbound supplier invoice does not contain any importable lines."
+msgstr "La fattura fornitore in ingresso non contiene righe importabili."
+
+#: fab_italy_edi/public/js/supplier.js:15
+msgid "The primary supplier address will be created when you save."
+msgstr "L'indirizzo principale del fornitore verrà creato al salvataggio."
+
+#: fab_italy_edi/public/js/supplier.js:18
+msgid "The primary supplier contact will be created when you save."
+msgstr "Il contatto principale del fornitore verrà creato al salvataggio."
+
+#: fab_italy_edi/public/js/supplier.js:13
+msgid "This Supplier was started from an inbound EDI invoice."
+msgstr "Questo fornitore è stato avviato da una fattura EDI in ingresso."
+
+#: fab_italy_edi/autofattura.py:298
+msgid "This autofattura draft is not linked to a source Purchase Invoice."
+msgstr "Questa bozza autofattura non è collegata a una Fattura di Acquisto di origine."
+
+#: fab_italy_edi/autofattura.py:472
+msgid "This autofattura is already queued or sent to SDI."
+msgstr "Questa autofattura è già accodata o inviata a SDI."
+
+#: fab_italy_edi/fab_italy_e_invoicing/page/autofatture/autofatture.js:259
+msgid "This autofattura is ready to be sent to SDI."
+msgstr "Questa autofattura è pronta per essere inviata a SDI."
+
+#: fab_italy_edi/public/js/edi_document.js:69
+msgid "This is the internal autofattura transport record. Use the Autofattura form for business editing. {0} {1}"
+msgstr "Questo è il record interno di trasporto dell'autofattura. Usa il modulo Autofattura per le modifiche gestionali. {0} {1}"
+
+#: fab_italy_edi/fab_italy_e_invoicing/page/autofatture/autofatture.js:182
+msgid "This page is the business-facing view for prepared autofattura records. Choose one from the list below to review the source Purchase Invoice, taxonomy code meaning, and current draft status."
+msgstr "Questa pagina è la vista gestionale dei record autofattura preparati. Scegline uno dall'elenco qui sotto per rivedere la Fattura di Acquisto di origine, il significato del codice tassonomico e lo stato attuale della bozza."
+
+#: fab_italy_edi/autofattura.py:147
+msgid "This supplier does not appear to be foreign."
+msgstr "Questo fornitore non sembra estero."
+
+#. Label of the totals_section (Section Break) field in DocType 'Autofattura'
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/autofattura/autofattura.json
+msgid "Totals"
+msgstr ""
+
+#: fab_italy_edi/fab_italy_e_invoicing/page/autofatture/autofatture.js:203
+#: fab_italy_edi/fab_italy_e_invoicing/page/autofatture/autofatture.js:458
+msgid "Transmission"
+msgstr "Trasmissione"
+
+#. Label of the transmission_attempts (Table) field in DocType 'EDI Document'
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/edi_document/edi_document.json
+msgid "Transmission Attempts"
+msgstr ""
+
+#. Label of the transmission_state (Select) field in DocType 'EDI Document'
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/edi_document/edi_document.json
+msgid "Transmission State"
+msgstr ""
+
+#: fab_italy_edi/public/js/sales_invoice.js:166
+msgid "Transmission: {0}"
+msgstr "Trasmissione: {0}"
+
+#. Label of the transport_section (Section Break) field in DocType
+#. 'Autofattura'
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/autofattura/autofattura.json
+msgid "Transport & SDI"
+msgstr "Trasporto e SDI"
+
+#. Label of the transport_status (Select) field in DocType 'EDI Transmission
+#. Attempt'
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/edi_transmission_attempt/edi_transmission_attempt.json
+msgid "Transport Status"
+msgstr ""
+
+#: fab_italy_edi/fab_italy_e_invoicing/page/autofatture/autofatture.js:452
+msgid "Type"
+msgstr "Tipo"
+
+#: fab_italy_edi/fab_italy_e_invoicing/page/autofatture/autofatture.js:365
+#: fab_italy_edi/fab_italy_e_invoicing/page/autofatture/autofatture.js:394
+#: fab_italy_edi/public/js/edi_document.js:219
+msgid "UOM"
+msgstr "UOM"
+
+#: fab_italy_edi/autofattura.py:909
+msgid "Unable to backfill autofattura documents"
+msgstr "Impossibile completare retroattivamente i documenti autofattura"
+
+#: fab_italy_edi/install.py:185
+msgid "Unable to backfill inbound Purchase Invoice draft"
+msgstr "Impossibile completare retroattivamente la bozza di Fattura di Acquisto in ingresso"
+
+#: fab_italy_edi/purchase_invoice_import.py:1134
+#, python-brace-format
+msgid "Unable to decode inbound supplier invoice file {0}."
+msgstr "Impossibile decodificare il file di fattura fornitore in ingresso {0}."
+
+#: fab_italy_edi/fatturapa/autofattura.py:296
+#, python-brace-format
+msgid "Unable to determine the VAT rate for row {0}. Set an Item Tax Template or matching tax rows."
+msgstr "Impossibile determinare l'aliquota IVA per la riga {0}. Imposta un Modello imposte articolo o righe imposta corrispondenti."
+
+#. Label of the unit_price (Float) field in DocType 'EDI Autofattura Line'
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/edi_autofattura_line/edi_autofattura_line.json
+#: fab_italy_edi/fab_italy_e_invoicing/page/autofatture/autofatture.js:366
+msgid "Unit Price"
+msgstr "Prezzo unitario"
+
+#. Label of the unit_of_measure (Data) field in DocType 'EDI Autofattura Line'
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/edi_autofattura_line/edi_autofattura_line.json
+msgid "Unit of Measure"
+msgstr ""
+
+#: fab_italy_edi/public/js/edi_document.js:189
+#: fab_italy_edi/public/js/purchase_invoice.js:72
+#: fab_italy_edi/purchase_invoice_import.py:739
+msgid "Unknown Supplier"
+msgstr "Fornitore sconosciuto"
+
+#: fab_italy_edi/public/js/edi_document.js:166
+msgid "Unknown mode"
+msgstr "Modalità sconosciuta"
+
+#: fab_italy_edi/purchase_invoice_import.py:250
+msgid "Unsupported inbound supplier invoice payload format."
+msgstr "Formato payload della fattura fornitore in ingresso non supportato."
+
+#: fab_italy_edi/public/js/purchase_invoice.js:164
+msgid "Update Autofattura"
+msgstr "Aggiorna autofattura"
+
+#: fab_italy_edi/fab_italy_e_invoicing/page/autofatture/autofatture.js:99
+msgid "Update Autofattura Draft"
+msgstr "Aggiorna bozza autofattura"
+
+#. Label of the use_environment_default_endpoint (Check) field in DocType 'EDI
+#. Provider'
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/edi_provider/edi_provider.json
+msgid "Use Default Endpoint"
+msgstr ""
+
+#. Label of the pec_use_ssl_for_imap (Check) field in DocType 'EDI
+#. Configuration'
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/edi_configuration/edi_configuration.json
+msgid "Use SSL for IMAP"
+msgstr ""
+
+#. Label of the pec_use_ssl_for_smtp (Check) field in DocType 'EDI
+#. Configuration'
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/edi_configuration/edi_configuration.json
+msgid "Use SSL for SMTP"
+msgstr ""
+
+#. Label of the use_status_polling (Check) field in DocType 'EDI Provider'
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/edi_provider/edi_provider.json
+msgid "Use Status Polling"
+msgstr ""
+
+#. Label of the use_webhooks (Check) field in DocType 'EDI Provider'
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/edi_provider/edi_provider.json
+msgid "Use Webhooks"
+msgstr ""
+
+#: fab_italy_edi/fab_italy_e_invoicing/page/autofatture/autofatture.js:368
+#: fab_italy_edi/fab_italy_e_invoicing/page/autofatture/autofatture.js:378
+msgid "VAT %"
+msgstr "IVA %"
+
+#. Label of the tax_rate (Float) field in DocType 'EDI Autofattura Line'
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/edi_autofattura_line/edi_autofattura_line.json
+msgid "VAT Rate"
+msgstr ""
+
+#: fab_italy_edi/fab_italy_e_invoicing/page/autofatture/autofatture.js:457
+msgid "Validation"
+msgstr "Validazione"
+
+#. Label of the validation_state (Select) field in DocType 'EDI Document'
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/edi_document/edi_document.json
+msgid "Validation State"
+msgstr ""
+
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/autofattura/autofattura.js:159
+msgid "Validation failed"
+msgstr "Validazione non riuscita"
+
+#. Label of the webhook_path (Data) field in DocType 'EDI Provider'
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/edi_provider/edi_provider.json
+msgid "Webhook Path"
+msgstr ""
+
+#. Option for the 'SDI State' (Select) field in DocType 'Autofattura'
+#. Option for the 'Latest Receipt State' (Select) field in DocType
+#. 'Autofattura'
+#. Option for the 'Transmission State' (Select) field in DocType 'EDI Document'
+#. Option for the 'Latest Receipt State' (Select) field in DocType 'EDI
+#. Document'
+#. Option for the 'Normalized State' (Select) field in DocType 'EDI Receipt'
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/autofattura/autofattura.json
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/edi_document/edi_document.json
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/edi_receipt/edi_receipt.json
+msgid "accepted"
+msgstr ""
+
+#. Option for the 'Document Kind' (Select) field in DocType 'EDI Document'
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/edi_document/edi_document.json
+msgid "autofattura"
+msgstr ""
+
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/edi_configuration/edi_configuration.py:97
+msgid "blank"
+msgstr "vuoto"
+
+#. Option for the 'SDI State' (Select) field in DocType 'Autofattura'
+#. Option for the 'Latest Receipt State' (Select) field in DocType
+#. 'Autofattura'
+#. Option for the 'Transmission State' (Select) field in DocType 'EDI Document'
+#. Option for the 'Latest Receipt State' (Select) field in DocType 'EDI
+#. Document'
+#. Option for the 'Normalized State' (Select) field in DocType 'EDI Receipt'
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/autofattura/autofattura.json
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/edi_document/edi_document.json
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/edi_receipt/edi_receipt.json
+msgid "cancelled"
+msgstr ""
+
+#. Option for the 'Document Kind' (Select) field in DocType 'EDI Document'
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/edi_document/edi_document.json
+msgid "credit_note"
+msgstr ""
+
+#. Option for the 'SDI State' (Select) field in DocType 'Autofattura'
+#. Option for the 'Latest Receipt State' (Select) field in DocType
+#. 'Autofattura'
+#. Option for the 'Transmission State' (Select) field in DocType 'EDI Document'
+#. Option for the 'Latest Receipt State' (Select) field in DocType 'EDI
+#. Document'
+#. Option for the 'Normalized State' (Select) field in DocType 'EDI Receipt'
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/autofattura/autofattura.json
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/edi_document/edi_document.json
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/edi_receipt/edi_receipt.json
+msgid "delivered"
+msgstr ""
+
+#. Option for the 'Review State' (Select) field in DocType 'Autofattura'
+#. Option for the 'SDI State' (Select) field in DocType 'Autofattura'
+#. Option for the 'Validation State' (Select) field in DocType 'EDI Document'
+#. Option for the 'Transmission State' (Select) field in DocType 'EDI Document'
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/autofattura/autofattura.json
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/edi_document/edi_document.json
+msgid "draft"
+msgstr ""
+
+#: fab_italy_edi/public/js/sales_invoice.js:142
+msgid "due today"
+msgstr "in scadenza oggi"
+
+#. Option for the 'SDI State' (Select) field in DocType 'Autofattura'
+#. Option for the 'Latest Receipt State' (Select) field in DocType
+#. 'Autofattura'
+#. Option for the 'Transmission State' (Select) field in DocType 'EDI Document'
+#. Option for the 'Latest Receipt State' (Select) field in DocType 'EDI
+#. Document'
+#. Option for the 'Normalized State' (Select) field in DocType 'EDI Receipt'
+#. Option for the 'Transport Status' (Select) field in DocType 'EDI
+#. Transmission Attempt'
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/autofattura/autofattura.json
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/edi_document/edi_document.json
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/edi_receipt/edi_receipt.json
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/edi_transmission_attempt/edi_transmission_attempt.json
+msgid "failed"
+msgstr ""
+
+#. Option for the 'Transmission State' (Select) field in DocType 'EDI Document'
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/edi_document/edi_document.json
+msgid "imported"
+msgstr ""
+
+#. Option for the 'Review State' (Select) field in DocType 'Autofattura'
+#. Option for the 'Validation State' (Select) field in DocType 'EDI Document'
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/autofattura/autofattura.json
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/edi_document/edi_document.json
+msgid "invalid"
+msgstr ""
+
+#. Option for the 'Document Kind' (Select) field in DocType 'EDI Document'
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/edi_document/edi_document.json
+msgid "invoice"
+msgstr ""
+
+#. Option for the 'Review State' (Select) field in DocType 'Autofattura'
+#. Option for the 'Validation State' (Select) field in DocType 'EDI Document'
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/autofattura/autofattura.json
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/edi_document/edi_document.json
+msgid "not_validated"
+msgstr ""
+
+#. Option for the 'SDI State' (Select) field in DocType 'Autofattura'
+#. Option for the 'Latest Receipt State' (Select) field in DocType
+#. 'Autofattura'
+#. Option for the 'Transmission State' (Select) field in DocType 'EDI Document'
+#. Option for the 'Latest Receipt State' (Select) field in DocType 'EDI
+#. Document'
+#. Option for the 'Normalized State' (Select) field in DocType 'EDI Receipt'
+#. Option for the 'Transport Status' (Select) field in DocType 'EDI
+#. Transmission Attempt'
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/autofattura/autofattura.json
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/edi_document/edi_document.json
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/edi_receipt/edi_receipt.json
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/edi_transmission_attempt/edi_transmission_attempt.json
+msgid "queued"
+msgstr ""
+
+#. Option for the 'SDI State' (Select) field in DocType 'Autofattura'
+#. Option for the 'Transmission State' (Select) field in DocType 'EDI Document'
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/autofattura/autofattura.json
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/edi_document/edi_document.json
+msgid "ready"
+msgstr ""
+
+#. Option for the 'SDI State' (Select) field in DocType 'Autofattura'
+#. Option for the 'Latest Receipt State' (Select) field in DocType
+#. 'Autofattura'
+#. Option for the 'Transmission State' (Select) field in DocType 'EDI Document'
+#. Option for the 'Latest Receipt State' (Select) field in DocType 'EDI
+#. Document'
+#. Option for the 'Normalized State' (Select) field in DocType 'EDI Receipt'
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/autofattura/autofattura.json
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/edi_document/edi_document.json
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/edi_receipt/edi_receipt.json
+msgid "rejected"
+msgstr ""
+
+#. Option for the 'SDI State' (Select) field in DocType 'Autofattura'
+#. Option for the 'Transmission State' (Select) field in DocType 'EDI Document'
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/autofattura/autofattura.json
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/edi_document/edi_document.json
+msgid "sending"
+msgstr ""
+
+#. Option for the 'SDI State' (Select) field in DocType 'Autofattura'
+#. Option for the 'Latest Receipt State' (Select) field in DocType
+#. 'Autofattura'
+#. Option for the 'Transmission State' (Select) field in DocType 'EDI Document'
+#. Option for the 'Latest Receipt State' (Select) field in DocType 'EDI
+#. Document'
+#. Option for the 'Normalized State' (Select) field in DocType 'EDI Receipt'
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/autofattura/autofattura.json
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/edi_document/edi_document.json
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/edi_receipt/edi_receipt.json
+msgid "sent"
+msgstr ""
+
+#. Option for the 'Transport Status' (Select) field in DocType 'EDI
+#. Transmission Attempt'
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/edi_transmission_attempt/edi_transmission_attempt.json
+msgid "success"
+msgstr ""
+
+#. Option for the 'Document Kind' (Select) field in DocType 'EDI Document'
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/edi_document/edi_document.json
+msgid "supplier_invoice_import"
+msgstr ""
+
+#: fab_italy_edi/channels/sdi_pec/base.py:264
+msgid "unknown document"
+msgstr "documento sconosciuto"
+
+#. Option for the 'Latest Receipt State' (Select) field in DocType
+#. 'Autofattura'
+#. Option for the 'Latest Receipt State' (Select) field in DocType 'EDI
+#. Document'
+#. Option for the 'Normalized State' (Select) field in DocType 'EDI Receipt'
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/autofattura/autofattura.json
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/edi_document/edi_document.json
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/edi_receipt/edi_receipt.json
+msgid "unknown_pending"
+msgstr ""
+
+#. Option for the 'Review State' (Select) field in DocType 'Autofattura'
+#. Option for the 'Validation State' (Select) field in DocType 'EDI Document'
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/autofattura/autofattura.json
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/edi_document/edi_document.json
+msgid "valid"
+msgstr ""
+
+#. Option for the 'Review State' (Select) field in DocType 'Autofattura'
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/autofattura/autofattura.json
+msgid "validation_failed"
+msgstr ""
+
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/edi_configuration/edi_configuration.py:80
+#, python-brace-format
+msgid "{0} cannot exceed {1} minutes."
+msgstr "{0} non può superare {1} minuti."
+
+#: fab_italy_edi/public/js/sales_invoice.js:138
+msgid "{0} days overdue"
+msgstr "{0} giorni di ritardo"
+
+#: fab_italy_edi/public/js/sales_invoice.js:149
+msgid "{0} days remaining"
+msgstr "{0} giorni rimanenti"
+
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/edi_configuration/edi_configuration.py:85
+#, python-brace-format
+msgid "{0} must be a multiple of {1} minutes."
+msgstr "{0} deve essere un multiplo di {1} minuti."
+
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/edi_configuration/edi_configuration.py:75
+#, python-brace-format
+msgid "{0} must be at least {1} minutes."
+msgstr "{0} deve essere di almeno {1} minuti."
+
+#: fab_italy_edi/api.py:336
+#, python-brace-format
+msgid "{0} {1} is already queued or being sent to SDI."
+msgstr "{0} {1} è già accodata o in invio a SDI."
+
+#: fab_italy_edi/api.py:330
+#, python-brace-format
+msgid "{0} {1} is already queued or sent to SDI as {2}."
+msgstr "{0} {1} è già accodata o inviata a SDI come {2}."

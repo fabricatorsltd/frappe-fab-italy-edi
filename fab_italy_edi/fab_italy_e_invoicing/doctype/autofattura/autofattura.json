@@ -1,0 +1,302 @@
+{
+ "actions": [],
+  "allow_import": 1,
+  "autoname": "hash",
+  "creation": "2026-04-25 19:10:00.000000",
+  "doctype": "DocType",
+  "document_type": "Document",
+  "engine": "InnoDB",
+  "field_order": [
+   "overview_section",
+   "source_purchase_invoice",
+   "supplier",
+   "supplier_name",
+   "column_break_overview",
+   "company",
+   "currency",
+   "document_section",
+   "document_type",
+   "document_date",
+   "supplier_invoice_number",
+   "column_break_document",
+   "document_number",
+   "supplier_invoice_date",
+   "naming_series",
+   "validation_state",
+   "column_break_status",
+   "transmission_state",
+   "latest_receipt_state",
+   "totals_section",
+   "net_total",
+   "column_break_totals",
+   "tax_total",
+   "column_break_grand_total",
+   "grand_total",
+   "editor_section",
+   "lines",
+   "transport_section",
+   "linked_edi_document",
+   "generated_xml",
+   "transport_column_break",
+   "transport_error_section",
+   "last_error"
+  ],
+  "fields": [
+   {
+    "fieldname": "overview_section",
+    "fieldtype": "Section Break"
+   },
+   {
+    "fieldname": "source_purchase_invoice",
+    "fieldtype": "Link",
+    "in_list_view": 1,
+    "label": "Source Purchase Invoice",
+   "options": "Purchase Invoice",
+   "reqd": 1
+  },
+   {
+    "fieldname": "supplier",
+    "fieldtype": "Link",
+    "in_list_view": 1,
+    "label": "Supplier",
+    "options": "Supplier",
+   "reqd": 1
+  },
+   {
+    "fieldname": "supplier_name",
+    "fieldtype": "Data",
+    "label": "Supplier Name",
+    "hidden": 1,
+    "read_only": 1
+   },
+   {
+    "fieldname": "column_break_overview",
+    "fieldtype": "Column Break"
+   },
+   {
+    "fieldname": "company",
+    "fieldtype": "Link",
+    "in_list_view": 1,
+    "label": "Company",
+    "options": "Company",
+    "reqd": 1
+   },
+   {
+    "fieldname": "currency",
+    "fieldtype": "Link",
+    "label": "Currency",
+    "options": "Currency",
+    "reqd": 1
+   },
+   {
+    "fieldname": "document_section",
+    "fieldtype": "Section Break"
+   },
+   {
+    "fieldname": "document_type",
+    "fieldtype": "Select",
+    "in_list_view": 1,
+    "label": "Document Type",
+    "options": "\nTD17\nTD18\nTD19",
+    "reqd": 1
+   },
+   {
+    "fieldname": "document_date",
+    "fieldtype": "Date",
+    "in_list_view": 1,
+    "label": "Autofattura Date",
+    "reqd": 1
+   },
+   {
+    "fieldname": "supplier_invoice_number",
+    "fieldtype": "Data",
+    "label": "Supplier Invoice Number",
+    "reqd": 1
+   },
+   {
+    "fieldname": "column_break_document",
+    "fieldtype": "Column Break"
+   },
+   {
+    "fieldname": "document_number",
+    "fieldtype": "Data",
+    "label": "Autofattura Number",
+    "read_only": 1
+   },
+   {
+    "fieldname": "supplier_invoice_date",
+    "fieldtype": "Date",
+    "label": "Supplier Invoice Date",
+    "reqd": 1
+   },
+   {
+    "fieldname": "naming_series",
+    "fieldtype": "Data",
+    "label": "Naming Series",
+    "read_only": 1
+   },
+   {
+    "default": "draft",
+    "fieldname": "validation_state",
+    "fieldtype": "Select",
+    "in_list_view": 1,
+    "label": "Review State",
+    "options": "\ndraft\nnot_validated\nvalid\ninvalid\nvalidation_failed",
+    "read_only": 1
+   },
+   {
+    "fieldname": "column_break_status",
+    "fieldtype": "Column Break"
+   },
+   {
+    "default": "draft",
+    "fieldname": "transmission_state",
+    "fieldtype": "Select",
+    "in_list_view": 1,
+    "label": "SDI State",
+    "options": "\ndraft\nready\nqueued\nsending\nsent\ndelivered\naccepted\nrejected\nfailed\ncancelled",
+    "read_only": 1
+   },
+   {
+    "depends_on": "eval:doc.latest_receipt_state",
+    "fieldname": "latest_receipt_state",
+    "fieldtype": "Select",
+    "label": "Latest Receipt State",
+    "options": "\nqueued\nsent\ndelivered\naccepted\nrejected\nfailed\ncancelled\nunknown_pending",
+    "read_only": 1
+   },
+   {
+    "fieldname": "totals_section",
+    "fieldtype": "Section Break",
+    "label": "Totals"
+  },
+  {
+   "fieldname": "net_total",
+    "fieldtype": "Currency",
+    "label": "Net Total",
+    "options": "currency",
+    "read_only": 1
+   },
+   {
+    "fieldname": "column_break_totals",
+    "fieldtype": "Column Break"
+   },
+   {
+    "fieldname": "tax_total",
+    "fieldtype": "Currency",
+    "label": "Tax Total",
+    "options": "currency",
+    "read_only": 1
+   },
+   {
+    "fieldname": "column_break_grand_total",
+    "fieldtype": "Column Break"
+   },
+   {
+    "fieldname": "grand_total",
+    "fieldtype": "Currency",
+    "label": "Grand Total",
+    "options": "currency",
+   "read_only": 1
+  },
+   {
+    "fieldname": "editor_section",
+    "fieldtype": "Section Break",
+    "label": "Lines"
+   },
+   {
+    "fieldname": "lines",
+    "fieldtype": "Table",
+    "label": "Lines",
+    "options": "EDI Autofattura Line"
+   },
+   {
+    "collapsible": 1,
+    "fieldname": "transport_section",
+    "fieldtype": "Section Break",
+    "label": "Transport & SDI"
+   },
+   {
+    "depends_on": "eval:doc.linked_edi_document",
+    "fieldname": "linked_edi_document",
+    "fieldtype": "Link",
+    "label": "Linked EDI Document",
+    "options": "EDI Document",
+    "read_only": 1
+   },
+   {
+    "depends_on": "eval:doc.generated_xml",
+    "fieldname": "generated_xml",
+    "fieldtype": "Attach",
+    "label": "Generated XML",
+    "read_only": 1
+   },
+   {
+    "fieldname": "transport_column_break",
+    "fieldtype": "Column Break"
+   },
+   {
+    "depends_on": "eval:doc.last_error",
+    "fieldname": "transport_error_section",
+    "fieldtype": "Section Break",
+    "label": "Last SDI Error"
+   },
+   {
+    "depends_on": "eval:doc.last_error",
+    "fieldname": "last_error",
+    "fieldtype": "Small Text",
+    "label": "Last Error",
+    "read_only": 1
+   }
+  ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2026-04-25 19:10:00.000000",
+ "modified_by": "Administrator",
+ "module": "FAB Italy E-Invoicing",
+ "name": "Autofattura",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Accounts Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Accounts User",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "search_fields": "source_purchase_invoice,supplier_name,document_number,linked_edi_document",
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "title_field": "document_number",
+ "track_changes": 1
+}

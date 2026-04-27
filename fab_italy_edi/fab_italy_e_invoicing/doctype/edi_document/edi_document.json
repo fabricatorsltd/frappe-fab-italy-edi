@@ -1,0 +1,302 @@
+{
+ "actions": [],
+ "allow_import": 1,
+ "autoname": "hash",
+ "creation": "2026-04-24 16:25:00.000000",
+ "doctype": "DocType",
+ "document_type": "Document",
+ "engine": "InnoDB",
+ "field_order": [
+  "source_doctype",
+  "source_name",
+  "company",
+  "document_kind",
+  "autofattura_document_type",
+  "autofattura_document_date",
+  "autofattura_document_number",
+  "autofattura_naming_series",
+  "autofattura_reference_section",
+  "autofattura_reference_invoice_number",
+  "autofattura_reference_invoice_date",
+  "autofattura_currency",
+  "autofattura_totals_column_break",
+  "autofattura_net_total",
+  "autofattura_tax_total",
+  "autofattura_grand_total",
+  "autofattura_editor_section",
+  "autofattura_lines",
+  "party_name",
+  "channel",
+  "provider",
+  "validation_state",
+  "transmission_state",
+  "latest_receipt_state",
+  "canonical_identifier",
+  "idempotency_key",
+  "external_submission_id",
+  "generated_xml",
+  "source_xml",
+  "last_error",
+  "transmission_attempts",
+  "receipts"
+ ],
+ "fields": [
+  {
+   "fieldname": "source_doctype",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Source DocType",
+   "options": "DocType",
+   "reqd": 1
+  },
+  {
+   "fieldname": "source_name",
+   "fieldtype": "Dynamic Link",
+   "in_list_view": 1,
+   "label": "Source Document",
+   "options": "source_doctype",
+   "reqd": 1
+  },
+  {
+   "fieldname": "company",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Company",
+   "options": "Company",
+   "reqd": 1
+  },
+  {
+   "fieldname": "document_kind",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Document Kind",
+   "options": "\ninvoice\ncredit_note\nsupplier_invoice_import\nautofattura",
+   "reqd": 1
+  },
+  {
+   "depends_on": "eval:doc.document_kind=='autofattura'",
+   "fieldname": "autofattura_document_type",
+   "fieldtype": "Select",
+   "label": "Autofattura Document Type",
+   "options": "\nTD17\nTD18\nTD19"
+  },
+  {
+   "depends_on": "eval:doc.document_kind=='autofattura'",
+   "fieldname": "autofattura_document_date",
+   "fieldtype": "Date",
+   "label": "Autofattura Document Date"
+  },
+  {
+   "depends_on": "eval:doc.document_kind=='autofattura'",
+   "fieldname": "autofattura_document_number",
+   "fieldtype": "Data",
+   "label": "Autofattura Document Number",
+   "read_only": 1
+  },
+  {
+   "depends_on": "eval:doc.document_kind=='autofattura'",
+   "fieldname": "autofattura_naming_series",
+   "fieldtype": "Data",
+   "label": "Autofattura Naming Series"
+  },
+  {
+   "depends_on": "eval:doc.document_kind=='autofattura'",
+   "fieldname": "autofattura_reference_section",
+   "fieldtype": "Section Break",
+   "label": "Autofattura Legal Reference"
+  },
+  {
+   "depends_on": "eval:doc.document_kind=='autofattura'",
+   "fieldname": "autofattura_reference_invoice_number",
+   "fieldtype": "Data",
+   "label": "Supplier Invoice Number"
+  },
+  {
+   "depends_on": "eval:doc.document_kind=='autofattura'",
+   "fieldname": "autofattura_reference_invoice_date",
+   "fieldtype": "Date",
+   "label": "Supplier Invoice Date"
+  },
+  {
+   "depends_on": "eval:doc.document_kind=='autofattura'",
+   "fieldname": "autofattura_currency",
+   "fieldtype": "Link",
+   "label": "Currency",
+   "options": "Currency",
+   "read_only": 1
+  },
+  {
+   "depends_on": "eval:doc.document_kind=='autofattura'",
+   "fieldname": "autofattura_totals_column_break",
+   "fieldtype": "Column Break"
+  },
+  {
+   "depends_on": "eval:doc.document_kind=='autofattura'",
+   "fieldname": "autofattura_net_total",
+   "fieldtype": "Currency",
+   "label": "Net Total",
+   "options": "autofattura_currency",
+   "read_only": 1
+  },
+  {
+   "depends_on": "eval:doc.document_kind=='autofattura'",
+   "fieldname": "autofattura_tax_total",
+   "fieldtype": "Currency",
+   "label": "Tax Total",
+   "options": "autofattura_currency",
+   "read_only": 1
+  },
+  {
+   "depends_on": "eval:doc.document_kind=='autofattura'",
+   "fieldname": "autofattura_grand_total",
+   "fieldtype": "Currency",
+   "label": "Grand Total",
+   "options": "autofattura_currency",
+   "read_only": 1
+  },
+  {
+   "depends_on": "eval:doc.document_kind=='autofattura'",
+   "fieldname": "autofattura_editor_section",
+   "fieldtype": "Section Break",
+   "label": "Autofattura Editor"
+  },
+  {
+   "depends_on": "eval:doc.document_kind=='autofattura'",
+   "fieldname": "autofattura_lines",
+   "fieldtype": "Table",
+   "label": "Autofattura Lines",
+   "options": "EDI Autofattura Line"
+  },
+  {
+   "fieldname": "party_name",
+   "fieldtype": "Data",
+   "label": "Party Name"
+  },
+  {
+   "fieldname": "channel",
+   "fieldtype": "Link",
+   "label": "Channel",
+   "options": "EDI Channel"
+  },
+  {
+   "fieldname": "provider",
+   "fieldtype": "Link",
+   "label": "Provider",
+   "options": "EDI Provider"
+  },
+  {
+   "default": "draft",
+   "fieldname": "validation_state",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Validation State",
+   "options": "\ndraft\nnot_validated\nvalid\ninvalid",
+   "reqd": 1
+  },
+  {
+   "default": "draft",
+   "fieldname": "transmission_state",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Transmission State",
+   "options": "\ndraft\nready\nqueued\nsending\nsent\ndelivered\naccepted\nrejected\nfailed\ncancelled\nimported",
+   "reqd": 1
+  },
+  {
+   "fieldname": "latest_receipt_state",
+   "fieldtype": "Select",
+   "label": "Latest Receipt State",
+   "options": "\nqueued\nsent\ndelivered\naccepted\nrejected\nfailed\ncancelled\nunknown_pending"
+  },
+  {
+   "fieldname": "canonical_identifier",
+   "fieldtype": "Data",
+   "label": "Canonical Identifier"
+  },
+  {
+   "fieldname": "idempotency_key",
+   "fieldtype": "Data",
+   "label": "Idempotency Key",
+   "unique": 1
+  },
+  {
+   "fieldname": "external_submission_id",
+   "fieldtype": "Data",
+   "label": "External Submission ID"
+  },
+  {
+   "fieldname": "generated_xml",
+   "fieldtype": "Attach",
+   "label": "Generated XML"
+  },
+  {
+   "fieldname": "source_xml",
+   "fieldtype": "Attach",
+   "label": "Source XML"
+  },
+  {
+   "fieldname": "last_error",
+   "fieldtype": "Small Text",
+   "label": "Last Error"
+  },
+  {
+   "fieldname": "transmission_attempts",
+   "fieldtype": "Table",
+   "label": "Transmission Attempts",
+   "options": "EDI Transmission Attempt"
+  },
+  {
+   "fieldname": "receipts",
+   "fieldtype": "Table",
+   "label": "Receipts",
+   "options": "EDI Receipt"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2026-04-24 16:25:00.000000",
+ "modified_by": "Administrator",
+ "module": "FAB Italy E-Invoicing",
+ "name": "EDI Document",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Accounts Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Accounts User",
+   "share": 1
+  }
+ ],
+ "search_fields": "source_name,canonical_identifier,external_submission_id,party_name",
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "title_field": "source_name",
+ "track_changes": 1
+}

@@ -4,11 +4,20 @@ app_publisher = "fabricators"
 app_description = "Italian e-invoicing and document exchange for ERPNext"
 app_email = "support@fabricators.ltd"
 app_license = "agpl-3.0"
+app_home = "/app/fab-italy-e-invoicing"
 
 # Apps
 # ------------------
 
-# required_apps = []
+required_apps = ["erpnext", "erpnext_italy", "fab"]
+
+add_to_apps_screen = [
+	{
+		"name": app_name,
+		"title": app_title,
+		"route": app_home,
+	}
+]
 
 # Each item in the list will be shown as an app in the apps page
 # add_to_apps_screen = [
@@ -26,7 +35,7 @@ app_license = "agpl-3.0"
 
 # include js, css files in header of desk.html
 # app_include_css = "/assets/fab_italy_edi/css/fab_italy_edi.css"
-# app_include_js = "/assets/fab_italy_edi/js/fab_italy_edi.js"
+app_include_js = "/assets/fab_italy_edi/js/desk.js"
 
 # include js, css files in header of web template
 # web_include_css = "/assets/fab_italy_edi/css/fab_italy_edi.css"
@@ -43,7 +52,12 @@ app_license = "agpl-3.0"
 # page_js = {"page" : "public/js/file.js"}
 
 # include js in doctype views
-# doctype_js = {"doctype" : "public/js/doctype.js"}
+doctype_js = {
+	"Sales Invoice": "public/js/sales_invoice.js",
+	"Purchase Invoice": "public/js/purchase_invoice.js",
+	"Supplier": "public/js/supplier.js",
+	"EDI Document": "public/js/edi_document.js",
+}
 # doctype_list_js = {"doctype" : "public/js/doctype_list.js"}
 # doctype_tree_js = {"doctype" : "public/js/doctype_tree.js"}
 # doctype_calendar_js = {"doctype" : "public/js/doctype_calendar.js"}
@@ -85,8 +99,7 @@ app_license = "agpl-3.0"
 # Installation
 # ------------
 
-# before_install = "fab_italy_edi.install.before_install"
-# after_install = "fab_italy_edi.install.after_install"
+after_install = "fab_italy_edi.install.after_install"
 
 # Uninstallation
 # ------------
@@ -109,6 +122,8 @@ app_license = "agpl-3.0"
 
 # before_app_uninstall = "fab_italy_edi.utils.before_app_uninstall"
 # after_app_uninstall = "fab_italy_edi.utils.after_app_uninstall"
+
+after_migrate = ["fab_italy_edi.install.after_migrate"]
 
 # Build
 # ------------------
@@ -138,34 +153,34 @@ app_license = "agpl-3.0"
 # ---------------
 # Hook on document methods and events
 
-# doc_events = {
-# 	"*": {
-# 		"on_update": "method",
-# 		"on_cancel": "method",
-# 		"on_trash": "method"
-# 	}
-# }
+doc_events = {
+	"Sales Invoice": {
+		"before_validate": "fab_italy_edi.install.scrub_missing_legacy_einvoice_type_link_values",
+	},
+	"Purchase Invoice": {
+		"before_validate": "fab_italy_edi.install.scrub_missing_legacy_einvoice_type_link_values",
+	},
+	"Supplier": {
+		"after_insert": "fab_italy_edi.purchase_invoice_import.materialize_inbound_supplier_links",
+	},
+	"Autofattura": {
+		"on_update": "fab_italy_edi.autofattura.sync_purchase_invoice_links_from_autofattura",
+	},
+	"EDI Document": {
+		"on_update": "fab_italy_edi.autofattura.sync_linked_autofattura_from_edi_document",
+	}
+}
 
 # Scheduled Tasks
 # ---------------
 
-# scheduler_events = {
-# 	"all": [
-# 		"fab_italy_edi.tasks.all"
-# 	],
-# 	"daily": [
-# 		"fab_italy_edi.tasks.daily"
-# 	],
-# 	"hourly": [
-# 		"fab_italy_edi.tasks.hourly"
-# 	],
-# 	"weekly": [
-# 		"fab_italy_edi.tasks.weekly"
-# 	],
-# 	"monthly": [
-# 		"fab_italy_edi.tasks.monthly"
-# 	],
-# }
+scheduler_events = {
+	"cron": {
+		"*/5 * * * *": [
+			"fab_italy_edi.polling.run_automatic_refresh_scheduler"
+		]
+	}
+}
 
 # Testing
 # -------
@@ -255,4 +270,3 @@ app_license = "agpl-3.0"
 # ------------
 # List of apps whose translatable strings should be excluded from this app's translations.
 # ignore_translatable_strings_from = []
-

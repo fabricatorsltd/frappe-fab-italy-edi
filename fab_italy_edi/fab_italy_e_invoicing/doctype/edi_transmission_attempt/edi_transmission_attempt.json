@@ -1,0 +1,76 @@
+{
+ "actions": [],
+ "autoname": "hash",
+ "creation": "2026-04-24 16:25:00.000000",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "attempt_number",
+  "transport_status",
+  "retryable",
+  "external_status_code",
+  "external_reference_id",
+  "external_status_message",
+  "request_payload",
+  "response_payload"
+ ],
+ "fields": [
+  {
+   "fieldname": "attempt_number",
+   "fieldtype": "Int",
+   "in_list_view": 1,
+   "label": "Attempt Number"
+  },
+  {
+   "fieldname": "transport_status",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Transport Status",
+   "options": "\nqueued\nsuccess\nfailed"
+  },
+  {
+   "default": "0",
+   "fieldname": "retryable",
+   "fieldtype": "Check",
+   "in_list_view": 1,
+   "label": "Retryable"
+  },
+  {
+   "fieldname": "external_status_code",
+   "fieldtype": "Data",
+   "label": "External Status Code"
+  },
+  {
+   "fieldname": "external_reference_id",
+   "fieldtype": "Data",
+   "label": "External Reference ID"
+  },
+  {
+   "fieldname": "external_status_message",
+   "fieldtype": "Small Text",
+   "label": "External Status Message"
+  },
+  {
+   "fieldname": "request_payload",
+   "fieldtype": "Attach",
+   "label": "Request Payload"
+  },
+  {
+   "fieldname": "response_payload",
+   "fieldtype": "Attach",
+   "label": "Response Payload"
+  }
+ ],
+ "istable": 1,
+ "links": [],
+ "modified": "2026-04-24 16:25:00.000000",
+ "modified_by": "Administrator",
+ "module": "FAB Italy E-Invoicing",
+ "name": "EDI Transmission Attempt",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "creation",
+ "sort_order": "DESC",
+ "states": []
+}

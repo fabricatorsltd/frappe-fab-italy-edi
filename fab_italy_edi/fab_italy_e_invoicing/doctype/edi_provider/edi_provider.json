@@ -1,0 +1,179 @@
+{
+ "actions": [],
+ "allow_import": 1,
+ "allow_rename": 1,
+ "autoname": "field:provider_name",
+ "creation": "2026-04-24 16:25:00.000000",
+ "doctype": "DocType",
+ "document_type": "Setup",
+ "engine": "InnoDB",
+ "field_order": [
+  "provider_name",
+  "channel",
+  "enabled",
+  "adapter_key",
+  "auth_mode",
+  "environment",
+  "use_environment_default_endpoint",
+  "endpoint_url",
+  "status_url",
+  "webhook_path",
+  "column_break_ylzy",
+  "use_webhooks",
+  "use_status_polling",
+  "username",
+  "api_key",
+  "password",
+  "api_secret",
+  "additional_settings"
+ ],
+ "fields": [
+  {
+   "fieldname": "provider_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Provider Name",
+   "reqd": 1,
+   "unique": 1
+  },
+  {
+   "fieldname": "channel",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Channel",
+   "options": "EDI Channel",
+   "reqd": 1
+  },
+  {
+   "default": "1",
+   "fieldname": "enabled",
+   "fieldtype": "Check",
+   "label": "Enabled"
+  },
+  {
+   "fieldname": "adapter_key",
+   "fieldtype": "Data",
+   "label": "Adapter Key",
+   "reqd": 1
+  },
+  {
+   "default": "Basic",
+   "description": "OpenAPI SDI is typically configured with account email and API key. A bearer token can be stored separately for direct API calls if needed.",
+   "fieldname": "auth_mode",
+   "fieldtype": "Select",
+   "label": "Auth Mode",
+   "options": "\nNone\nBasic\nBearer Token\nAPI Key\nOAuth2"
+  },
+  {
+   "default": "Production",
+   "fieldname": "environment",
+   "fieldtype": "Select",
+   "label": "Environment",
+   "options": "\nProduction\nSandbox"
+  },
+  {
+   "default": "1",
+   "fieldname": "use_environment_default_endpoint",
+   "fieldtype": "Check",
+   "label": "Use Default Endpoint"
+  },
+  {
+   "fieldname": "endpoint_url",
+   "fieldtype": "Data",
+   "label": "API Base URL"
+  },
+  {
+   "fieldname": "status_url",
+   "fieldtype": "Data",
+   "label": "Status Base URL"
+  },
+  {
+   "fieldname": "webhook_path",
+   "fieldtype": "Data",
+   "label": "Webhook Path"
+  },
+  {
+   "fieldname": "column_break_ylzy",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "0",
+   "fieldname": "use_webhooks",
+   "fieldtype": "Check",
+   "label": "Use Webhooks"
+  },
+  {
+   "default": "1",
+   "fieldname": "use_status_polling",
+   "fieldtype": "Check",
+   "label": "Use Status Polling"
+  },
+  {
+   "description": "Email address of the OpenAPI account used to manage SDI tokens and scopes.",
+   "fieldname": "username",
+   "fieldtype": "Data",
+   "label": "Account Email"
+  },
+  {
+   "description": "API key from the OpenAPI console.",
+   "fieldname": "api_key",
+   "fieldtype": "Password",
+   "label": "API Key"
+  },
+  {
+   "description": "Optional bearer token cache or manual override for direct SDI API calls.",
+   "fieldname": "password",
+   "fieldtype": "Password",
+   "label": "Access Token"
+  },
+  {
+   "description": "Optional provider-specific secret or refresh token.",
+   "fieldname": "api_secret",
+   "fieldtype": "Password",
+   "label": "Refresh Token / Secret"
+  },
+  {
+   "fieldname": "additional_settings",
+   "fieldtype": "JSON",
+   "label": "Additional Settings"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2026-04-24 16:25:00.000000",
+ "modified_by": "Administrator",
+ "module": "FAB Italy E-Invoicing",
+ "name": "EDI Provider",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Accounts Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "search_fields": "adapter_key,channel",
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "title_field": "provider_name",
+ "track_changes": 1
+}

@@ -1,0 +1,121 @@
+{
+ "actions": [],
+ "allow_import": 1,
+ "allow_rename": 1,
+ "autoname": "field:channel_key",
+ "creation": "2026-04-24 16:25:00.000000",
+ "doctype": "DocType",
+ "document_type": "Setup",
+ "engine": "InnoDB",
+ "field_order": [
+  "channel_key",
+  "channel_name",
+  "enabled",
+  "handler_path",
+  "column_break_kqrb",
+  "supports_outbound",
+  "supports_inbound",
+  "supports_webhooks",
+  "supports_polling",
+  "capabilities"
+ ],
+ "fields": [
+  {
+   "fieldname": "channel_key",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Channel Key",
+   "reqd": 1,
+   "unique": 1
+  },
+  {
+   "fieldname": "channel_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Channel Name",
+   "reqd": 1
+  },
+  {
+   "default": "1",
+   "fieldname": "enabled",
+   "fieldtype": "Check",
+   "label": "Enabled"
+  },
+  {
+   "fieldname": "handler_path",
+   "fieldtype": "Data",
+   "label": "Handler Path"
+  },
+  {
+   "fieldname": "column_break_kqrb",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "1",
+   "fieldname": "supports_outbound",
+   "fieldtype": "Check",
+   "label": "Supports Outbound"
+  },
+  {
+   "default": "1",
+   "fieldname": "supports_inbound",
+   "fieldtype": "Check",
+   "label": "Supports Inbound"
+  },
+  {
+   "default": "0",
+   "fieldname": "supports_webhooks",
+   "fieldtype": "Check",
+   "label": "Supports Webhooks"
+  },
+  {
+   "default": "1",
+   "fieldname": "supports_polling",
+   "fieldtype": "Check",
+   "label": "Supports Polling"
+  },
+  {
+   "fieldname": "capabilities",
+   "fieldtype": "JSON",
+   "label": "Capabilities"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2026-04-24 16:25:00.000000",
+ "modified_by": "Administrator",
+ "module": "FAB Italy E-Invoicing",
+ "name": "EDI Channel",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Accounts Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "search_fields": "channel_name",
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "title_field": "channel_name",
+ "track_changes": 1
+}

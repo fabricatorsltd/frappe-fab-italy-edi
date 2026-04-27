@@ -1,0 +1,64 @@
+{
+ "actions": [],
+ "autoname": "hash",
+ "creation": "2026-04-24 16:25:00.000000",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "receipt_type",
+  "normalized_state",
+  "matched",
+  "external_message_id",
+  "payload_file",
+  "processing_notes"
+ ],
+ "fields": [
+  {
+   "fieldname": "receipt_type",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Receipt Type"
+  },
+  {
+   "fieldname": "normalized_state",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Normalized State",
+   "options": "\nqueued\nsent\ndelivered\naccepted\nrejected\nfailed\ncancelled\nunknown_pending"
+  },
+  {
+   "default": "1",
+   "fieldname": "matched",
+   "fieldtype": "Check",
+   "in_list_view": 1,
+   "label": "Matched"
+  },
+  {
+   "fieldname": "external_message_id",
+   "fieldtype": "Data",
+   "label": "External Message ID"
+  },
+  {
+   "fieldname": "payload_file",
+   "fieldtype": "Attach",
+   "label": "Payload File"
+  },
+  {
+   "fieldname": "processing_notes",
+   "fieldtype": "Small Text",
+   "label": "Processing Notes"
+  }
+ ],
+ "istable": 1,
+ "links": [],
+ "modified": "2026-04-24 16:25:00.000000",
+ "modified_by": "Administrator",
+ "module": "FAB Italy E-Invoicing",
+ "name": "EDI Receipt",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "creation",
+ "sort_order": "DESC",
+ "states": []
+}
