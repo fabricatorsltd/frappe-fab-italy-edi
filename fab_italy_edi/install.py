@@ -228,10 +228,19 @@ def hide_legacy_custom_field(doctype: str, fieldname: str) -> None:
 	if not custom_field_name:
 		return
 
-	if frappe.db.get_value("Custom Field", custom_field_name, "hidden") == 1:
+	updates = {}
+	if frappe.db.get_value("Custom Field", custom_field_name, "hidden") != 1:
+		updates["hidden"] = 1
+	if frappe.db.get_value("Custom Field", custom_field_name, "reqd") != 0:
+		updates["reqd"] = 0
+	if frappe.db.get_value("Custom Field", custom_field_name, "fieldtype") == "Link":
+		updates["fieldtype"] = "Data"
+	if frappe.db.get_value("Custom Field", custom_field_name, "options"):
+		updates["options"] = ""
+	if not updates:
 		return
 
-	frappe.db.set_value("Custom Field", custom_field_name, "hidden", 1, update_modified=False)
+	frappe.db.set_value("Custom Field", custom_field_name, updates, update_modified=False)
 
 
 def clear_legacy_field_values(doctype: str, link_field: str, description_field: str | None = None) -> None:

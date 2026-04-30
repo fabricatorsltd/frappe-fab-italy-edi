@@ -369,7 +369,14 @@ class TestInstall(unittest.TestCase):
 			if doctype != "Custom Field":
 				return None
 			if isinstance(filters, str):
-				return 0
+				is_link_field = "tipo_di_documento" in filters and "descrizione" not in filters
+				field_values = {
+					"hidden": 0,
+					"reqd": 1 if is_link_field else 0,
+					"fieldtype": "Link" if is_link_field else "Data",
+					"options": "Tipologia di documento e-Invoice" if is_link_field else "",
+				}
+				return field_values.get(fieldname)
 			return {
 				("Sales Invoice", "custom_tipo_di_documento"): "Sales Invoice-custom_tipo_di_documento_per_fatt_elett",
 				("Sales Invoice", "custom_descrizione_tipo_documento"): "Sales Invoice-custom_descrizione_tipo_documento",
@@ -423,37 +430,78 @@ class TestInstall(unittest.TestCase):
 		self.assertIsNone(document.custom_tipo_di_documento)
 		self.assertIsNone(document.custom_descrizione_tipo_documento)
 
-		with patch.object(install, "frappe", new=frappe_stub):
+		def mock_get_value(doctype, filters, fieldname=None, **kwargs):
+			if doctype != "Custom Field":
+				return None
+			if isinstance(filters, str):
+				is_link_field = "tipo_di_documento" in filters and "descrizione" not in filters
+				field_values = {
+					"hidden": 0,
+					"reqd": 1 if is_link_field else 0,
+					"fieldtype": "Link" if is_link_field else "Data",
+					"options": "Tipologia di documento e-Invoice" if is_link_field else "",
+				}
+				return field_values.get(fieldname)
+			return {
+				("Sales Invoice", "custom_tipo_di_documento"): "Sales Invoice-custom_tipo_di_documento_per_fatt_elett",
+				("Sales Invoice", "custom_descrizione_tipo_documento"): "Sales Invoice-custom_descrizione_tipo_documento",
+				("Purchase Invoice", "custom_tipo_di_documento"): "Purchase Invoice-custom_tipo_di_documento",
+				("Purchase Invoice", "custom_descrizione_tipo_documento"): "Purchase Invoice-custom_descrizione_tipo_documento",
+			}.get((filters["dt"], filters["fieldname"]))
+
+		neutralize_stub = SimpleNamespace(
+			db=SimpleNamespace(
+				exists=Mock(side_effect=mock_exists),
+				get_value=Mock(side_effect=mock_get_value),
+				set_value=Mock(),
+			),
+			get_all=Mock(
+				side_effect=[
+					[
+						{
+							"name": "ACC-SINV-2026-00001",
+							"custom_tipo_di_documento": "customer.custom_tipo_fattura_elettronica",
+							"custom_descrizione_tipo_documento": "Fattura",
+						}
+					],
+					[
+						{
+							"name": "ACC-PINV-2026-00001",
+							"custom_tipo_di_documento": "supplier.custom_tipo_autofattura",
+							"custom_descrizione_tipo_documento": "Autofattura",
+						}
+					],
+				]
+			),
+		)
+
+		with patch.object(install, "frappe", new=neutralize_stub):
 			install.neutralize_missing_legacy_einvoice_type_links()
 
-		frappe_stub.db.set_value.assert_has_calls(
+		neutralize_stub.db.set_value.assert_has_calls(
 			[
 				call(
 					"Custom Field",
 					"Sales Invoice-custom_tipo_di_documento_per_fatt_elett",
-					"hidden",
-					1,
+					{"hidden": 1, "reqd": 0, "fieldtype": "Data", "options": ""},
 					update_modified=False,
 				),
 				call(
 					"Custom Field",
 					"Sales Invoice-custom_descrizione_tipo_documento",
-					"hidden",
-					1,
+					{"hidden": 1},
 					update_modified=False,
 				),
 				call(
 					"Custom Field",
 					"Purchase Invoice-custom_tipo_di_documento",
-					"hidden",
-					1,
+					{"hidden": 1, "reqd": 0, "fieldtype": "Data", "options": ""},
 					update_modified=False,
 				),
 				call(
 					"Custom Field",
 					"Purchase Invoice-custom_descrizione_tipo_documento",
-					"hidden",
-					1,
+					{"hidden": 1},
 					update_modified=False,
 				),
 				call(

@@ -1,10 +1,10 @@
-# FAB Italy E-Invoicing
+# fab Italy E-Invoicing
 
 Italian e-invoicing and document exchange for ERPNext.
 
 ## Scope
 
-`fab_italy_edi` is the business-domain app for FAB's Italian document exchange
+`fab_italy_edi` is the business-domain app for fab's Italian document exchange
 stack. It owns the ERPNext-facing workflows, canonical document model, and the
 operator UX around outbound, inbound, and receipt-driven lifecycle management.
 
@@ -50,9 +50,18 @@ The seeded **OpenAPI SDI Proxy** provider uses the OpenAPI account flow:
 - **Access Token**: optional manual bearer override
 
 Use **Sandbox** for `https://test.sdi.openapi.it` and **Production** for
-`https://sdi.openapi.it`. When the provider stays on basic auth mode, FAB
+`https://sdi.openapi.it`. When the provider stays on basic auth mode, fab
 requests bearer tokens from the OpenAPI OAuth endpoints automatically before
 polling or submission calls.
+
+## Contributing
+
+Follow the official Frappe contribution guidelines:
+
+- <https://github.com/frappe/erpnext/wiki/Contribution-Guidelines>
+
+That includes upstream expectations for contribution proposals, coding
+standards, pull request checklists, and documentation updates.
 
 ## Development
 
