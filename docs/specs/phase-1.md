@@ -2,7 +2,7 @@
 
 ## Problem statement
 
-`fab_italy_edi` must provide a production-oriented Italian document exchange layer for ERPNext v16, using `erpnext_italy` as an installation prerequisite where its Italy-localized fields and legacy helpers are still needed, while keeping FAB responsible for the operator workflow, transport orchestration, and new inbound / outbound automation. The first release must support outbound and inbound operational flows for Italian e-invoicing while keeping the architecture extensible for PEPPOL and NSO.
+`fab_italy_edi` must provide a production-oriented Italian document exchange layer for ERPNext v16, installing the Italy-localized fields it needs itself on top of the Italy regional module shipped with ERPNext, while keeping FAB responsible for the operator workflow, transport orchestration, and new inbound / outbound automation. The first release must support outbound and inbound operational flows for Italian e-invoicing while keeping the architecture extensible for PEPPOL and NSO.
 
 ## Scope
 
@@ -37,11 +37,10 @@
 - Full PEPPOL execution flows
 - Full NSO execution flows
 - long-term archival / conservazione implementation
-- replacing every `erpnext_italy` helper in Phase 1
 
 ## Design principles
 
-1. FAB owns the workflow and transport orchestration, while `erpnext_italy` may remain a prerequisite for Italy-localized document fields and transitional XML helpers.
+1. FAB owns the workflow and transport orchestration, and installs the Italy-localized document fields it depends on, relying on ERPNext only for the regional helpers it still ships.
 2. Channel abstraction so transport providers do not shape the core business workflow.
 3. Async-first execution for network transmission and receipt ingestion.
 4. Audit-first persistence of payloads, attempts, and receipts.
@@ -95,7 +94,7 @@ Implemented in the current app:
 - exact inbound tax import using fixed document tax rows plus row-level `Item Tax Template` binding
 - ABI/CAB-backed bank resolution through the companion `fab_banks_import` app
 - standard Natura IVA account + mapping provisioning as disabled defaults, with lazy enablement when an inbound invoice uses a mapped Natura bucket
-- site installation now requires `erpnext_italy` in addition to ERPNext
+- site installation requires ERPNext only; the Italy-localized Company, Address and Customer fields are created by this app on install and migrate
 - foreign Purchase Invoices can now be prepared for autofattura inside FAB by choosing `TD17` / `TD18` / `TD19`, validating a dedicated naming series, and creating a linked draft `EDI Document`
 - the accounting/tax guidance layer has now been specified as a dedicated follow-up module so Purchase Invoice operators can be guided through expense-vs-asset classification, payable-account currency, foreign-purchase handling, and autofattura readiness
 

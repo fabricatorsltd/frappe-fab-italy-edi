@@ -9,7 +9,7 @@ app_home = "/app/fab-italy-e-invoicing"
 # Apps
 # ------------------
 
-required_apps = ["erpnext", "erpnext_italy", "fab"]
+required_apps = ["erpnext", "fab"]
 
 add_to_apps_screen = [
 	{

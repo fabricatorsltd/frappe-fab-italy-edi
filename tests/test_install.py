@@ -26,7 +26,17 @@ class TestInstall(unittest.TestCase):
 		with patch.object(install, "_", side_effect=lambda text: text):
 			custom_fields = install.get_custom_fields()
 
-		self.assertEqual(set(custom_fields), {"Sales Invoice", "Purchase Invoice", "Supplier"})
+		self.assertEqual(
+			set(custom_fields),
+			{
+				"Sales Invoice",
+				"Purchase Invoice",
+				"Supplier",
+				"Company",
+				"Address",
+				"Customer",
+			},
+		)
 		self.assertGreaterEqual(
 			{field["fieldname"] for field in custom_fields["Sales Invoice"]},
 			{
@@ -58,6 +68,31 @@ class TestInstall(unittest.TestCase):
 				"fab_edi_payments_preview_json",
 			},
 		)
+
+	def test_custom_fields_cover_italian_localisation(self):
+		with patch.object(install, "_", side_effect=lambda text: text):
+			custom_fields = install.get_custom_fields()
+
+		self.assertGreaterEqual(
+			{field["fieldname"] for field in custom_fields["Company"]},
+			{"sb_e_invoicing", "fiscal_regime", "fiscal_code", "vat_collectability"},
+		)
+		self.assertGreaterEqual(
+			{field["fieldname"] for field in custom_fields["Address"]},
+			{"country_code", "state_code"},
+		)
+		self.assertGreaterEqual(
+			{field["fieldname"] for field in custom_fields["Customer"]},
+			{"fiscal_code", "recipient_code", "pec", "is_public_administration"},
+		)
+
+		customer_anchors = {field["fieldname"]: field.get("insert_after") for field in custom_fields["Customer"]}
+		self.assertEqual(customer_anchors["recipient_code"], "fiscal_code")
+		self.assertEqual(customer_anchors["pec"], "recipient_code")
+
+		company_options = {field["fieldname"]: field.get("options") for field in custom_fields["Company"]}
+		self.assertIn("RF01-Ordinario", company_options["fiscal_regime"])
+		self.assertIn("I-Immediata", company_options["vat_collectability"])
 
 	def test_default_seed_data_contains_openapi_provider(self):
 		channels = {item["channel_key"]: item for item in install.get_default_channels()}

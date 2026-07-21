@@ -6,6 +6,8 @@ import frappe
 from frappe import _
 from frappe.custom.doctype.custom_field.custom_field import create_custom_fields
 
+from erpnext.regional.italy import fiscal_regimes, vat_collectability_options
+
 from fab_italy_edi.autofattura import backfill_autofatture
 from fab_italy_edi.automation import ensure_automation_user
 from fab_italy_edi.backends import get_provider_adapter
@@ -467,7 +469,114 @@ def get_custom_fields() -> dict[str, list[dict[str, object]]]:
 		"Sales Invoice": get_sales_invoice_custom_fields(),
 		"Purchase Invoice": get_purchase_invoice_custom_fields(),
 		"Supplier": get_supplier_custom_fields(),
+		"Company": get_company_custom_fields(),
+		"Address": get_address_custom_fields(),
+		"Customer": get_customer_custom_fields(),
 	}
+
+
+def get_company_custom_fields() -> list[dict[str, object]]:
+	"""Italian identification fields read when building FatturaPA documents.
+
+	ERPNext ships these under ``erpnext.regional.italy.setup``, but that setup only
+	runs from the setup wizard and the v11/v12 patches, so a site that never went
+	through an Italian setup wizard would not have them.
+	"""
+	return [
+		{
+			"fieldname": "sb_e_invoicing",
+			"label": _("E-Invoicing"),
+			"fieldtype": "Section Break",
+			"insert_after": "date_of_establishment",
+			"print_hide": 1,
+		},
+		{
+			"fieldname": "fiscal_regime",
+			"label": _("Fiscal Regime"),
+			"fieldtype": "Select",
+			"insert_after": "sb_e_invoicing",
+			"print_hide": 1,
+			"options": "\n".join(fiscal_regimes),
+		},
+		{
+			"fieldname": "fiscal_code",
+			"label": _("Fiscal Code"),
+			"fieldtype": "Data",
+			"insert_after": "fiscal_regime",
+			"print_hide": 1,
+			"description": _("Applicable if the company is an Individual or a Proprietorship"),
+		},
+		{
+			"fieldname": "vat_collectability",
+			"label": _("VAT Collectability"),
+			"fieldtype": "Select",
+			"insert_after": "fiscal_code",
+			"print_hide": 1,
+			"options": "\n".join(vat_collectability_options),
+		},
+	]
+
+
+def get_address_custom_fields() -> list[dict[str, object]]:
+	"""Province and country codes required by the FatturaPA address blocks.
+
+	``state_code`` is populated by ``erpnext.regional.italy.utils.set_state_code``,
+	which ERPNext already hooks on Address validate, so no hook is registered here.
+	"""
+	return [
+		{
+			"fieldname": "country_code",
+			"label": _("Country Code"),
+			"fieldtype": "Data",
+			"insert_after": "country",
+			"print_hide": 1,
+			"fetch_from": "country.code",
+		},
+		{
+			"fieldname": "state_code",
+			"label": _("State Code"),
+			"fieldtype": "Data",
+			"insert_after": "state",
+			"print_hide": 1,
+		},
+	]
+
+
+def get_customer_custom_fields() -> list[dict[str, object]]:
+	"""Recipient routing and identification fields for outbound e-invoices."""
+	return [
+		{
+			"fieldname": "fiscal_code",
+			"label": _("Fiscal Code"),
+			"fieldtype": "Data",
+			"insert_after": "tax_id",
+			"print_hide": 1,
+		},
+		{
+			"fieldname": "recipient_code",
+			"label": _("Recipient Code"),
+			"fieldtype": "Data",
+			"insert_after": "fiscal_code",
+			"print_hide": 1,
+			"default": "0000000",
+		},
+		{
+			"fieldname": "pec",
+			"label": _("Recipient PEC"),
+			"fieldtype": "Data",
+			"insert_after": "recipient_code",
+			"print_hide": 1,
+		},
+		{
+			"fieldname": "is_public_administration",
+			"label": _("Is Public Administration"),
+			"fieldtype": "Check",
+			"insert_after": "is_internal_customer",
+			"print_hide": 1,
+			"description": _("Set this if the customer is a Public Administration company."),
+			"depends_on": 'eval:doc.customer_type=="Company"',
+		},
+	]
 
 
 def get_default_channels() -> list[dict[str, object]]:

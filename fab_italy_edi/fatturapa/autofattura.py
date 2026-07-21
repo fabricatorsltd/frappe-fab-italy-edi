@@ -12,10 +12,13 @@ from frappe.utils import cint, cstr
 from frappe.utils.file_manager import save_file
 
 from erpnext.regional.italy.utils import (
-	get_address_country_code,
-	get_attachment_progressive_name_and_number,
 	get_invoice_summary,
 	get_progressive_name_and_number,
+)
+
+from fab_italy_edi.fatturapa.regional_compat import (
+	get_address_country_code,
+	get_attachment_progressive_name_and_number,
 	prepare_e_invoice_address,
 )
 from erpnext.setup.doctype.company.company import get_default_company_address

@@ -33,11 +33,12 @@ Committed specifications live under [`docs/specs`](docs/specs), including:
 cd $PATH_TO_YOUR_BENCH
 bench get-app https://github.com/fabricatorsltd/frappe-fab-italy-edi.git --branch version-16
 bench get-app erpnext --branch version-16
-bench get-app https://github.com/frappe/erpnext_italy.git --branch version-16
 bench --site [site] install-app fab_italy_edi
 ```
 
-`fab_italy_edi` requires both `erpnext` and `erpnext_italy` in the bench.
+`fab_italy_edi` requires `erpnext` in the bench. The Italian localisation fields it
+needs on Company, Address and Customer are installed by this app itself, on top of
+the Italy regional module that ships with ERPNext.
 `fab_openapi` is the reusable backend app for OpenAPI-based SDI transport and
 should also be installed when testing that provider path.
 
