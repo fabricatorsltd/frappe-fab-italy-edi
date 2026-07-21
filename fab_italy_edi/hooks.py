@@ -11,16 +11,17 @@ app_home = "/app/fab-italy-e-invoicing"
 
 required_apps = ["erpnext", "fab"]
 
-add_to_apps_screen = [
-	{
-		"name": app_name,
-		"title": app_title,
-		"route": app_home,
-		# frappe reads this key unconditionally when building Desktop Icons, so a
-		# missing "logo" raises KeyError and aborts icon creation for every app.
-		"logo": "/assets/fab/images/fab-logo.png",
-	}
-]
+# Deliberately not declared: this app is reached through the "fab" container on the
+# desk, so it must not claim a top level tile of its own. Declaring it also made
+# create_desktop_icons_from_installed_apps() read app_details["logo"] without a
+# default, which raised KeyError and aborted desktop icon creation for the site.
+# add_to_apps_screen = [
+# 	{
+# 		"name": app_name,
+# 		"title": app_title,
+# 		"route": app_home,
+# 	}
+# ]
 
 # Each item in the list will be shown as an app in the apps page
 # add_to_apps_screen = [
