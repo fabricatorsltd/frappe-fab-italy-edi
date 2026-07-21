@@ -16,6 +16,9 @@ add_to_apps_screen = [
 		"name": app_name,
 		"title": app_title,
 		"route": app_home,
+		# frappe reads this key unconditionally when building Desktop Icons, so a
+		# missing "logo" raises KeyError and aborts icon creation for every app.
+		"logo": "/assets/fab/images/fab-logo.png",
 	}
 ]
 
