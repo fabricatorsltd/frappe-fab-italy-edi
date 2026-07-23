@@ -237,8 +237,12 @@ def hide_legacy_custom_field(doctype: str, fieldname: str) -> None:
 
 
 def clear_legacy_field_values(doctype: str, link_field: str, description_field: str | None = None) -> None:
+	# sites that never had the legacy custom fields have no columns to clear
+	if not frappe.db.has_column(doctype, link_field):
+		return
+
 	fields = ["name", link_field]
-	if description_field:
+	if description_field and frappe.db.has_column(doctype, description_field):
 		fields.append(description_field)
 
 	for row in frappe.get_all(doctype, fields=fields):
