@@ -53,6 +53,7 @@ async function update_fab_edi_sdi_notice(frm) {
 		({ message, color } = get_fab_edi_status_message({
 			transmission_state,
 			receipt_state,
+			transmission_date: frm.doc.fab_edi_transmission_date,
 			external_submission_id: edi_status?.external_submission_id,
 			last_error: edi_status?.last_error,
 		}, deadline_context));
@@ -174,8 +175,10 @@ function get_fab_edi_status_message(status, deadline_context) {
 		parts.push(first_line(status.last_error));
 	}
 
-	if (FAB_EDI_SUCCESS_STATES.has(primary_state)) {
-		parts.push(get_success_confirmation_message(primary_state));
+	// once the invoice reached SDI the 12 day transmission deadline is met:
+	// show when it left, never the countdown
+	if (FAB_EDI_SENT_STATES.has(primary_state)) {
+		parts.push(get_success_confirmation_message(primary_state, status.transmission_date));
 		return {
 			message: parts.join(" · "),
 			color: get_edi_state_color(primary_state),
@@ -198,16 +201,21 @@ function get_deadline_message(deadline_context) {
 	return __("SDI deadline: {0} ({1})", [deadline_context.deadline_label, deadline_status]);
 }
 
-function get_success_confirmation_message(state) {
+function get_success_confirmation_message(state, transmission_date) {
+	const sent_on = transmission_date
+		? __("transmitted on {0}", [frappe.datetime.str_to_user(transmission_date, false, true)])
+		: __("transmitted to SDI");
+
 	if (state === "delivered") {
-		return __("Invoice confirmed by SDI and delivered to the recipient.");
+		return __("Delivered to the recipient ({0}).", [sent_on]);
 	}
 
 	if (state === "accepted") {
-		return __("Invoice confirmed with a final positive outcome.");
+		return __("Confirmed with a final positive outcome ({0}).", [sent_on]);
 	}
 
-	return __("Invoice confirmed by SDI.");
+	// queued / sent: reached SDI in time, awaiting the recipient receipt
+	return sent_on.charAt(0).toUpperCase() + sent_on.slice(1) + ".";
 }
 
 function get_deadline_color(deadline_context) {
@@ -221,6 +229,11 @@ function get_edi_state_color(state) {
 
 	if (FAB_EDI_SUCCESS_STATES.has(state)) {
 		return "green";
+	}
+
+	// transmitted, waiting for the recipient receipt: informational, not a warning
+	if (FAB_EDI_SENT_STATES.has(state)) {
+		return "blue";
 	}
 
 	return "yellow";
