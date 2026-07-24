@@ -3,6 +3,7 @@ from __future__ import annotations
 import json
 from typing import Any
 
+import frappe
 from frappe.utils import cstr
 from frappe.utils.file_manager import save_file
 
@@ -202,12 +203,20 @@ def persist_payload_artifact(document, filename_prefix: str, payload: Any, field
 		content = str(payload)
 		extension = "txt"
 
-	file_doc = save_file(
-		f"{filename_prefix}.{extension}",
-		content.encode("utf-8"),
-		document.doctype,
-		document.name,
-		is_private=1,
-		df=fieldname,
-	)
+	# the outbound send runs as the roleless EDI automation user; the rest of
+	# the lifecycle already writes with ignore_permissions, save_file is the
+	# only call that still checks access on the attached document
+	previous_flag = frappe.flags.ignore_permissions
+	frappe.flags.ignore_permissions = True
+	try:
+		file_doc = save_file(
+			f"{filename_prefix}.{extension}",
+			content.encode("utf-8"),
+			document.doctype,
+			document.name,
+			is_private=1,
+			df=fieldname,
+		)
+	finally:
+		frappe.flags.ignore_permissions = previous_flag
 	return file_doc.file_url
