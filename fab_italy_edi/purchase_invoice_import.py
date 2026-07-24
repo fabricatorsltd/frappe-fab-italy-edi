@@ -898,7 +898,7 @@ def get_tax_mapping_key(tax: Mapping[str, Any]) -> tuple[float, str]:
 def build_tax_bucket_descriptor(tax: Mapping[str, Any]) -> dict[str, Any]:
 	rate = flt(tax.get("tax_rate"))
 	nature = (normalize_text(tax.get("nature")) or "").upper()
-	label = f"{rate:.2f}%"
+	label = f"{rate:g}%"
 	if nature:
 		label = f"{label} / {nature}"
 	return {

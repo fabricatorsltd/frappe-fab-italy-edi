@@ -403,7 +403,7 @@ msgstr "Configura una serie di denominazione dedicata per Autofattura nella Conf
 
 #: fab_italy_edi/public/js/purchase_invoice.js:90
 msgid "Configure inbound tax mappings for {0} before submitting so ERPNext matches the supplier total."
-msgstr "Configura le mappature fiscali in ingresso per {0} prima dell'invio, così ERPNext corrisponderà al totale del fornitore."
+msgstr "Configura le mappature fiscali in ingresso per {0} prima di contabilizzare, così ERPNext corrisponderà al totale del fornitore."
 
 #: fab_italy_edi/purchase_invoice_import.py:805
 #, python-brace-format
@@ -1516,7 +1516,7 @@ msgstr "Stato revisione"
 
 #: fab_italy_edi/public/js/purchase_invoice.js:94
 msgid "Review the imported tax rows before submitting so ERPNext matches the supplier total."
-msgstr "Rivedi le righe imposta importate prima dell'invio, così ERPNext corrisponderà al totale del fornitore."
+msgstr "Rivedi le righe imposta importate prima di contabilizzare, così ERPNext corrisponderà al totale del fornitore."
 
 #: fab_italy_edi/fab_italy_e_invoicing/doctype/autofattura/autofattura.js:135
 msgid "Review: {0}"
