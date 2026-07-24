@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import re
 from typing import Any
 
 import frappe
@@ -203,6 +204,10 @@ def persist_payload_artifact(document, filename_prefix: str, payload: Any, field
 		content = str(payload)
 		extension = "txt"
 
+	# document numbers carry slashes (FATT/2026/0001) that would be read as
+	# path separators by the file writer: keep the artifact name flat
+	safe_prefix = re.sub(r"[^A-Za-z0-9._-]+", "-", filename_prefix)
+
 	# the outbound send runs as the roleless EDI automation user; the rest of
 	# the lifecycle already writes with ignore_permissions, save_file is the
 	# only call that still checks access on the attached document
@@ -210,7 +215,7 @@ def persist_payload_artifact(document, filename_prefix: str, payload: Any, field
 	frappe.flags.ignore_permissions = True
 	try:
 		file_doc = save_file(
-			f"{filename_prefix}.{extension}",
+			f"{safe_prefix}.{extension}",
 			content.encode("utf-8"),
 			document.doctype,
 			document.name,
