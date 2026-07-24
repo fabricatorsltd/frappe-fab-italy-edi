@@ -8,6 +8,9 @@ import frappe
 AUTOMATION_USER = "fab-edi-bot@example.invalid"
 AUTOMATION_USER_NAME = "FAB EDI Bot"
 AUTOMATION_USER_TYPE = "System User"
+# covers Sales/Purchase Invoice reads, EDI Document writes and the private file
+# access check that fires when attaching outbound payload artifacts
+AUTOMATION_USER_ROLES = ("Accounts Manager",)
 
 
 def ensure_automation_user() -> str:
@@ -24,6 +27,7 @@ def ensure_automation_user() -> str:
 			}
 		)
 		user.insert(ignore_permissions=True)
+		ensure_automation_user_roles(user)
 		return user.name
 
 	user = frappe.get_doc("User", user_name)
@@ -42,7 +46,18 @@ def ensure_automation_user() -> str:
 	if changed:
 		user.save(ignore_permissions=True)
 
+	ensure_automation_user_roles(user)
 	return user.name
+
+
+def ensure_automation_user_roles(user) -> None:
+	existing = {row.role for row in user.get("roles")}
+	missing = [role for role in AUTOMATION_USER_ROLES if role not in existing]
+	if not missing:
+		return
+	for role in missing:
+		user.append("roles", {"role": role})
+	user.save(ignore_permissions=True)
 
 
 @contextmanager
