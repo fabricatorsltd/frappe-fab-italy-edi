@@ -1398,7 +1398,7 @@ msgstr "Accodamento fattura per SDI..."
 #: fab_italy_edi/fab_italy_e_invoicing/page/autofatture/autofatture.js:395
 #: fab_italy_edi/public/js/edi_document.js:220
 msgid "Rate"
-msgstr "Aliquota"
+msgstr "Tariffa"
 
 #: fab_italy_edi/fab_italy_e_invoicing/page/autofatture/autofatture.js:410
 #: fab_italy_edi/public/js/edi_document.js:231
