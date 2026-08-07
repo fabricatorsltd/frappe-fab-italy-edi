@@ -704,6 +704,9 @@ def build_purchase_invoice_items(preview: Mapping[str, Any], *, company: str) ->
 	default_expense_account = get_default_expense_account(company)
 	default_cost_center = get_default_cost_center(company)
 	mapping_rows = get_inbound_tax_mapping_rows(company)
+	# credit notes (TD04) map to a return Purchase Invoice, which ERPNext requires
+	# to carry negative quantities and amounts
+	sign = -1 if (preview.get("invoice") or {}).get("is_return") else 1
 	rows = []
 	for item in preview.get("items") or []:
 		description_lines = [normalize_text(item.get("description")) or _("Imported line")]
@@ -720,10 +723,10 @@ def build_purchase_invoice_items(preview: Mapping[str, Any], *, company: str) ->
 			{
 				"item_name": normalize_text(item.get("item_name")) or _("Imported line"),
 				"description": "\n".join(description_lines),
-				"qty": flt(item.get("qty")) or 1.0,
+				"qty": sign * (flt(item.get("qty")) or 1.0),
 				"uom": uom,
 				"rate": flt(item.get("rate")),
-				"amount": flt(item.get("amount")),
+				"amount": sign * flt(item.get("amount")),
 				"conversion_factor": 1.0,
 				"expense_account": default_expense_account,
 				"cost_center": default_cost_center,
@@ -805,6 +808,14 @@ def resolve_purchase_invoice_taxes(
 	taxes = [tax for tax in preview.get("taxes") or [] if should_include_tax_bucket(tax)]
 	if not taxes:
 		return [], []
+
+	# on a credit note the items carry negative amounts, so the tax must follow the
+	# same sign for the document total (and item-wise details) to add up
+	if (preview.get("invoice") or {}).get("is_return"):
+		taxes = [
+			{**tax, "tax_amount": -flt(tax.get("tax_amount")), "taxable_amount": -flt(tax.get("taxable_amount"))}
+			for tax in taxes
+		]
 
 	forced_account = normalize_text(tax_account)
 	if forced_account:
