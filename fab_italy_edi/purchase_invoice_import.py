@@ -723,9 +723,13 @@ def build_purchase_invoice_items(preview: Mapping[str, Any], *, company: str) ->
 			{
 				"item_name": normalize_text(item.get("item_name")) or _("Imported line"),
 				"description": "\n".join(description_lines),
-				"qty": sign * (flt(item.get("qty")) or 1.0),
+				# the line total is the source of truth: some lines carry a discount
+				# or rounding where prezzo_unitario * quantita != prezzo_totale, and
+				# zero-quantity lines must stay at zero, so pin qty to 1 and rate to
+				# the line total instead of letting ERPNext recompute qty * rate
+				"qty": sign * 1.0,
 				"uom": uom,
-				"rate": flt(item.get("rate")),
+				"rate": flt(item.get("amount")),
 				"amount": sign * flt(item.get("amount")),
 				"conversion_factor": 1.0,
 				"expense_account": default_expense_account,
