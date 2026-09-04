@@ -92,6 +92,16 @@ ITALIAN_PAYMENT_TERMS_TEMPLATES = (
 
 DEFAULT_ITALIAN_PAYMENT_TERMS_TEMPLATE = "Bonifico 30 gg d.f."
 
+# Fields describing the transmission of one specific document, per doctype
+EDI_TRACKING_FIELDS = {
+	"Sales Invoice": (
+		"fab_edi_transmission_state",
+		"fab_edi_transmission_date",
+		"fab_edi_receipt_state",
+	),
+	"Purchase Invoice": ("fab_edi_transmission_state", "fab_edi_transmission_date"),
+}
+
 
 def after_install():
 	ensure_custom_fields()
@@ -123,6 +133,8 @@ def ensure_seed_records():
 
 def normalize_seeded_records():
 	normalize_seeded_providers()
+	backfill_bank_account_swift_numbers()
+	clear_copied_edi_tracking_fields()
 	ensure_workspace_navigation()
 	neutralize_missing_legacy_einvoice_type_links()
 	remove_inbound_invoices_page()
@@ -253,6 +265,39 @@ def ensure_company_payment_defaults():
 		pluck="name",
 	):
 		frappe.db.set_value("Company", company, "payment_terms", DEFAULT_ITALIAN_PAYMENT_TERMS_TEMPLATE)
+
+
+def backfill_bank_account_swift_numbers():
+	for row in frappe.get_all(
+		"Bank Account",
+		filters={"bank": ["is", "set"], "swift_number": ["is", "not set"]},
+		fields=["name", "bank"],
+	):
+		swift_number = frappe.db.get_value("Bank", row["bank"], "swift_number")
+		if swift_number:
+			frappe.db.set_value(
+				"Bank Account", row["name"], "swift_number", swift_number, update_modified=False
+			)
+
+
+def clear_copied_edi_tracking_fields():
+	"""Drop tracking values a duplicate inherited from the document it was copied from.
+
+	These fields are no_copy now, but drafts duplicated before that carry a transmission
+	state that hides the send action, so they are cleared here. Submitted documents keep
+	their own history untouched.
+	"""
+	for doctype, fieldnames in EDI_TRACKING_FIELDS.items():
+		names = frappe.get_all(
+			doctype,
+			filters={"docstatus": 0, "fab_edi_document": ["is", "not set"]},
+			or_filters={fieldname: ["is", "set"] for fieldname in fieldnames},
+			pluck="name",
+		)
+		for name in names:
+			frappe.db.set_value(
+				doctype, name, dict.fromkeys(fieldnames, None), update_modified=False
+			)
 
 
 def ensure_workspace_navigation():
@@ -641,7 +686,27 @@ def get_custom_fields() -> dict[str, list[dict[str, object]]]:
 		"Company": get_company_custom_fields(),
 		"Address": get_address_custom_fields(),
 		"Customer": get_customer_custom_fields(),
+		"Bank Account": get_bank_account_custom_fields(),
 	}
+
+
+def get_bank_account_custom_fields() -> list[dict[str, object]]:
+	"""BIC of the bank, mirrored onto the account.
+
+	The Payment Schedule field ERPNext installs for Italy fetches
+	``bank_account.swift_number``, a column Bank Account does not have because the code
+	is stored on Bank, so reading it raises "Unknown column 'swift_number'".
+	"""
+	return [
+		{
+			"fieldname": "swift_number",
+			"label": _("Swift Code (BIC)"),
+			"fieldtype": "Data",
+			"insert_after": "iban",
+			"read_only": 1,
+			"fetch_from": "bank.swift_number",
+		},
+	]
 
 
 def get_company_custom_fields() -> list[dict[str, object]]:
@@ -876,6 +941,7 @@ def get_sales_invoice_custom_fields() -> list[dict[str, object]]:
 			"insert_after": "fab_edi_section",
 			"read_only": 1,
 			"allow_on_submit": 1,
+			"no_copy": 1,
 		},
 		{
 			"fieldname": "fab_edi_column_break",
@@ -890,6 +956,7 @@ def get_sales_invoice_custom_fields() -> list[dict[str, object]]:
 			"read_only": 1,
 			"allow_on_submit": 1,
 			"in_standard_filter": 1,
+			"no_copy": 1,
 		},
 		{
 			"fieldname": "fab_edi_transmission_date",
@@ -898,6 +965,7 @@ def get_sales_invoice_custom_fields() -> list[dict[str, object]]:
 			"insert_after": "fab_edi_transmission_state",
 			"read_only": 1,
 			"allow_on_submit": 1,
+			"no_copy": 1,
 		},
 		{
 			"fieldname": "fab_edi_receipt_state",
@@ -906,6 +974,7 @@ def get_sales_invoice_custom_fields() -> list[dict[str, object]]:
 			"insert_after": "fab_edi_transmission_date",
 			"read_only": 1,
 			"allow_on_submit": 1,
+			"no_copy": 1,
 		},
 		{
 			"fieldname": "fab_edi_cig",
@@ -940,6 +1009,7 @@ def get_purchase_invoice_custom_fields() -> list[dict[str, object]]:
 			"insert_after": "fab_edi_section",
 			"read_only": 1,
 			"allow_on_submit": 1,
+			"no_copy": 1,
 		},
 		{
 			"fieldname": "fab_edi_column_break",
@@ -962,6 +1032,7 @@ def get_purchase_invoice_custom_fields() -> list[dict[str, object]]:
 			"read_only": 1,
 			"allow_on_submit": 1,
 			"in_standard_filter": 1,
+			"no_copy": 1,
 			"description": _("Set on self-billed invoices (autofattura) we transmit to SDI."),
 		},
 		{
@@ -971,6 +1042,7 @@ def get_purchase_invoice_custom_fields() -> list[dict[str, object]]:
 			"insert_after": "fab_edi_transmission_state",
 			"read_only": 1,
 			"allow_on_submit": 1,
+			"no_copy": 1,
 		},
 		{
 			"fieldname": "fab_edi_reception_date",
