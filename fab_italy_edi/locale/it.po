@@ -2374,3 +2374,7 @@ msgstr "{0} {1} è già accodata o in invio a SDI."
 #, python-brace-format
 msgid "{0} {1} is already queued or sent to SDI as {2}."
 msgstr "{0} {1} è già accodata o inviata a SDI come {2}."
+
+#: fab_italy_edi/api.py:466
+msgid "The VAT on this invoice is booked as a fixed amount, so the e-invoice would carry no VAT summary. Use a Sales Taxes and Charges Template with a VAT rate (for example IVA 22) instead."
+msgstr "L'IVA di questa fattura è registrata come importo fisso, quindi la fattura elettronica non avrebbe il riepilogo IVA. Usa un modello Imposte e Oneri di Vendita con un'aliquota IVA (per esempio IVA 22)."

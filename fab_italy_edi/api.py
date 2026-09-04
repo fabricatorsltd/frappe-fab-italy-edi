@@ -455,7 +455,26 @@ def read_site_file(file_url: str) -> str:
 def generate_sales_invoice_xml(invoice):
 	from erpnext.regional.italy.utils import prepare_and_attach_invoice
 
+	validate_vat_summary(invoice)
 	return prepare_and_attach_invoice(invoice, replace=True)
+
+
+def validate_vat_summary(invoice) -> None:
+	"""ERPNext builds DatiRiepilogo only from percentage tax rows: VAT booked as a
+	fixed "Actual" amount (what the Odoo import produced) yields an XML without the
+	summary block, which SDI rejects. Refuse early with a message that says how to fix it."""
+	from erpnext.regional.italy.utils import get_invoice_summary
+
+	if not invoice.taxes or not any(tax.tax_amount for tax in invoice.taxes):
+		return
+	summary = get_invoice_summary(invoice.items, invoice.taxes, invoice.get("item_wise_tax_details") or [])
+	if summary:
+		return
+	raise ValidationError(
+		_(
+			"The VAT on this invoice is booked as a fixed amount, so the e-invoice would carry no VAT summary. Use a Sales Taxes and Charges Template with a VAT rate (for example IVA 22) instead."
+		)
+	)
 
 
 def append_transmission_attempt(
