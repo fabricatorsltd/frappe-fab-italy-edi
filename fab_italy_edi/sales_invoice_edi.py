@@ -4,8 +4,47 @@ from typing import Any
 
 import frappe
 
+from fab_italy_edi.fatturapa.regional_compat import is_italian_company
+
 
 ATTENTION_STATES = {"rejected", "failed", "cancelled"}
+
+
+def fill_payment_schedule_bank_account(document: Any, method: str | None = None) -> None:
+	"""Put the company Bank Account on the payment schedule rows that lack one.
+
+	``erpnext.regional.italy.utils.prepare_payment_schedule`` falls back to
+	``Company.default_bank_account``, which links to Account and not to Bank Account, so
+	without the Bank Account on the row the IBAN never reaches DatiPagamento.
+	"""
+	if not document.get("payment_schedule"):
+		return
+
+	if not is_italian_company(document.get("company")):
+		return
+
+	bank_account = get_company_bank_account(document.company)
+	if not bank_account:
+		return
+
+	for row in document.payment_schedule:
+		if not row.get("bank_account"):
+			row.bank_account = bank_account
+
+
+def get_company_bank_account(company: str) -> str | None:
+	"""Company Bank Account carrying an IBAN: the default one, or the only one there is."""
+	bank_accounts = frappe.get_all(
+		"Bank Account",
+		filters={"company": company, "is_company_account": 1, "iban": ["is", "set"], "disabled": 0},
+		fields=["name", "is_default"],
+	)
+
+	default_accounts = [row["name"] for row in bank_accounts if row["is_default"]]
+	if len(default_accounts) == 1:
+		return default_accounts[0]
+
+	return bank_accounts[0]["name"] if len(bank_accounts) == 1 else None
 
 
 def sync_sales_invoice_tracking(document: Any, *, activity_message: str | None = None) -> None:

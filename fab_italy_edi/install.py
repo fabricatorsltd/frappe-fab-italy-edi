@@ -11,6 +11,7 @@ from erpnext.regional.italy import fiscal_regimes, vat_collectability_options
 from fab_italy_edi.autofattura import backfill_autofatture
 from fab_italy_edi.automation import ensure_automation_user
 from fab_italy_edi.backends import get_provider_adapter
+from fab_italy_edi.fatturapa.regional_compat import ITALIAN_COMPANY_COUNTRIES
 from fab_italy_edi.inbound_tax_setup import ensure_standard_inbound_natura_setup
 from fab_italy_edi.purchase_invoice_import import (
 	QUARANTINED_INBOUND_SUPPLIER_PREFIX,
@@ -31,6 +32,65 @@ LEGACY_EINVOICE_TYPE_FIELDS = (
 	("Sales Invoice", "custom_tipo_di_documento", "custom_descrizione_tipo_documento"),
 	("Purchase Invoice", "custom_tipo_di_documento", "custom_descrizione_tipo_documento"),
 )
+
+# (Mode of Payment, FatturaPA code, type to use when the mode has to be created).
+# Modes with no type are only corrected when they already exist, never created.
+# "F24 Tax Payment" is left alone: it has no FatturaPA equivalent.
+ITALIAN_MODE_OF_PAYMENT_CODES = (
+	("Cash", "MP01-Contanti", None),
+	("Cheque", "MP02-Assegno", None),
+	("Bank Draft", "MP03-Assegno circolare", None),
+	("Wire Transfer", "MP05-Bonifico", None),
+	("Credit Card", "MP08-Carta di pagamento", None),
+	("American Express", "MP08-Carta di pagamento", None),
+	("Bancomat", "MP08-Carta di pagamento", "Bank"),
+	("RID", "MP09-RID", None),
+	("RiBa", "MP12-RIBA", "Bank"),
+	("SEPA Direct Debit", "MP19-SEPA Direct Debit", "Bank"),
+)
+
+PAYMENT_TERM_DUE_DATE_BASIS = {
+	"d.f.": "Day(s) after invoice date",
+	"d.f.f.m.": "Day(s) after the end of the invoice month",
+}
+
+# Italian label of the mode, used to build shareable Payment Term names.
+PAYMENT_TERM_MODE_LABELS = {
+	"Cash": "Contanti",
+	"Credit Card": "Carta di credito",
+	"RiBa": "RiBa",
+	"SEPA Direct Debit": "SEPA Direct Debit",
+	"Wire Transfer": "Bonifico",
+}
+
+# (template name, Mode of Payment, due date basis, ((credit days, invoice portion), ...))
+ITALIAN_PAYMENT_TERMS_TEMPLATES = (
+	("Rimessa diretta", "Wire Transfer", "d.f.", ((0, 100),)),
+	("Pagamento anticipato", "Wire Transfer", "d.f.", ((0, 100),)),
+	("Contanti alla consegna", "Cash", "d.f.", ((0, 100),)),
+	("Carta di credito", "Credit Card", "d.f.", ((0, 100),)),
+	("Bonifico 30 gg d.f.", "Wire Transfer", "d.f.", ((30, 100),)),
+	("Bonifico 60 gg d.f.", "Wire Transfer", "d.f.", ((60, 100),)),
+	("Bonifico 90 gg d.f.", "Wire Transfer", "d.f.", ((90, 100),)),
+	("Bonifico 30 gg d.f.f.m.", "Wire Transfer", "d.f.f.m.", ((30, 100),)),
+	("Bonifico 60 gg d.f.f.m.", "Wire Transfer", "d.f.f.m.", ((60, 100),)),
+	("Bonifico 90 gg d.f.f.m.", "Wire Transfer", "d.f.f.m.", ((90, 100),)),
+	("Bonifico 30/60 gg d.f.f.m.", "Wire Transfer", "d.f.f.m.", ((30, 50), (60, 50))),
+	(
+		"Bonifico 30/60/90 gg d.f.f.m.",
+		"Wire Transfer",
+		"d.f.f.m.",
+		((30, 33.33), (60, 33.33), (90, 33.34)),
+	),
+	("RiBa 30 gg d.f.f.m.", "RiBa", "d.f.f.m.", ((30, 100),)),
+	("RiBa 60 gg d.f.f.m.", "RiBa", "d.f.f.m.", ((60, 100),)),
+	("RiBa 90 gg d.f.f.m.", "RiBa", "d.f.f.m.", ((90, 100),)),
+	("RiBa 30/60 gg d.f.f.m.", "RiBa", "d.f.f.m.", ((30, 50), (60, 50))),
+	("RiBa 30/60/90 gg d.f.f.m.", "RiBa", "d.f.f.m.", ((30, 33.33), (60, 33.33), (90, 33.34))),
+	("SEPA Direct Debit 30 gg d.f.f.m.", "SEPA Direct Debit", "d.f.f.m.", ((30, 100),)),
+)
+
+DEFAULT_ITALIAN_PAYMENT_TERMS_TEMPLATE = "Bonifico 30 gg d.f."
 
 
 def after_install():
@@ -56,6 +116,9 @@ def ensure_seed_records():
 	ensure_automation_user()
 	ensure_seed_documents("EDI Channel", "channel_key", get_default_channels())
 	ensure_seed_documents("EDI Provider", "provider_name", get_default_providers())
+	ensure_mode_of_payment_codes()
+	ensure_italian_payment_terms()
+	ensure_company_payment_defaults()
 
 
 def normalize_seeded_records():
@@ -88,6 +151,108 @@ def ensure_seed_documents(doctype: str, lookup_field: str, documents: list[dict[
 
 		if changed:
 			doc.save(ignore_permissions=True)
+
+
+def ensure_mode_of_payment_codes():
+	"""Align the FatturaPA code of the standard modes of payment.
+
+	``ensure_seed_documents`` only fills empty fields, but a wrong code lands in
+	ModalitaPagamento, so here an existing code is overwritten.
+	"""
+	for mode_of_payment, code, type_when_missing in ITALIAN_MODE_OF_PAYMENT_CODES:
+		if not frappe.db.exists("Mode of Payment", mode_of_payment):
+			if not type_when_missing:
+				continue
+
+			frappe.get_doc(
+				{
+					"doctype": "Mode of Payment",
+					"mode_of_payment": mode_of_payment,
+					"type": type_when_missing,
+					"enabled": 1,
+					"mode_of_payment_code": code,
+				}
+			).insert(ignore_permissions=True)
+			continue
+
+		if frappe.db.get_value("Mode of Payment", mode_of_payment, "mode_of_payment_code") != code:
+			frappe.db.set_value("Mode of Payment", mode_of_payment, "mode_of_payment_code", code)
+
+
+def ensure_italian_payment_terms():
+	"""Seed the classic Italian payment terms and templates.
+
+	Existing records are left untouched: the templates are the ones users edit.
+	"""
+	for template_name, mode_of_payment, basis, rows in ITALIAN_PAYMENT_TERMS_TEMPLATES:
+		terms = [
+			ensure_payment_term(mode_of_payment, basis, credit_days, invoice_portion)
+			for credit_days, invoice_portion in rows
+		]
+		ensure_payment_terms_template(template_name, terms)
+
+
+def ensure_payment_term(
+	mode_of_payment: str, basis: str, credit_days: int, invoice_portion: float
+) -> dict[str, object]:
+	payment_term = {
+		"payment_term_name": get_payment_term_name(mode_of_payment, basis, credit_days, invoice_portion),
+		"invoice_portion": invoice_portion,
+		"mode_of_payment": mode_of_payment,
+		"due_date_based_on": PAYMENT_TERM_DUE_DATE_BASIS[basis],
+		"credit_days": credit_days,
+	}
+
+	if not frappe.db.exists("Payment Term", payment_term["payment_term_name"]):
+		frappe.get_doc({"doctype": "Payment Term", **payment_term}).insert(ignore_permissions=True)
+
+	return payment_term
+
+
+def ensure_payment_terms_template(template_name: str, terms: list[dict[str, object]]):
+	if frappe.db.exists("Payment Terms Template", template_name):
+		return
+
+	template = frappe.get_doc({"doctype": "Payment Terms Template", "template_name": template_name})
+	for term in terms:
+		# the child table fetches from the Payment Term only while validating links, which
+		# runs after the template validates that the portions add up to 100, so set them here
+		template.append(
+			"terms",
+			{
+				"payment_term": term["payment_term_name"],
+				"invoice_portion": term["invoice_portion"],
+				"mode_of_payment": term["mode_of_payment"],
+				"due_date_based_on": term["due_date_based_on"],
+				"credit_days": term["credit_days"],
+			},
+		)
+
+	template.insert(ignore_permissions=True)
+
+
+def get_payment_term_name(
+	mode_of_payment: str, basis: str, credit_days: int, invoice_portion: float
+) -> str:
+	"""Name a Payment Term after its mode, delay and portion so templates can share it."""
+	return "{0} {1} gg {2} {3}%".format(
+		PAYMENT_TERM_MODE_LABELS.get(mode_of_payment, mode_of_payment),
+		credit_days,
+		basis,
+		f"{invoice_portion:.2f}".rstrip("0").rstrip("."),
+	)
+
+
+def ensure_company_payment_defaults():
+	if not frappe.db.exists("Payment Terms Template", DEFAULT_ITALIAN_PAYMENT_TERMS_TEMPLATE):
+		return
+
+	for company in frappe.get_all(
+		"Company",
+		filters={"country": ["in", ITALIAN_COMPANY_COUNTRIES], "payment_terms": ["is", "not set"]},
+		pluck="name",
+	):
+		frappe.db.set_value("Company", company, "payment_terms", DEFAULT_ITALIAN_PAYMENT_TERMS_TEMPLATE)
 
 
 def ensure_workspace_navigation():

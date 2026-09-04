@@ -14,6 +14,16 @@ from frappe.utils import cstr
 
 from erpnext.regional.italy.utils import get_progressive_name_and_number
 
+# Country names ERPNext treats as Italy in erpnext.regional.italy.utils.sales_invoice_on_submit
+ITALIAN_COMPANY_COUNTRIES = ("Italy", "Italia", "Italian Republic", "Repubblica Italiana")
+
+
+def is_italian_company(company: str | None) -> bool:
+	if not company:
+		return False
+
+	return frappe.get_cached_value("Company", company, "country") in ITALIAN_COMPANY_COUNTRIES
+
 
 def get_address_country_code(address) -> str | None:
 	"""Return the ISO 3166-1 alpha-2 code for an Address.
