@@ -31,6 +31,33 @@ def fill_payment_schedule_bank_account(document: Any, method: str | None = None)
 		if not row.get("bank_account"):
 			row.bank_account = bank_account
 
+	# The name, IBAN and BIC columns are fetch fields that only follow a link change,
+	# so rows rebuilt on submit keep them empty; write them so the stored schedule
+	# carries the bank data (email templates read the row, the XML refills it anyway).
+	details = {}
+	for row in document.payment_schedule:
+		if not row.get("bank_account"):
+			continue
+		if row.bank_account not in details:
+			details[row.bank_account] = get_bank_account_details(row.bank_account)
+		for fieldname, value in details[row.bank_account].items():
+			if not row.get(fieldname) and value:
+				row.set(fieldname, value)
+
+
+def get_bank_account_details(bank_account: str) -> dict[str, str | None]:
+	account = frappe.db.get_value(
+		"Bank Account", bank_account, ["bank", "iban", "swift_number"], as_dict=True
+	)
+	if not account:
+		return {}
+	return {
+		"bank_account_name": account.bank,
+		"bank_account_iban": account.iban,
+		"bank_account_swift_number": account.swift_number
+		or frappe.db.get_value("Bank", account.bank, "swift_number"),
+	}
+
 
 def get_company_bank_account(company: str) -> str | None:
 	"""Company Bank Account carrying an IBAN: the default one, or the only one there is."""
