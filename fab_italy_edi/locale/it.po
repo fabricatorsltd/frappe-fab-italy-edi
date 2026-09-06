@@ -2459,3 +2459,6 @@ msgstr "Arrotondamento"
 #, python-brace-format
 msgid "The imported total {0} does not match the supplier document total {1}. Review this invoice before submitting it."
 msgstr "Il totale importato {0} non corrisponde al totale del documento del fornitore {1}. Controlla la fattura prima di contabilizzarla."
+
+msgid "This file carries {0} invoices and only one can be imported. Import them by hand and tell the developer."
+msgstr "Questo file contiene {0} fatture e ne puo' essere importata una sola. Importale a mano e segnalalo allo sviluppatore."

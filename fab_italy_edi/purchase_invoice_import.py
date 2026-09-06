@@ -271,7 +271,17 @@ def parse_supplier_invoice_source(source: Any) -> dict[str, Any]:
 
 	root = as_mapping(normalized.get("fattura_elettronica") or normalized)
 	header = as_mapping(root.get("fattura_elettronica_header"))
-	body = as_mapping(first(root.get("fattura_elettronica_body")))
+	bodies = [row for row in ensure_list(root.get("fattura_elettronica_body")) if isinstance(row, Mapping)]
+	if len(bodies) > 1:
+		# one file can carry several invoices, and only the first one would be imported.
+		# the total check cannot see the loss, because the lines and the document total
+		# both come from this first body and reconcile with each other
+		raise ValidationError(
+			_(
+				"This file carries {0} invoices and only one can be imported. Import them by hand and tell the developer."
+			).format(len(bodies))
+		)
+	body = as_mapping(first(bodies))
 	document_data = as_mapping(get_path(body, "dati_generali", "dati_generali_documento"))
 	items = [
 		build_item_preview(line)
