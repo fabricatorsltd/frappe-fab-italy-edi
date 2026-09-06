@@ -283,6 +283,12 @@ def parse_supplier_invoice_source(source: Any) -> dict[str, Any]:
 		for block in ensure_list(document_data.get("dati_cassa_previdenziale"))
 		if isinstance(block, Mapping) and abs(flt(block.get("importo_contributo_cassa"))) > 0.0001
 	)
+	items.extend(
+		line
+		for row in ensure_list(get_path(body, "dati_beni_servizi", "dati_riepilogo"))
+		if isinstance(row, Mapping)
+		for line in build_summary_adjustment_item_previews(row)
+	)
 	taxes = [
 		build_tax_preview(row)
 		for row in ensure_list(get_path(body, "dati_beni_servizi", "dati_riepilogo"))
@@ -312,13 +318,22 @@ def parse_supplier_invoice_source(source: Any) -> dict[str, Any]:
 	total_net_amount = sum(flt(row.get("taxable_amount")) for row in taxes) or sum(
 		flt(item.get("amount")) for item in items
 	)
+	discounts = [
+		discount
+		for row in ensure_list(document_data.get("sconto_maggiorazione"))
+		if isinstance(row, Mapping)
+		for discount in [build_document_discount_preview(row, base_amount=total_net_amount)]
+		if discount
+	]
 	document_total = flt(document_data.get("importo_totale_documento")) or None
 	total_adjustments = build_total_adjustments(
 		document_total=document_total,
 		net_amount=total_net_amount,
 		tax_amount=total_tax_amount,
 		withholdings=withholdings,
+		rounding=flt(document_data.get("arrotondamento")),
 		stamp_duty=stamp_duty,
+		discounts=discounts,
 	)
 	total_amount = document_total or (
 		total_net_amount + total_tax_amount + sum_total_adjustments(total_adjustments)
@@ -348,6 +363,7 @@ def parse_supplier_invoice_source(source: Any) -> dict[str, Any]:
 		"taxes": taxes,
 		"withholdings": withholdings,
 		"stamp_duty": stamp_duty,
+		"document_discounts": discounts,
 		"total_adjustments": total_adjustments,
 		"payments": payments,
 		"attachments": attachments,
@@ -421,8 +437,28 @@ def build_welfare_fund_item_preview(block: Mapping[str, Any]) -> dict[str, Any]:
 	# lines, the taxable base and the document total in agreement
 	fund_code = normalize_text(block.get("tipo_cassa")) or _("Unknown fund")
 	fund_rate = flt(block.get("al_cassa"))
-	amount = flt(block.get("importo_contributo_cassa"))
 	description = _("Welfare fund contribution {0} ({1}%)").format(fund_code, f"{fund_rate:g}")
+	return build_synthetic_item_preview(description, flt(block.get("importo_contributo_cassa")), block)
+
+
+def build_summary_adjustment_item_previews(row: Mapping[str, Any]) -> list[dict[str, Any]]:
+	# imponibile_importo is the sum of the line totals plus the incidental charges and the
+	# rounding on the taxable amount, neither of which has a line of its own
+	previews = []
+	for fieldname, description in (
+		("spese_accessorie", _("Incidental charges")),
+		("arrotondamento", _("Rounding on the taxable amount")),
+	):
+		amount = flt(row.get(fieldname))
+		if abs(amount) <= 0.0001:
+			continue
+		previews.append(build_synthetic_item_preview(description, amount, row))
+	return previews
+
+
+def build_synthetic_item_preview(description: str, amount: float, source: Mapping[str, Any]) -> dict[str, Any]:
+	"""A line the supplier document does not carry but its taxable base does. The VAT
+	bucket comes from the source block so the item-wise tax breakup still binds it."""
 	return {
 		"line_no": None,
 		"item_name": description[:140],
@@ -431,9 +467,9 @@ def build_welfare_fund_item_preview(block: Mapping[str, Any]) -> dict[str, Any]:
 		"uom": None,
 		"rate": amount,
 		"amount": amount,
-		"tax_rate": flt(block.get("aliquota_iva")),
-		"nature": normalize_text(block.get("natura")),
-		"admin_reference": normalize_text(block.get("riferimento_amministrazione")),
+		"tax_rate": flt(source.get("aliquota_iva")),
+		"nature": normalize_text(source.get("natura")),
+		"admin_reference": normalize_text(source.get("riferimento_amministrazione")),
 		"notes": [],
 	}
 
@@ -492,13 +528,35 @@ def build_stamp_duty_preview(block: Any) -> dict[str, Any] | None:
 	}
 
 
+def build_document_discount_preview(row: Mapping[str, Any], *, base_amount: float) -> dict[str, Any] | None:
+	discount_type = (normalize_text(row.get("tipo")) or "SC").upper()
+	percentage = flt(row.get("percentuale"))
+	amount = flt(row.get("importo"))
+	if abs(amount) <= 0.0001 and abs(percentage) > 0.0001:
+		amount = round(base_amount * percentage / 100.0, 2)
+	if abs(amount) <= 0.0001:
+		return None
+
+	description = _("Document surcharge") if discount_type == "MG" else _("Document discount")
+	if abs(percentage) > 0.0001:
+		description = _("{0} ({1}%)").format(description, f"{percentage:g}")
+	return {
+		"discount_type": discount_type,
+		"description": description,
+		"amount": amount,
+		"deduct": discount_type != "MG",
+	}
+
+
 def build_total_adjustments(
 	*,
 	document_total: float | None,
 	net_amount: float,
 	tax_amount: float,
 	withholdings: list[dict[str, Any]],
-	stamp_duty: dict[str, Any] | None,
+	rounding: float = 0.0,
+	stamp_duty: dict[str, Any] | None = None,
+	discounts: list[dict[str, Any]] | None = None,
 ) -> list[dict[str, Any]]:
 	"""Document level blocks that move the payable total after the VAT rows.
 
@@ -509,7 +567,9 @@ def build_total_adjustments(
 	the supplier passed the cost on. When it is charged on it is usually a line of its own,
 	already in the taxable base, and when it is not the document total does not carry it
 	either. So it is only booked when the gap left by importo_totale_documento is exactly
-	the stamp, which is the one case where nothing else accounts for it."""
+	the stamp, which is the one case where nothing else accounts for it. The document
+	level discount is read the same way: issuers disagree on whether dati_riepilogo is
+	already net of it."""
 	adjustments = [
 		{
 			"kind": "withholding",
@@ -519,17 +579,37 @@ def build_total_adjustments(
 		}
 		for withholding in withholdings
 	]
-	if stamp_duty and document_total is not None:
-		residual = flt(document_total) - (net_amount + tax_amount + sum_total_adjustments(adjustments))
-		if abs(residual - flt(stamp_duty["amount"])) <= 0.005:
-			adjustments.append(
-				{
-					"kind": "stamp_duty",
-					"description": stamp_duty["description"],
-					"amount": flt(stamp_duty["amount"]),
-					"deduct": False,
-				}
-			)
+	if abs(flt(rounding)) > 0.0001:
+		adjustments.append(
+			{"kind": "rounding", "description": _("Rounding"), "amount": flt(rounding), "deduct": False}
+		)
+
+	if document_total is None:
+		return adjustments
+
+	residual = flt(document_total) - (net_amount + tax_amount + sum_total_adjustments(adjustments))
+	if stamp_duty and abs(residual - flt(stamp_duty["amount"])) <= 0.005:
+		adjustments.append(
+			{
+				"kind": "stamp_duty",
+				"description": stamp_duty["description"],
+				"amount": flt(stamp_duty["amount"]),
+				"deduct": False,
+			}
+		)
+		residual -= flt(stamp_duty["amount"])
+
+	discounts = discounts or []
+	if discounts and abs(residual - sum_total_adjustments(discounts)) <= 0.005:
+		adjustments.extend(
+			{
+				"kind": "discount",
+				"description": discount["description"],
+				"amount": flt(discount["amount"]),
+				"deduct": discount["deduct"],
+			}
+			for discount in discounts
+		)
 	return adjustments
 
 
@@ -910,7 +990,15 @@ def build_total_adjustment_rows(preview: Mapping[str, Any], *, company: str | No
 def resolve_total_adjustment_account(adjustment: Mapping[str, Any], *, company: str | None) -> str:
 	if adjustment["kind"] == "withholding":
 		return get_inbound_withholding_account(company)
+	if adjustment["kind"] == "rounding":
+		return get_rounding_account(company)
 	return get_default_expense_account(company)
+
+
+def get_rounding_account(company: str) -> str:
+	return normalize_text(frappe.get_cached_value("Company", company, "round_off_account")) or (
+		get_default_expense_account(company)
+	)
 
 
 def get_inbound_withholding_account(company: str | None) -> str:

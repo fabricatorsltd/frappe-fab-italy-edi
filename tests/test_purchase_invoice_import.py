@@ -402,6 +402,87 @@ class TestPurchaseInvoiceImport(unittest.TestCase):
 			{"description": "Stamp duty", "amount": 2.0, "virtual": True},
 		)
 
+	def test_build_summary_adjustment_item_previews_covers_charges_and_rounding(self):
+		previews = purchase_invoice_import.build_summary_adjustment_item_previews(
+			{
+				"aliquota_iva": "22.00",
+				"spese_accessorie": "5.00",
+				"arrotondamento": "-0.01",
+				"imponibile_importo": "1004.99",
+				"imposta": "221.10",
+			}
+		)
+
+		self.assertEqual(
+			[(row["description"], row["amount"], row["tax_rate"]) for row in previews],
+			[("Incidental charges", 5.0, 22.0), ("Rounding on the taxable amount", -0.01, 22.0)],
+		)
+
+	def test_build_total_adjustments_always_books_the_document_rounding(self):
+		adjustments = purchase_invoice_import.build_total_adjustments(
+			document_total=100.05,
+			net_amount=82.0,
+			tax_amount=18.04,
+			withholdings=[],
+			rounding=0.01,
+		)
+
+		self.assertEqual(
+			adjustments,
+			[{"kind": "rounding", "description": "Rounding", "amount": 0.01, "deduct": False}],
+		)
+
+	def test_build_total_adjustments_applies_the_document_discount_that_explains_the_gap(self):
+		discount = purchase_invoice_import.build_document_discount_preview(
+			{"tipo": "SC", "percentuale": "10.00"}, base_amount=1000.0
+		)
+		self.assertEqual(
+			discount,
+			{
+				"discount_type": "SC",
+				"description": "Document discount (10%)",
+				"amount": 100.0,
+				"deduct": True,
+			},
+		)
+
+		adjustments = purchase_invoice_import.build_total_adjustments(
+			document_total=1120.0,
+			net_amount=1000.0,
+			tax_amount=220.0,
+			withholdings=[],
+			discounts=[discount],
+		)
+		self.assertEqual(
+			adjustments,
+			[
+				{
+					"kind": "discount",
+					"description": "Document discount (10%)",
+					"amount": 100.0,
+					"deduct": True,
+				}
+			],
+		)
+
+	def test_build_total_adjustments_skips_a_document_discount_already_in_the_summary(self):
+		adjustments = purchase_invoice_import.build_total_adjustments(
+			document_total=1220.0,
+			net_amount=1000.0,
+			tax_amount=220.0,
+			withholdings=[],
+			discounts=[
+				{
+					"discount_type": "SC",
+					"description": "Document discount (10%)",
+					"amount": 100.0,
+					"deduct": True,
+				}
+			],
+		)
+
+		self.assertEqual(adjustments, [])
+
 	def test_build_purchase_invoice_taxes_deducts_the_withholding_after_the_vat_rows(self):
 		configuration = SimpleNamespace(
 			get=lambda fieldname, *args: {
