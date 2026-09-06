@@ -7,6 +7,8 @@ from frappe.utils import cint, flt
 
 from erpnext.setup.setup_wizard.operations.taxes_setup import get_or_create_account
 
+from fab_italy_edi.fatturapa.regional_compat import ITALIAN_COMPANY_COUNTRIES
+
 
 STANDARD_INBOUND_NATURA_TAX_TYPES: tuple[dict[str, str], ...] = (
 	{"nature": "N1", "account_name": "VAT Natura N1 - Excluded ex art. 15"},
@@ -57,7 +59,11 @@ def get_standard_inbound_vat_rates() -> list[float]:
 
 
 def ensure_standard_inbound_tax_setup() -> None:
-	for row in frappe.get_all("Company", fields=["name"]):
+	# only Italian companies receive fatturaPA, and the VAT credit account is created
+	# enabled, so seeding it everywhere would show an unrequested account in the chart
+	# of a company that never sees an inbound SdI document. A company that does hold an
+	# EDI Configuration is served below whatever its country.
+	for row in frappe.get_all("Company", filters={"country": ["in", ITALIAN_COMPANY_COUNTRIES]}, fields=["name"]):
 		ensure_standard_inbound_natura_accounts(row["name"])
 		ensure_standard_inbound_vat_credit_account(row["name"])
 
@@ -96,6 +102,10 @@ def ensure_standard_inbound_natura_accounts(company: str) -> dict[str, str]:
 
 def ensure_standard_inbound_vat_credit_account(company: str) -> str:
 	account = get_or_create_account(company, dict(STANDARD_INBOUND_VAT_CREDIT_ACCOUNT))
+	# input VAT is posted to, so a chart that carries this account disabled would let the
+	# draft save and only fail at submission, when the ledger refuses a disabled account
+	if cint(frappe.db.get_value("Account", account.name, "disabled")):
+		frappe.db.set_value("Account", account.name, "disabled", 0, update_modified=False)
 	return account.name
 
 
