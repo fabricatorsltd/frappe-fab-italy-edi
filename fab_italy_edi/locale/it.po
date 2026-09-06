@@ -2387,3 +2387,31 @@ msgstr "Cassa sconosciuta"
 #, python-brace-format
 msgid "Welfare fund contribution {0} ({1}%)"
 msgstr "Contributo cassa previdenziale {0} ({1}%)"
+
+#: fab_italy_edi/purchase_invoice_import.py:428
+msgid "Unknown withholding"
+msgstr "Ritenuta sconosciuta"
+
+#: fab_italy_edi/purchase_invoice_import.py:431
+#, python-brace-format
+msgid "Withholding tax {0} ({1}%)"
+msgstr "Ritenuta {0} ({1}%)"
+
+#: fab_italy_edi/purchase_invoice_import.py:433
+#, python-brace-format
+msgid "{0} - payment reason {1}"
+msgstr "{0} - causale pagamento {1}"
+
+#: fab_italy_edi/purchase_invoice_import.py:876
+#, python-brace-format
+msgid "This supplier invoice carries a withholding tax. Set Inbound Withholding Account on EDI Configuration {0} before importing it."
+msgstr "Questa fattura fornitore contiene una ritenuta. Imposta Conto Ritenute in Entrata sulla Configurazione EDI {0} prima di importarla."
+
+#: fab_italy_edi/purchase_invoice_import.py:912
+#, python-brace-format
+msgid "Withholding: {0} = {1}"
+msgstr "Ritenuta: {0} = {1}"
+
+#: fab_italy_edi/public/js/edi_document.js:236
+msgid "Document Adjustments"
+msgstr "Rettifiche documento"

@@ -32,6 +32,7 @@
   "recipient_code_fallback",
   "inbound_purchase_tax_mapping_section",
   "inbound_tax_mappings",
+  "inbound_withholding_account",
   "autofattura_naming_series",
   "pec_section",
   "pec_username",
@@ -188,6 +189,13 @@
    "options": "EDI Inbound Tax Mapping"
   },
   {
+   "description": "Account that receives the withholding (ritenuta d'acconto) deducted from inbound supplier invoices. Buying from a professional makes the company a withholding agent, so this must be a liability account.",
+   "fieldname": "inbound_withholding_account",
+   "fieldtype": "Link",
+   "label": "Inbound Withholding Account",
+   "options": "Account"
+  },
+  {
    "description": "Dedicated naming series to use for autofattura documents created from foreign supplier purchases.",
    "fieldname": "autofattura_naming_series",
    "fieldtype": "Data",
@@ -252,7 +260,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2026-04-24 16:25:00.000000",
+ "modified": "2026-09-06 10:00:00.000000",
  "modified_by": "Administrator",
  "module": "FAB Italy E-Invoicing",
  "name": "EDI Configuration",

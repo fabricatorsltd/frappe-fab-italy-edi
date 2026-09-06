@@ -300,11 +300,21 @@ def parse_supplier_invoice_source(source: Any) -> dict[str, Any]:
 		if isinstance(row, Mapping)
 	]
 
+	withholdings = [
+		build_withholding_preview(row)
+		for row in ensure_list(document_data.get("dati_ritenuta"))
+		if isinstance(row, Mapping) and abs(flt(row.get("importo_ritenuta"))) > 0.0001
+	]
+
 	total_tax_amount = sum(flt(row.get("tax_amount")) for row in taxes)
 	total_net_amount = sum(flt(row.get("taxable_amount")) for row in taxes) or sum(
 		flt(item.get("amount")) for item in items
 	)
-	total_amount = flt(document_data.get("importo_totale_documento")) or (total_net_amount + total_tax_amount)
+	document_total = flt(document_data.get("importo_totale_documento")) or None
+	total_adjustments = build_total_adjustments(withholdings=withholdings)
+	total_amount = document_total or (
+		total_net_amount + total_tax_amount + sum_total_adjustments(total_adjustments)
+	)
 	due_date = max((payment.get("due_date") for payment in payments if payment.get("due_date")), default=None)
 	document_type = normalize_text(document_data.get("tipo_documento"))
 
@@ -318,6 +328,8 @@ def parse_supplier_invoice_source(source: Any) -> dict[str, Any]:
 			"total_amount": total_amount,
 			"total_net_amount": total_net_amount,
 			"total_tax_amount": total_tax_amount,
+			"total_withholding_amount": sum(flt(row.get("amount")) for row in withholdings),
+			"document_total": document_total,
 			"due_date": due_date,
 			"progressive_send": normalize_text(get_path(header, "dati_trasmissione", "progressivo_invio")),
 			"destination_code": normalize_text(get_path(header, "dati_trasmissione", "codice_destinatario")),
@@ -326,6 +338,8 @@ def parse_supplier_invoice_source(source: Any) -> dict[str, Any]:
 		},
 		"items": items,
 		"taxes": taxes,
+		"withholdings": withholdings,
+		"total_adjustments": total_adjustments,
 		"payments": payments,
 		"attachments": attachments,
 	}
@@ -439,6 +453,42 @@ def build_tax_preview(row: Mapping[str, Any]) -> dict[str, Any]:
 		"tax_rate": rate,
 		"nature": nature,
 	}
+
+
+def build_withholding_preview(row: Mapping[str, Any]) -> dict[str, Any]:
+	withholding_type = normalize_text(row.get("tipo_ritenuta")) or _("Unknown withholding")
+	payment_reason = normalize_text(row.get("causale_pagamento"))
+	rate = flt(row.get("aliquota_ritenuta"))
+	description = _("Withholding tax {0} ({1}%)").format(withholding_type, f"{rate:g}")
+	if payment_reason:
+		description = _("{0} - payment reason {1}").format(description, payment_reason)
+	return {
+		"withholding_type": withholding_type,
+		"description": description,
+		"rate": rate,
+		"amount": flt(row.get("importo_ritenuta")),
+		"payment_reason": payment_reason,
+	}
+
+
+def build_total_adjustments(*, withholdings: list[dict[str, Any]]) -> list[dict[str, Any]]:
+	"""Document level blocks that move the payable total after the VAT rows.
+
+	The withholding leaves the taxable base and the VAT untouched: it only reduces what
+	is owed to the supplier, and importo_totale_documento is already net of it."""
+	return [
+		{
+			"kind": "withholding",
+			"description": withholding["description"],
+			"amount": flt(withholding["amount"]),
+			"deduct": True,
+		}
+		for withholding in withholdings
+	]
+
+
+def sum_total_adjustments(adjustments: list[Mapping[str, Any]]) -> float:
+	return sum(-flt(row["amount"]) if row["deduct"] else flt(row["amount"]) for row in adjustments)
 
 
 def build_payment_preview(row: Mapping[str, Any]) -> dict[str, Any]:
@@ -781,7 +831,56 @@ def build_purchase_invoice_taxes(
 		tax_account=tax_account,
 		allow_unmapped=allow_unmapped,
 	)
-	return [spec["row"] for spec in resolved_tax_specs], unresolved_tax_buckets
+	# the document level adjustments must stay after the VAT rows: the item-wise tax
+	# breakup pairs preview["taxes"] with doc.taxes by position
+	rows = [spec["row"] for spec in resolved_tax_specs]
+	rows.extend(build_total_adjustment_rows(preview, company=company))
+	return rows, unresolved_tax_buckets
+
+
+def build_total_adjustment_rows(preview: Mapping[str, Any], *, company: str | None) -> list[dict[str, Any]]:
+	adjustments = preview.get("total_adjustments") or []
+	if not adjustments:
+		return []
+
+	# a credit note carries negative lines and negative VAT, and an adjustment has to
+	# follow the same sign for the document total to add up
+	sign = -1 if (preview.get("invoice") or {}).get("is_return") else 1
+	return [
+		{
+			"charge_type": "Actual",
+			"account_head": resolve_total_adjustment_account(adjustment, company=company),
+			"description": adjustment["description"],
+			"rate": 0.0,
+			"tax_amount": sign * flt(adjustment["amount"]),
+			"add_deduct_tax": "Deduct" if adjustment["deduct"] else "Add",
+			"included_in_print_rate": 0,
+			"dont_recompute_tax": 1,
+		}
+		for adjustment in adjustments
+	]
+
+
+def resolve_total_adjustment_account(adjustment: Mapping[str, Any], *, company: str | None) -> str:
+	if adjustment["kind"] == "withholding":
+		return get_inbound_withholding_account(company)
+	return get_default_expense_account(company)
+
+
+def get_inbound_withholding_account(company: str | None) -> str:
+	company = normalize_text(company)
+	account = None
+	if company and frappe.db.exists("EDI Configuration", company):
+		configuration = frappe.get_cached_doc("EDI Configuration", company)
+		account = normalize_text(configuration.get("inbound_withholding_account"))
+	if not account:
+		raise ValidationError(
+			_(
+				"This supplier invoice carries a withholding tax. Set Inbound Withholding Account on"
+				" EDI Configuration {0} before importing it."
+			).format(company or "")
+		)
+	return account
 
 
 def build_purchase_invoice_remarks(
@@ -802,6 +901,10 @@ def build_purchase_invoice_remarks(
 			flt(invoice.get("total_amount")),
 		)
 	)
+	for withholding in preview.get("withholdings") or []:
+		lines.append(
+			_("Withholding: {0} = {1}").format(withholding["description"], flt(withholding["amount"]))
+		)
 	for payment in preview.get("payments") or []:
 		payment_bits = [payment.get("mode"), payment.get("iban"), payment.get("bank_name")]
 		payment_bits = [bit for bit in payment_bits if bit]

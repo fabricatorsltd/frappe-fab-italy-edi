@@ -290,6 +290,158 @@ class TestPurchaseInvoiceImport(unittest.TestCase):
 		self.assertEqual(sum(item["amount"] for item in preview["items"]), 1065.0)
 		self.assertEqual(preview["invoice"]["total_net_amount"], 1065.0)
 
+	def test_parse_supplier_invoice_source_reads_the_withholding(self):
+		payload = {
+			"fattura_elettronica_header": {},
+			"fattura_elettronica_body": [
+				{
+					"dati_generali": {
+						"dati_generali_documento": {
+							"tipo_documento": "TD06",
+							"divisa": "EUR",
+							"data": "2026-09-01",
+							"numero": "88/2026",
+							"importo_totale_documento": "1020.00",
+							"dati_ritenuta": [
+								{
+									"tipo_ritenuta": "RT02",
+									"importo_ritenuta": "200.00",
+									"aliquota_ritenuta": "20.00",
+									"causale_pagamento": "A",
+								}
+							],
+						}
+					},
+					"dati_beni_servizi": {
+						"dettaglio_linee": [
+							{
+								"numero_linea": 1,
+								"descrizione": "Onorario professionale",
+								"prezzo_totale": "1000.00",
+								"aliquota_iva": "22.00",
+							}
+						],
+						"dati_riepilogo": [
+							{"aliquota_iva": "22.00", "imponibile_importo": "1000.00", "imposta": "220.00"}
+						],
+					},
+				}
+			],
+		}
+
+		with patch.object(
+			purchase_invoice_import,
+			"frappe",
+			new=SimpleNamespace(
+				db=SimpleNamespace(get_value=Mock(return_value="Italy")),
+				defaults=SimpleNamespace(get_global_default=Mock(return_value="EUR")),
+			),
+		):
+			preview = purchase_invoice_import.parse_supplier_invoice_source(payload)
+
+		self.assertEqual(
+			preview["withholdings"],
+			[
+				{
+					"withholding_type": "RT02",
+					"description": "Withholding tax RT02 (20%) - payment reason A",
+					"rate": 20.0,
+					"amount": 200.0,
+					"payment_reason": "A",
+				}
+			],
+		)
+		self.assertEqual(preview["invoice"]["total_withholding_amount"], 200.0)
+		self.assertEqual(preview["invoice"]["total_net_amount"], 1000.0)
+		self.assertEqual(preview["invoice"]["total_tax_amount"], 220.0)
+		self.assertEqual(preview["invoice"]["total_amount"], 1020.0)
+		self.assertEqual(
+			preview["total_adjustments"],
+			[
+				{
+					"kind": "withholding",
+					"description": "Withholding tax RT02 (20%) - payment reason A",
+					"amount": 200.0,
+					"deduct": True,
+				}
+			],
+		)
+
+	def test_build_purchase_invoice_taxes_deducts_the_withholding_after_the_vat_rows(self):
+		configuration = SimpleNamespace(
+			get=lambda fieldname, *args: {
+				"inbound_tax_mappings": [
+					SimpleNamespace(tax_rate=22.0, nature=None, account_head="IVA 22% - fab")
+				],
+				"inbound_withholding_account": "260200 - Withholdings payable - fab",
+			}.get(fieldname)
+		)
+		with patch.object(
+			purchase_invoice_import,
+			"frappe",
+			new=SimpleNamespace(
+				db=SimpleNamespace(exists=Mock(return_value=True)),
+				get_cached_doc=Mock(return_value=configuration),
+			),
+		), patch.object(
+			purchase_invoice_import,
+			"ensure_inbound_natura_account_enabled",
+			side_effect=lambda account_head, nature=None: account_head,
+		):
+			tax_rows, unresolved = purchase_invoice_import.build_purchase_invoice_taxes(
+				{
+					"taxes": [{"description": "VAT 22%", "tax_amount": 220.0, "tax_rate": 22.0}],
+					"total_adjustments": [
+						{
+							"kind": "withholding",
+							"description": "Withholding tax RT02 (20%)",
+							"amount": 200.0,
+							"deduct": True,
+						}
+					],
+				},
+				company="Fabricators",
+			)
+
+		self.assertEqual(unresolved, [])
+		self.assertEqual([row["account_head"] for row in tax_rows], ["IVA 22% - fab", "260200 - Withholdings payable - fab"])
+		self.assertEqual(
+			tax_rows[1],
+			{
+				"charge_type": "Actual",
+				"account_head": "260200 - Withholdings payable - fab",
+				"description": "Withholding tax RT02 (20%)",
+				"rate": 0.0,
+				"tax_amount": 200.0,
+				"add_deduct_tax": "Deduct",
+				"included_in_print_rate": 0,
+				"dont_recompute_tax": 1,
+			},
+		)
+
+	def test_build_purchase_invoice_taxes_requires_the_withholding_account(self):
+		with patch.object(
+			purchase_invoice_import,
+			"frappe",
+			new=SimpleNamespace(db=SimpleNamespace(exists=Mock(return_value=False))),
+		):
+			with self.assertRaises(frappe.ValidationError):
+				purchase_invoice_import.build_purchase_invoice_taxes(
+					{
+						"taxes": [],
+						"total_adjustments": [
+							{
+								"kind": "withholding",
+								"description": "Withholding tax RT02 (20%)",
+								"amount": 200.0,
+								"deduct": True,
+							}
+						],
+					},
+					company="Fabricators",
+					allow_unmapped=True,
+				)
+
 	def test_build_purchase_invoice_items_negates_welfare_fund_line_on_credit_note(self):
 		with (
 			patch.object(purchase_invoice_import, "get_default_uom", return_value="Nos"),

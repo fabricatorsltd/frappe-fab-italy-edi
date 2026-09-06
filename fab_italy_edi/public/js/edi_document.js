@@ -165,6 +165,15 @@ function build_preview_html(preview) {
 				</tr>`
 		)
 		.join("");
+	const adjustments = (preview.total_adjustments || [])
+		.map(
+			(row) =>
+				`<li>${escape_html(row.description || "")}: ${format_currency_value(
+					row.deduct ? -row.amount : row.amount,
+					invoice.currency
+				)}</li>`
+		)
+		.join("");
 	const payments = (preview.payments || [])
 		.map(
 			(payment) =>
@@ -240,6 +249,7 @@ function build_preview_html(preview) {
 				</thead>
 				<tbody>${taxes || `<tr><td colspan="4">${__("No tax rows found.")}</td></tr>`}</tbody>
 			</table>
+			${adjustments ? `<h5>${__("Document Adjustments")}</h5><ul>${adjustments}</ul>` : ""}
 			${payments ? `<h5>${__("Payments")}</h5><ul>${payments}</ul>` : ""}
 			${attachments ? `<h5>${__("Attachments")}</h5><ul>${attachments}</ul>` : ""}
 		</div>`;
