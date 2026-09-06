@@ -2454,3 +2454,8 @@ msgstr "{0} ({1}%)"
 #: fab_italy_edi/purchase_invoice_import.py:509
 msgid "Rounding"
 msgstr "Arrotondamento"
+
+#: fab_italy_edi/purchase_invoice_import.py:961
+#, python-brace-format
+msgid "The imported total {0} does not match the supplier document total {1}. Review this invoice before submitting it."
+msgstr "Il totale importato {0} non corrisponde al totale del documento del fornitore {1}. Controlla la fattura prima di contabilizzarla."

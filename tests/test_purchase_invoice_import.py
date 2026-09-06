@@ -695,6 +695,30 @@ class TestPurchaseInvoiceImport(unittest.TestCase):
 		self.assertEqual(rows[0]["amount"], 90.0)
 		self.assertNotIn("price_list_rate", rows[1])
 
+	def test_build_purchase_invoice_remarks_flags_a_total_that_does_not_reconcile(self):
+		preview = {
+			"invoice": {
+				"bill_no": "9/2026",
+				"total_net_amount": 100.0,
+				"total_tax_amount": 22.0,
+				"total_amount": 130.0,
+				"document_total": 130.0,
+			},
+			"supplier": {"display_name": "Studio Legale"},
+		}
+
+		remarks = purchase_invoice_import.build_purchase_invoice_remarks(preview)
+
+		self.assertIn(
+			"The imported total 122.0 does not match the supplier document total 130.0.", remarks
+		)
+
+		preview["invoice"]["document_total"] = 122.0
+		self.assertNotIn(
+			"does not match the supplier document total",
+			purchase_invoice_import.build_purchase_invoice_remarks(preview),
+		)
+
 	def test_build_purchase_invoice_taxes_requires_account_when_tax_exists(self):
 		with self.assertRaises(frappe.ValidationError):
 			purchase_invoice_import.build_purchase_invoice_taxes(

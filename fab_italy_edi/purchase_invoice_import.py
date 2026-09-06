@@ -1052,6 +1052,18 @@ def build_purchase_invoice_remarks(
 			flt(invoice.get("total_amount")),
 		)
 	)
+	document_total = invoice.get("document_total")
+	if document_total is not None:
+		imported_total = flt(invoice.get("total_net_amount")) + flt(invoice.get("total_tax_amount")) + (
+			sum_total_adjustments(preview.get("total_adjustments") or [])
+		)
+		if abs(flt(document_total) - imported_total) > 0.005:
+			lines.append(
+				_(
+					"The imported total {0} does not match the supplier document total {1}."
+					" Review this invoice before submitting it."
+				).format(round(imported_total, 2), round(flt(document_total), 2))
+			)
 	for withholding in preview.get("withholdings") or []:
 		lines.append(
 			_("Withholding: {0} = {1}").format(withholding["description"], flt(withholding["amount"]))
