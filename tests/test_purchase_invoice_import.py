@@ -80,6 +80,69 @@ SAMPLE_SUPPLIER_XML = """<?xml version="1.0" encoding="UTF-8"?>
 """
 
 
+SAMPLE_PROFESSIONAL_SUPPLIER_XML = """<?xml version="1.0" encoding="UTF-8"?>
+<FatturaElettronica versione="FPR12" xmlns="http://ivaservizi.agenziaentrate.gov.it/docs/xsd/fatture/v1.2">
+	<FatturaElettronicaHeader>
+		<DatiTrasmissione>
+			<ProgressivoInvio>000002S7y8</ProgressivoInvio>
+			<CodiceDestinatario>K95IV18</CodiceDestinatario>
+		</DatiTrasmissione>
+		<CedentePrestatore>
+			<DatiAnagrafici>
+				<IdFiscaleIVA>
+					<IdPaese>IT</IdPaese>
+					<IdCodice>04162670923</IdCodice>
+				</IdFiscaleIVA>
+				<Anagrafica>
+					<Denominazione>Orion S.T.P. S.r.l.</Denominazione>
+				</Anagrafica>
+			</DatiAnagrafici>
+			<Sede>
+				<Indirizzo>Via Sidney Sonnino, 67</Indirizzo>
+				<CAP>09125</CAP>
+				<Comune>Cagliari</Comune>
+				<Provincia>CA</Provincia>
+				<Nazione>IT</Nazione>
+			</Sede>
+		</CedentePrestatore>
+	</FatturaElettronicaHeader>
+	<FatturaElettronicaBody>
+		<DatiGenerali>
+			<DatiGeneraliDocumento>
+				<TipoDocumento>TD01</TipoDocumento>
+				<Divisa>EUR</Divisa>
+				<Data>2026-09-01</Data>
+				<Numero>9326-JET/2026</Numero>
+				<DatiCassaPrevidenziale>
+					<TipoCassa>TC08</TipoCassa>
+					<AlCassa>4.00</AlCassa>
+					<ImportoContributoCassa>0.64</ImportoContributoCassa>
+					<ImponibileCassa>16.00</ImponibileCassa>
+					<AliquotaIVA>22.00</AliquotaIVA>
+				</DatiCassaPrevidenziale>
+				<ImportoTotaleDocumento>20.30</ImportoTotaleDocumento>
+			</DatiGeneraliDocumento>
+		</DatiGenerali>
+		<DatiBeniServizi>
+			<DettaglioLinee>
+				<NumeroLinea>1</NumeroLinea>
+				<Descrizione>Onorario mensile - Agosto 2026</Descrizione>
+				<Quantita>1.00</Quantita>
+				<PrezzoUnitario>16.00</PrezzoUnitario>
+				<PrezzoTotale>16.00</PrezzoTotale>
+				<AliquotaIVA>22.00</AliquotaIVA>
+			</DettaglioLinee>
+			<DatiRiepilogo>
+				<AliquotaIVA>22.00</AliquotaIVA>
+				<ImponibileImporto>16.64</ImponibileImporto>
+				<Imposta>3.66</Imposta>
+			</DatiRiepilogo>
+		</DatiBeniServizi>
+	</FatturaElettronicaBody>
+</FatturaElettronica>
+"""
+
+
 class TestPurchaseInvoiceImport(unittest.TestCase):
 	def test_parse_supplier_invoice_source_extracts_preview_from_xml(self):
 		with patch.object(
@@ -127,6 +190,181 @@ class TestPurchaseInvoiceImport(unittest.TestCase):
 		self.assertEqual(item["item_name"], "PRESTAZIONE")
 		self.assertEqual(item["description"], "ISTANZA DI RATEIZZAZIONE CARTELLE - MIRKO BROMBIN")
 		self.assertEqual(item["notes"], ["CONSULENZA"])
+
+	def test_parse_supplier_invoice_source_adds_welfare_fund_line(self):
+		with patch.object(
+			purchase_invoice_import,
+			"frappe",
+			new=SimpleNamespace(
+				db=SimpleNamespace(get_value=Mock(return_value="Italy")),
+				defaults=SimpleNamespace(get_global_default=Mock(return_value="EUR")),
+			),
+		):
+			preview = purchase_invoice_import.parse_supplier_invoice_source(
+				SAMPLE_PROFESSIONAL_SUPPLIER_XML
+			)
+
+		self.assertEqual(len(preview["items"]), 2)
+		self.assertEqual(preview["items"][1]["description"], "Welfare fund contribution TC08 (4%)")
+		self.assertEqual(preview["items"][1]["amount"], 0.64)
+		self.assertEqual(preview["items"][1]["rate"], 0.64)
+		self.assertEqual(preview["items"][1]["tax_rate"], 22.0)
+		self.assertEqual(sum(item["amount"] for item in preview["items"]), 16.64)
+		self.assertEqual(preview["invoice"]["total_net_amount"], 16.64)
+		self.assertEqual(preview["invoice"]["total_tax_amount"], 3.66)
+		self.assertEqual(preview["invoice"]["total_amount"], 20.30)
+
+	def test_parse_supplier_invoice_source_adds_one_line_per_welfare_fund_block(self):
+		payload = {
+			"fattura_elettronica_header": {},
+			"fattura_elettronica_body": [
+				{
+					"dati_generali": {
+						"dati_generali_documento": {
+							"tipo_documento": "TD01",
+							"divisa": "EUR",
+							"data": "2026-09-01",
+							"numero": "77/2026",
+							"importo_totale_documento": "1287.20",
+							"dati_cassa_previdenziale": [
+								{
+									"tipo_cassa": "TC01",
+									"al_cassa": "4.00",
+									"importo_contributo_cassa": "40.00",
+									"aliquota_iva": "22.00",
+								},
+								{
+									"tipo_cassa": "TC22",
+									"al_cassa": "2.50",
+									"importo_contributo_cassa": "25.00",
+									"aliquota_iva": "22.00",
+								},
+								{
+									"tipo_cassa": "TC05",
+									"al_cassa": "0.00",
+									"importo_contributo_cassa": "0.00",
+									"aliquota_iva": "22.00",
+								},
+							],
+						}
+					},
+					"dati_beni_servizi": {
+						"dettaglio_linee": [
+							{
+								"numero_linea": 1,
+								"descrizione": "Onorario professionale",
+								"prezzo_totale": "1000.00",
+								"aliquota_iva": "22.00",
+							}
+						],
+						"dati_riepilogo": [
+							{
+								"aliquota_iva": "22.00",
+								"imponibile_importo": "1065.00",
+								"imposta": "234.30",
+							}
+						],
+					},
+				}
+			],
+		}
+
+		with patch.object(
+			purchase_invoice_import,
+			"frappe",
+			new=SimpleNamespace(
+				db=SimpleNamespace(get_value=Mock(return_value="Italy")),
+				defaults=SimpleNamespace(get_global_default=Mock(return_value="EUR")),
+			),
+		):
+			preview = purchase_invoice_import.parse_supplier_invoice_source(payload)
+
+		self.assertEqual(
+			[item["description"] for item in preview["items"]],
+			[
+				"Onorario professionale",
+				"Welfare fund contribution TC01 (4%)",
+				"Welfare fund contribution TC22 (2.5%)",
+			],
+		)
+		self.assertEqual(sum(item["amount"] for item in preview["items"]), 1065.0)
+		self.assertEqual(preview["invoice"]["total_net_amount"], 1065.0)
+
+	def test_build_purchase_invoice_items_negates_welfare_fund_line_on_credit_note(self):
+		with (
+			patch.object(purchase_invoice_import, "get_default_uom", return_value="Nos"),
+			patch.object(purchase_invoice_import, "get_default_expense_account", return_value="5111 - Cost of Goods Sold - fab"),
+			patch.object(purchase_invoice_import, "get_default_cost_center", return_value="Main - fab"),
+			patch.object(purchase_invoice_import, "ensure_uom", return_value="Nos"),
+			patch.object(purchase_invoice_import, "get_inbound_tax_mapping_rows", return_value=[]),
+			patch.object(purchase_invoice_import, "get_inbound_item_tax_template_for_item", return_value=None),
+		):
+			rows = purchase_invoice_import.build_purchase_invoice_items(
+				{
+					"invoice": {"is_return": True},
+					"items": [
+						{"item_name": "Onorario", "description": "Onorario", "amount": 16.0, "tax_rate": 22.0},
+						{
+							"item_name": "Welfare fund contribution TC08 (4%)",
+							"description": "Welfare fund contribution TC08 (4%)",
+							"amount": 0.64,
+							"tax_rate": 22.0,
+						},
+					],
+				},
+				company="Fabricators",
+			)
+
+		self.assertEqual([row["qty"] for row in rows], [-1.0, -1.0])
+		self.assertEqual([row["amount"] for row in rows], [-16.0, -0.64])
+		self.assertEqual([row["rate"] for row in rows], [16.0, 0.64])
+		self.assertEqual(rows[1]["expense_account"], "5111 - Cost of Goods Sold - fab")
+
+	def test_build_inbound_item_wise_tax_details_spreads_over_welfare_fund_line(self):
+		details = purchase_invoice_import.build_inbound_item_wise_tax_details(
+			{
+				"items": [
+					{"item_name": "Onorario", "amount": 16.0, "tax_rate": 22.0, "nature": None},
+					{
+						"item_name": "Welfare fund contribution TC08 (4%)",
+						"amount": 0.64,
+						"tax_rate": 22.0,
+						"nature": None,
+					},
+				]
+			},
+			[
+				{
+					"source_tax": {
+						"description": "VAT 22.00%",
+						"taxable_amount": 16.64,
+						"tax_amount": 3.66,
+						"tax_rate": 22.0,
+						"nature": None,
+					}
+				}
+			],
+		)
+
+		self.assertEqual(
+			details,
+			[
+				{
+					"item_index": 0,
+					"tax_index": 0,
+					"rate": 22.0,
+					"amount": 3.52,
+					"taxable_amount": 16.0,
+				},
+				{
+					"item_index": 1,
+					"tax_index": 0,
+					"rate": 22.0,
+					"amount": 0.14,
+					"taxable_amount": 0.64,
+				},
+			],
+		)
 
 	def test_build_purchase_invoice_taxes_requires_account_when_tax_exists(self):
 		with self.assertRaises(frappe.ValidationError):

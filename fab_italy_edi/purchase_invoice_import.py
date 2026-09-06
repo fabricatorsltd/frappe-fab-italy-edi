@@ -278,6 +278,11 @@ def parse_supplier_invoice_source(source: Any) -> dict[str, Any]:
 		for line in ensure_list(get_path(body, "dati_beni_servizi", "dettaglio_linee"))
 		if isinstance(line, Mapping)
 	]
+	items.extend(
+		build_welfare_fund_item_preview(block)
+		for block in ensure_list(document_data.get("dati_cassa_previdenziale"))
+		if isinstance(block, Mapping) and abs(flt(block.get("importo_contributo_cassa"))) > 0.0001
+	)
 	taxes = [
 		build_tax_preview(row)
 		for row in ensure_list(get_path(body, "dati_beni_servizi", "dati_riepilogo"))
@@ -384,6 +389,29 @@ def build_item_preview(line: Mapping[str, Any]) -> dict[str, Any]:
 		"nature": normalize_text(line.get("natura")),
 		"admin_reference": normalize_text(line.get("riferimento_amministrazione")),
 		"notes": notes,
+	}
+
+
+def build_welfare_fund_item_preview(block: Mapping[str, Any]) -> dict[str, Any]:
+	# the welfare fund contribution has no line of its own, but dati_riepilogo already
+	# counts it in imponibile_importo, so it is imported as a synthetic line to keep the
+	# lines, the taxable base and the document total in agreement
+	fund_code = normalize_text(block.get("tipo_cassa")) or _("Unknown fund")
+	fund_rate = flt(block.get("al_cassa"))
+	amount = flt(block.get("importo_contributo_cassa"))
+	description = _("Welfare fund contribution {0} ({1}%)").format(fund_code, f"{fund_rate:g}")
+	return {
+		"line_no": None,
+		"item_name": description[:140],
+		"description": description,
+		"qty": 1.0,
+		"uom": None,
+		"rate": amount,
+		"amount": amount,
+		"tax_rate": flt(block.get("aliquota_iva")),
+		"nature": normalize_text(block.get("natura")),
+		"admin_reference": normalize_text(block.get("riferimento_amministrazione")),
+		"notes": [],
 	}
 
 
