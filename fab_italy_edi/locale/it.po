@@ -2415,3 +2415,17 @@ msgstr "Ritenuta: {0} = {1}"
 #: fab_italy_edi/public/js/edi_document.js:236
 msgid "Document Adjustments"
 msgstr "Rettifiche documento"
+
+#: fab_italy_edi/purchase_invoice_import.py:441
+msgid "Stamp duty"
+msgstr "Imposta di bollo"
+
+#: fab_italy_edi/purchase_invoice_import.py:945
+#, python-brace-format
+msgid "Stamp duty charged by the supplier: {0}"
+msgstr "Imposta di bollo addebitata dal fornitore: {0}"
+
+#: fab_italy_edi/purchase_invoice_import.py:947
+#, python-brace-format
+msgid "Stamp duty declared on the supplier document but not charged on: {0}"
+msgstr "Imposta di bollo dichiarata sul documento del fornitore ma non addebitata: {0}"

@@ -306,12 +306,20 @@ def parse_supplier_invoice_source(source: Any) -> dict[str, Any]:
 		if isinstance(row, Mapping) and abs(flt(row.get("importo_ritenuta"))) > 0.0001
 	]
 
+	stamp_duty = build_stamp_duty_preview(document_data.get("dati_bollo"))
+
 	total_tax_amount = sum(flt(row.get("tax_amount")) for row in taxes)
 	total_net_amount = sum(flt(row.get("taxable_amount")) for row in taxes) or sum(
 		flt(item.get("amount")) for item in items
 	)
 	document_total = flt(document_data.get("importo_totale_documento")) or None
-	total_adjustments = build_total_adjustments(withholdings=withholdings)
+	total_adjustments = build_total_adjustments(
+		document_total=document_total,
+		net_amount=total_net_amount,
+		tax_amount=total_tax_amount,
+		withholdings=withholdings,
+		stamp_duty=stamp_duty,
+	)
 	total_amount = document_total or (
 		total_net_amount + total_tax_amount + sum_total_adjustments(total_adjustments)
 	)
@@ -339,6 +347,7 @@ def parse_supplier_invoice_source(source: Any) -> dict[str, Any]:
 		"items": items,
 		"taxes": taxes,
 		"withholdings": withholdings,
+		"stamp_duty": stamp_duty,
 		"total_adjustments": total_adjustments,
 		"payments": payments,
 		"attachments": attachments,
@@ -471,12 +480,37 @@ def build_withholding_preview(row: Mapping[str, Any]) -> dict[str, Any]:
 	}
 
 
-def build_total_adjustments(*, withholdings: list[dict[str, Any]]) -> list[dict[str, Any]]:
+def build_stamp_duty_preview(block: Any) -> dict[str, Any] | None:
+	block = as_mapping(block)
+	amount = flt(block.get("importo_bollo"))
+	if abs(amount) <= 0.0001:
+		return None
+	return {
+		"description": _("Stamp duty"),
+		"amount": amount,
+		"virtual": normalize_text(block.get("bollo_virtuale")) == "SI",
+	}
+
+
+def build_total_adjustments(
+	*,
+	document_total: float | None,
+	net_amount: float,
+	tax_amount: float,
+	withholdings: list[dict[str, Any]],
+	stamp_duty: dict[str, Any] | None,
+) -> list[dict[str, Any]]:
 	"""Document level blocks that move the payable total after the VAT rows.
 
 	The withholding leaves the taxable base and the VAT untouched: it only reduces what
-	is owed to the supplier, and importo_totale_documento is already net of it."""
-	return [
+	is owed to the supplier, and importo_totale_documento is already net of it.
+
+	The stamp duty is different: dati_bollo states that the document is stamped, not that
+	the supplier passed the cost on. When it is charged on it is usually a line of its own,
+	already in the taxable base, and when it is not the document total does not carry it
+	either. So it is only booked when the gap left by importo_totale_documento is exactly
+	the stamp, which is the one case where nothing else accounts for it."""
+	adjustments = [
 		{
 			"kind": "withholding",
 			"description": withholding["description"],
@@ -485,6 +519,18 @@ def build_total_adjustments(*, withholdings: list[dict[str, Any]]) -> list[dict[
 		}
 		for withholding in withholdings
 	]
+	if stamp_duty and document_total is not None:
+		residual = flt(document_total) - (net_amount + tax_amount + sum_total_adjustments(adjustments))
+		if abs(residual - flt(stamp_duty["amount"])) <= 0.005:
+			adjustments.append(
+				{
+					"kind": "stamp_duty",
+					"description": stamp_duty["description"],
+					"amount": flt(stamp_duty["amount"]),
+					"deduct": False,
+				}
+			)
+	return adjustments
 
 
 def sum_total_adjustments(adjustments: list[Mapping[str, Any]]) -> float:
@@ -904,6 +950,18 @@ def build_purchase_invoice_remarks(
 	for withholding in preview.get("withholdings") or []:
 		lines.append(
 			_("Withholding: {0} = {1}").format(withholding["description"], flt(withholding["amount"]))
+		)
+	stamp_duty = preview.get("stamp_duty")
+	if stamp_duty:
+		charged = any(
+			adjustment["kind"] == "stamp_duty" for adjustment in preview.get("total_adjustments") or []
+		)
+		lines.append(
+			(
+				_("Stamp duty charged by the supplier: {0}")
+				if charged
+				else _("Stamp duty declared on the supplier document but not charged on: {0}")
+			).format(flt(stamp_duty["amount"]))
 		)
 	for payment in preview.get("payments") or []:
 		payment_bits = [payment.get("mode"), payment.get("iban"), payment.get("bank_name")]

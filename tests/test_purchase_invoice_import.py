@@ -367,6 +367,41 @@ class TestPurchaseInvoiceImport(unittest.TestCase):
 			],
 		)
 
+	def test_build_total_adjustments_skips_the_stamp_duty_the_supplier_absorbs(self):
+		adjustments = purchase_invoice_import.build_total_adjustments(
+			document_total=105.13,
+			net_amount=87.88,
+			tax_amount=17.25,
+			withholdings=[],
+			stamp_duty={"description": "Stamp duty", "amount": 2.0, "virtual": True},
+		)
+
+		self.assertEqual(adjustments, [])
+
+	def test_build_total_adjustments_charges_the_stamp_duty_left_in_the_total(self):
+		adjustments = purchase_invoice_import.build_total_adjustments(
+			document_total=107.13,
+			net_amount=87.88,
+			tax_amount=17.25,
+			withholdings=[],
+			stamp_duty={"description": "Stamp duty", "amount": 2.0, "virtual": True},
+		)
+
+		self.assertEqual(
+			adjustments,
+			[{"kind": "stamp_duty", "description": "Stamp duty", "amount": 2.0, "deduct": False}],
+		)
+
+	def test_build_stamp_duty_preview_ignores_a_block_without_an_amount(self):
+		self.assertIsNone(purchase_invoice_import.build_stamp_duty_preview(None))
+		self.assertIsNone(purchase_invoice_import.build_stamp_duty_preview({"bollo_virtuale": "SI"}))
+		self.assertEqual(
+			purchase_invoice_import.build_stamp_duty_preview(
+				{"bollo_virtuale": "SI", "importo_bollo": "2.00"}
+			),
+			{"description": "Stamp duty", "amount": 2.0, "virtual": True},
+		)
+
 	def test_build_purchase_invoice_taxes_deducts_the_withholding_after_the_vat_rows(self):
 		configuration = SimpleNamespace(
 			get=lambda fieldname, *args: {
