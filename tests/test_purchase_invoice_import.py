@@ -634,6 +634,67 @@ class TestPurchaseInvoiceImport(unittest.TestCase):
 			],
 		)
 
+	def test_build_item_preview_keeps_the_line_discount(self):
+		item = purchase_invoice_import.build_item_preview(
+			{
+				"numero_linea": "1",
+				"descrizione": "CONSULENZA",
+				"quantita": "2.00",
+				"prezzo_unitario": "50.00",
+				"sconto_maggiorazione": [{"tipo": "SC", "percentuale": "10.00"}],
+				"prezzo_totale": "90.00",
+				"aliquota_iva": "22.00",
+			}
+		)
+
+		self.assertEqual(item["amount"], 90.0)
+		self.assertEqual(item["discount_amount"], 10.0)
+
+	def test_build_item_preview_ignores_rounding_without_a_discount_block(self):
+		item = purchase_invoice_import.build_item_preview(
+			{
+				"numero_linea": "1",
+				"descrizione": "CONSULENZA",
+				"quantita": "3.00",
+				"prezzo_unitario": "16.666666",
+				"prezzo_totale": "50.00",
+				"aliquota_iva": "22.00",
+			}
+		)
+
+		self.assertEqual(item["discount_amount"], 0.0)
+
+	def test_build_purchase_invoice_items_carries_the_line_discount(self):
+		with (
+			patch.object(purchase_invoice_import, "get_default_uom", return_value="Nos"),
+			patch.object(purchase_invoice_import, "get_default_expense_account", return_value="5111 - Cost of Goods Sold - fab"),
+			patch.object(purchase_invoice_import, "get_default_cost_center", return_value="Main - fab"),
+			patch.object(purchase_invoice_import, "ensure_uom", return_value="Nos"),
+			patch.object(purchase_invoice_import, "get_inbound_tax_mapping_rows", return_value=[]),
+			patch.object(purchase_invoice_import, "get_inbound_item_tax_template_for_item", return_value=None),
+		):
+			rows = purchase_invoice_import.build_purchase_invoice_items(
+				{
+					"items": [
+						{
+							"item_name": "CONSULENZA",
+							"description": "CONSULENZA",
+							"amount": 90.0,
+							"discount_amount": 10.0,
+							"tax_rate": 22.0,
+						},
+						{"item_name": "ALTRO", "description": "ALTRO", "amount": 50.0, "tax_rate": 22.0},
+					]
+				},
+				company="Fabricators",
+			)
+
+		self.assertEqual(rows[0]["price_list_rate"], 100.0)
+		self.assertEqual(rows[0]["discount_amount"], 10.0)
+		self.assertEqual(rows[0]["rate"], 90.0)
+		self.assertEqual(rows[0]["amount"], 90.0)
+		self.assertNotIn("price_list_rate", rows[1])
+
 	def test_build_purchase_invoice_taxes_requires_account_when_tax_exists(self):
 		with self.assertRaises(frappe.ValidationError):
 			purchase_invoice_import.build_purchase_invoice_taxes(

@@ -424,11 +424,23 @@ def build_item_preview(line: Mapping[str, Any]) -> dict[str, Any]:
 		"uom": normalize_text(line.get("unita_misura")),
 		"rate": flt(line.get("prezzo_unitario")),
 		"amount": flt(line.get("prezzo_totale")),
+		"discount_amount": build_line_discount_amount(line),
 		"tax_rate": flt(line.get("aliquota_iva")),
 		"nature": normalize_text(line.get("natura")),
 		"admin_reference": normalize_text(line.get("riferimento_amministrazione")),
 		"notes": notes,
 	}
+
+
+def build_line_discount_amount(line: Mapping[str, Any]) -> float:
+	# prezzo_totale is already net of the line discount, so the discount is the gap the
+	# line total leaves against the undiscounted price, which is how ERPNext stores it
+	if not any(isinstance(row, Mapping) for row in ensure_list(line.get("sconto_maggiorazione"))):
+		return 0.0
+
+	gross_amount = flt(line.get("prezzo_unitario")) * (flt(line.get("quantita")) or 1.0)
+	discount_amount = round(gross_amount - flt(line.get("prezzo_totale")), 2)
+	return discount_amount if discount_amount > 0.0001 else 0.0
 
 
 def build_welfare_fund_item_preview(block: Mapping[str, Any]) -> dict[str, Any]:
@@ -923,24 +935,29 @@ def build_purchase_invoice_items(preview: Mapping[str, Any], *, company: str) ->
 			company=company,
 			mapping_rows=mapping_rows,
 		)
-		rows.append(
-			{
-				"item_name": normalize_text(item.get("item_name")) or _("Imported line"),
-				"description": "\n".join(description_lines),
-				# the line total is the source of truth: some lines carry a discount
-				# or rounding where prezzo_unitario * quantita != prezzo_totale, and
-				# zero-quantity lines must stay at zero, so pin qty to 1 and rate to
-				# the line total instead of letting ERPNext recompute qty * rate
-				"qty": sign * 1.0,
-				"uom": uom,
-				"rate": flt(item.get("amount")),
-				"amount": sign * flt(item.get("amount")),
-				"conversion_factor": 1.0,
-				"expense_account": default_expense_account,
-				"cost_center": default_cost_center,
-				"item_tax_template": item_tax_template,
-			}
-		)
+		row = {
+			"item_name": normalize_text(item.get("item_name")) or _("Imported line"),
+			"description": "\n".join(description_lines),
+			# the line total is the source of truth: some lines carry a discount
+			# or rounding where prezzo_unitario * quantita != prezzo_totale, and
+			# zero-quantity lines must stay at zero, so pin qty to 1 and rate to
+			# the line total instead of letting ERPNext recompute qty * rate
+			"qty": sign * 1.0,
+			"uom": uom,
+			"rate": flt(item.get("amount")),
+			"amount": sign * flt(item.get("amount")),
+			"conversion_factor": 1.0,
+			"expense_account": default_expense_account,
+			"cost_center": default_cost_center,
+			"item_tax_template": item_tax_template,
+		}
+		discount_amount = flt(item.get("discount_amount"))
+		if discount_amount > 0:
+			# keeping the price before discount and the discount next to the net rate
+			# preserves the detail without moving the line total
+			row["price_list_rate"] = flt(item.get("amount")) + discount_amount
+			row["discount_amount"] = discount_amount
+		rows.append(row)
 	return rows
 
 
