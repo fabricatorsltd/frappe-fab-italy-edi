@@ -959,15 +959,26 @@ def ensure_inbound_item_tax_template(
 ) -> str:
 	title = build_inbound_item_tax_template_title(selected_mapping)
 	existing = frappe.db.get_value("Item Tax Template", {"company": company, "title": title}, "name")
-	taxes = []
-	selected_key = (selected_mapping["tax_rate"], selected_mapping.get("nature"))
+	# several mappings share one account head (every ordinary VAT rate books to input VAT),
+	# and ERPNext rejects a template that repeats a tax account, so the selected mapping
+	# claims its account first and the remaining accounts are added once each
+	taxes = [
+		{
+			"tax_type": selected_mapping["account_head"],
+			"tax_rate": selected_mapping["tax_rate"],
+			"not_applicable": 0,
+		}
+	]
+	seen_accounts = {selected_mapping["account_head"]}
 	for mapping in mapping_rows:
-		mapping_key = (mapping["tax_rate"], mapping.get("nature"))
+		if mapping["account_head"] in seen_accounts:
+			continue
+		seen_accounts.add(mapping["account_head"])
 		taxes.append(
 			{
 				"tax_type": mapping["account_head"],
-				"tax_rate": mapping["tax_rate"] if mapping_key == selected_key else 0,
-				"not_applicable": 0 if mapping_key == selected_key else 1,
+				"tax_rate": 0,
+				"not_applicable": 1,
 			}
 		)
 

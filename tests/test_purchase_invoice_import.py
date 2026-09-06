@@ -325,6 +325,36 @@ class TestPurchaseInvoiceImport(unittest.TestCase):
 			],
 		)
 
+	def test_ensure_inbound_item_tax_template_lists_each_account_once(self):
+		template = SimpleNamespace(name="Inbound 22.00% - fab", insert=Mock())
+		frappe_stub = SimpleNamespace(
+			db=SimpleNamespace(get_value=Mock(return_value=None)),
+			get_doc=Mock(return_value=template),
+		)
+		with patch.object(purchase_invoice_import, "frappe", new=frappe_stub):
+			name = purchase_invoice_import.ensure_inbound_item_tax_template(
+				company="Fabricators",
+				selected_mapping={
+					"tax_rate": 22.0,
+					"nature": None,
+					"account_head": "160100 - VAT credit - fab",
+				},
+				mapping_rows=[
+					{"tax_rate": 22.0, "nature": None, "account_head": "160100 - VAT credit - fab"},
+					{"tax_rate": 10.0, "nature": None, "account_head": "160100 - VAT credit - fab"},
+					{"tax_rate": 0.0, "nature": "N2.2", "account_head": "VAT Natura N2.2 - fab"},
+				],
+			)
+
+		self.assertEqual(name, "Inbound 22.00% - fab")
+		self.assertEqual(
+			frappe_stub.get_doc.call_args[0][0]["taxes"],
+			[
+				{"tax_type": "160100 - VAT credit - fab", "tax_rate": 22.0, "not_applicable": 0},
+				{"tax_type": "VAT Natura N2.2 - fab", "tax_rate": 0, "not_applicable": 1},
+			],
+		)
+
 	def test_build_purchase_invoice_items_uses_company_defaults(self):
 		with (
 			patch.object(purchase_invoice_import, "get_default_uom", return_value="Nos"),

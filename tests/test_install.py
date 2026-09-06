@@ -261,6 +261,52 @@ class TestInstall(unittest.TestCase):
 		n22_rows = [row for row in configuration.inbound_tax_mappings if row["nature"] == "N2.2"]
 		self.assertEqual(n22_rows, [{"tax_rate": 0.0, "nature": "N2.2", "account_head": "Custom N2.2 - fab"}])
 
+	def test_append_missing_standard_inbound_vat_rate_mappings_is_idempotent(self):
+		class StubConfiguration(SimpleNamespace):
+			def get(self, fieldname):
+				return getattr(self, fieldname, None)
+
+			def append(self, fieldname, value):
+				getattr(self, fieldname).append(value)
+
+		configuration = StubConfiguration(
+			company="Fabricators",
+			inbound_tax_mappings=[
+				{"tax_rate": 10.0, "nature": None, "account_head": "Custom input VAT - fab"},
+			],
+		)
+
+		changed = inbound_tax_setup.append_missing_standard_inbound_vat_rate_mappings(
+			configuration,
+			account_head="160100 - VAT credit - fab",
+		)
+
+		self.assertTrue(changed)
+		self.assertEqual(
+			len(configuration.inbound_tax_mappings),
+			len(inbound_tax_setup.get_standard_inbound_vat_rates()),
+		)
+		self.assertEqual(
+			{(row["tax_rate"], row["nature"]) for row in configuration.inbound_tax_mappings},
+			{(rate, None) for rate in inbound_tax_setup.get_standard_inbound_vat_rates()},
+		)
+		rows_at_10 = [row for row in configuration.inbound_tax_mappings if row["tax_rate"] == 10.0]
+		self.assertEqual(
+			rows_at_10,
+			[{"tax_rate": 10.0, "nature": None, "account_head": "Custom input VAT - fab"}],
+		)
+
+		self.assertFalse(
+			inbound_tax_setup.append_missing_standard_inbound_vat_rate_mappings(
+				configuration,
+				account_head="160100 - VAT credit - fab",
+			)
+		)
+		self.assertEqual(
+			len(configuration.inbound_tax_mappings),
+			len(inbound_tax_setup.get_standard_inbound_vat_rates()),
+		)
+
 	def test_enable_disabled_inbound_natura_account_only_for_standard_nature(self):
 		frappe_stub = SimpleNamespace(
 			db=SimpleNamespace(

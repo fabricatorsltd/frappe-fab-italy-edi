@@ -36,27 +36,48 @@ STANDARD_INBOUND_NATURA_TAX_TYPES: tuple[dict[str, str], ...] = (
 )
 
 
+# Ordinary Italian VAT rates a supplier can charge on a taxable line. Such a line carries no
+# Natura code, so the mapping key is the rate paired with an empty nature.
+STANDARD_INBOUND_VAT_RATES: tuple[float, ...] = (22.0, 10.0, 5.0, 4.0)
+
+# Input VAT is an asset, so it is looked up (and created, on a chart that lacks it) under the
+# asset side of the chart instead of the natura accounts, which sit on the liability side.
+STANDARD_INBOUND_VAT_CREDIT_ACCOUNT: dict[str, str] = {
+	"account_name": "VAT credit",
+	"root_type": "Asset",
+}
+
+
 def get_standard_inbound_natura_tax_types() -> list[dict[str, str]]:
 	return [dict(row) for row in STANDARD_INBOUND_NATURA_TAX_TYPES]
 
 
-def ensure_standard_inbound_natura_setup() -> None:
+def get_standard_inbound_vat_rates() -> list[float]:
+	return list(STANDARD_INBOUND_VAT_RATES)
+
+
+def ensure_standard_inbound_tax_setup() -> None:
 	for row in frappe.get_all("Company", fields=["name"]):
 		ensure_standard_inbound_natura_accounts(row["name"])
+		ensure_standard_inbound_vat_credit_account(row["name"])
 
 	for row in frappe.get_all("EDI Configuration", fields=["name"]):
 		configuration = frappe.get_doc("EDI Configuration", row["name"])
-		if ensure_standard_inbound_natura_configuration(configuration):
+		if ensure_standard_inbound_tax_configuration(configuration):
 			configuration.save(ignore_permissions=True)
 
 
-def ensure_standard_inbound_natura_configuration(configuration) -> bool:
+def ensure_standard_inbound_tax_configuration(configuration) -> bool:
 	company = getattr(configuration, "company", None)
 	if not company:
 		return False
 
 	account_heads = ensure_standard_inbound_natura_accounts(company)
-	return append_missing_standard_inbound_natura_mappings(configuration, account_heads=account_heads)
+	changed = append_missing_standard_inbound_natura_mappings(configuration, account_heads=account_heads)
+	vat_credit_account = ensure_standard_inbound_vat_credit_account(company)
+	if append_missing_standard_inbound_vat_rate_mappings(configuration, account_head=vat_credit_account):
+		changed = True
+	return changed
 
 
 def ensure_standard_inbound_natura_accounts(company: str) -> dict[str, str]:
@@ -71,6 +92,11 @@ def ensure_standard_inbound_natura_accounts(company: str) -> dict[str, str]:
 		)
 		account_heads[row["nature"]] = account.name
 	return account_heads
+
+
+def ensure_standard_inbound_vat_credit_account(company: str) -> str:
+	account = get_or_create_account(company, dict(STANDARD_INBOUND_VAT_CREDIT_ACCOUNT))
+	return account.name
 
 
 def append_missing_standard_inbound_natura_mappings(
@@ -93,6 +119,29 @@ def append_missing_standard_inbound_natura_mappings(
 				"tax_rate": 0.0,
 				"nature": row["nature"],
 				"account_head": account_heads[row["nature"]],
+			},
+		)
+		existing_keys.add(key)
+		changed = True
+	return changed
+
+
+def append_missing_standard_inbound_vat_rate_mappings(configuration, *, account_head: str) -> bool:
+	existing_keys = {
+		build_mapping_key(row.get("tax_rate"), row.get("nature"))
+		for row in (configuration.get("inbound_tax_mappings") or [])
+	}
+	changed = False
+	for tax_rate in STANDARD_INBOUND_VAT_RATES:
+		key = build_mapping_key(tax_rate, None)
+		if key in existing_keys:
+			continue
+		configuration.append(
+			"inbound_tax_mappings",
+			{
+				"tax_rate": tax_rate,
+				"nature": None,
+				"account_head": account_head,
 			},
 		)
 		existing_keys.add(key)

@@ -4,7 +4,7 @@ from frappe.model.document import Document
 from frappe.utils import cint, flt
 
 from fab_italy_edi.channels.sdi_pec.base import PEC_REQUIRED_CONFIGURATION_FIELDS, SDIPECChannel
-from fab_italy_edi.inbound_tax_setup import ensure_standard_inbound_natura_configuration
+from fab_italy_edi.inbound_tax_setup import ensure_standard_inbound_tax_configuration
 
 
 MIN_POLLING_INTERVAL_MINUTES = 5
@@ -59,7 +59,7 @@ class EDIConfiguration(Document):
 
 	def before_validate(self):
 		if self.is_new():
-			ensure_standard_inbound_natura_configuration(self)
+			ensure_standard_inbound_tax_configuration(self)
 
 	def validate(self):
 		for fieldname, label in POLLING_INTERVAL_FIELDS.items():

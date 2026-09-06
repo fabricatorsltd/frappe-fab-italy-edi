@@ -12,7 +12,7 @@ from fab_italy_edi.autofattura import backfill_autofatture
 from fab_italy_edi.automation import ensure_automation_user
 from fab_italy_edi.backends import get_provider_adapter
 from fab_italy_edi.fatturapa.regional_compat import ITALIAN_COMPANY_COUNTRIES
-from fab_italy_edi.inbound_tax_setup import ensure_standard_inbound_natura_setup
+from fab_italy_edi.inbound_tax_setup import ensure_standard_inbound_tax_setup
 from fab_italy_edi.purchase_invoice_import import (
 	QUARANTINED_INBOUND_SUPPLIER_PREFIX,
 	ensure_purchase_invoice_review_draft,
@@ -106,14 +106,14 @@ EDI_TRACKING_FIELDS = {
 def after_install():
 	ensure_custom_fields()
 	ensure_seed_records()
-	ensure_standard_inbound_natura_setup()
+	ensure_standard_inbound_tax_setup()
 	ensure_workspace_navigation()
 
 
 def after_migrate():
 	ensure_custom_fields()
 	ensure_seed_records()
-	ensure_standard_inbound_natura_setup()
+	ensure_standard_inbound_tax_setup()
 	normalize_seeded_records()
 	backfill_autofatture()
 
