@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import json
 import re
+from contextlib import contextmanager
 from pathlib import Path
 from typing import Any, Mapping
 import xml.etree.ElementTree as ET
@@ -53,7 +54,46 @@ def create_purchase_invoice_draft_from_edi_document(
 	)
 
 
+@contextmanager
+def use_site_language():
+	"""What ends up written on the Purchase Invoice must read the same whoever imports
+	it. Left to the session, a line description would be Italian when an agent clicks
+	the button and English when the polling job does the same work."""
+	read_setting = getattr(getattr(frappe, "db", None), "get_single_value", None)
+	language = (read_setting("System Settings", "language") if read_setting else None) or "en"
+	local = getattr(frappe, "local", None)
+	if local is None:
+		yield language
+		return
+
+	previous = getattr(local, "lang", None)
+	local.lang = language
+	try:
+		yield language
+	finally:
+		local.lang = previous
+
+
 def ensure_purchase_invoice_review_draft(
+	document,
+	*,
+	preview: dict[str, Any] | None = None,
+	supplier: str | None = None,
+	tax_account: str | None = None,
+) -> dict[str, Any]:
+	with use_site_language() as language:
+		if preview is not None and preview.get("language") != language:
+			# the caller built it for the screen, in its own language
+			preview = None
+		return build_purchase_invoice_review_draft(
+			document,
+			preview=preview,
+			supplier=supplier,
+			tax_account=tax_account,
+		)
+
+
+def build_purchase_invoice_review_draft(
 	document,
 	*,
 	preview: dict[str, Any] | None = None,
@@ -160,6 +200,7 @@ def build_incoming_supplier_invoice_preview(document) -> dict[str, Any]:
 	preview = parse_supplier_invoice_source(source)
 	tax_mapping_status = get_inbound_tax_mapping_status(document.company, preview.get("taxes") or [])
 	preview["edi_document"] = document.name
+	preview["language"] = getattr(frappe.local, "lang", None)
 	preview["canonical_identifier"] = document.canonical_identifier
 	preview["source_xml"] = document.source_xml
 	preview["purchase_invoice"] = find_linked_purchase_invoice(document.name)
