@@ -1522,7 +1522,10 @@ def ensure_uom(uom_name: str) -> str:
 		return existing_uom
 	new_uom = frappe.new_doc("UOM")
 	new_uom.uom_name = uom_name
-	new_uom.save()
+	# the unit is whatever the supplier wrote on the line, and the automation user that
+	# polls the channel holds accounting roles, not the item ones. Without this the whole
+	# polling batch dies on a unit nobody happens to have created yet.
+	new_uom.insert(ignore_permissions=True)
 	return new_uom.name
 
 
