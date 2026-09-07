@@ -5,6 +5,8 @@ import json
 import frappe
 from frappe import _
 from frappe.custom.doctype.custom_field.custom_field import create_custom_fields
+from frappe.custom.doctype.property_setter.property_setter import make_property_setter
+from frappe.utils import cstr
 
 from erpnext.regional.italy import fiscal_regimes, vat_collectability_options
 
@@ -105,6 +107,7 @@ EDI_TRACKING_FIELDS = {
 
 def after_install():
 	ensure_custom_fields()
+	ensure_vat_collectability_is_per_invoice()
 	ensure_seed_records()
 	ensure_standard_inbound_tax_setup()
 	ensure_workspace_navigation()
@@ -112,6 +115,7 @@ def after_install():
 
 def after_migrate():
 	ensure_custom_fields()
+	ensure_vat_collectability_is_per_invoice()
 	ensure_seed_records()
 	ensure_standard_inbound_tax_setup()
 	normalize_seeded_records()
@@ -120,6 +124,29 @@ def after_migrate():
 
 def ensure_custom_fields():
 	create_custom_fields(get_custom_fields(), update=True)
+
+
+def ensure_vat_collectability_is_per_invoice():
+	"""Let a single invoice carry its own VAT collectability.
+
+	The Italian regional setup fetches the field from the company on every save, so a
+	value chosen on the document is overwritten: split of payments, which applies to
+	the invoice and not to us, could never be set. Fetching only when the field is
+	empty keeps the company value as the default and lets the operator override it.
+	"""
+	doctype, fieldname = "Sales Invoice", "vat_collectability"
+	if not frappe.db.exists("Custom Field", f"{doctype}-{fieldname}"):
+		return
+
+	current = frappe.db.get_value(
+		"Property Setter",
+		{"doc_type": doctype, "field_name": fieldname, "property": "fetch_if_empty"},
+		"value",
+	)
+	if cstr(current) == "1":
+		return
+
+	make_property_setter(doctype, fieldname, "fetch_if_empty", 1, "Check", validate_fields_for_doctype=False)
 
 
 def ensure_seed_records():
