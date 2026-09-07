@@ -2462,3 +2462,48 @@ msgstr "Il totale importato {0} non corrisponde al totale del documento del forn
 
 msgid "This file carries {0} invoices and only one can be imported. Import them by hand and tell the developer."
 msgstr "Questo file contiene {0} fatture e ne puo' essere importata una sola. Importale a mano e segnalalo allo sviluppatore."
+
+#, python-brace-format
+msgid "E-invoicing polling stalled for {0}"
+msgstr "Polling e-fatturazione fermo per {0}"
+
+#, python-brace-format
+msgid "E-invoicing polling recovered for {0}"
+msgstr "Polling e-fatturazione ripristinato per {0}"
+
+#, python-brace-format
+msgid "{0}: automatic e-invoicing polling is running again."
+msgstr "{0}: il polling automatico dell'e-fatturazione funziona di nuovo."
+
+#, python-brace-format
+msgid "{0}: automatic e-invoicing polling has stalled."
+msgstr "{0}: il polling automatico dell'e-fatturazione si è fermato."
+
+#, python-brace-format
+msgid "{0}: last run {1}, {2} behind schedule, interval {3} minutes."
+msgstr "{0}: ultima esecuzione {1}, {2} di ritardo, intervallo {3} minuti."
+
+msgid "never"
+msgstr "mai"
+
+#, python-brace-format
+msgid "Most recent related Error Log: {0} ({1})."
+msgstr "Error Log correlato più recente: {0} ({1})."
+
+msgid "No further alert is sent for this configuration in the next 24 hours."
+msgstr "Nessun altro avviso viene inviato per questa configurazione nelle prossime 24 ore."
+
+msgid "Outbound status polling"
+msgstr "Polling stato documenti in uscita"
+
+msgid "Incoming supplier invoice polling"
+msgstr "Polling fatture fornitore in entrata"
+
+msgid "Notification polling"
+msgstr "Polling notifiche"
+
+msgid "No recipient for the e-invoicing polling alert"
+msgstr "Nessun destinatario per l'avviso di polling e-fatturazione"
+
+msgid "Unable to check the e-invoicing polling health"
+msgstr "Impossibile controllare lo stato del polling e-fatturazione"

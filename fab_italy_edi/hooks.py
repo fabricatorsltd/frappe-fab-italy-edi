@@ -184,7 +184,10 @@ scheduler_events = {
 		"*/5 * * * *": [
 			"fab_italy_edi.polling.run_automatic_refresh_scheduler"
 		]
-	}
+	},
+	"hourly": [
+		"fab_italy_edi.polling_watchdog.check_polling_health"
+	]
 }
 
 # Testing

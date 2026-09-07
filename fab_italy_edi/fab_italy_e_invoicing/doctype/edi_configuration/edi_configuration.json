@@ -18,11 +18,14 @@
   "incoming_invoice_polling_interval_mins",
   "column_break_automatic_refresh",
   "notification_polling_interval_mins",
+  "polling_alert_recipients",
   "automatic_refresh_status_section",
   "last_outbound_status_polling_at",
   "last_incoming_invoice_polling_at",
   "column_break_automatic_refresh_status",
   "last_notification_polling_at",
+  "last_polling_alert_sent_at",
+  "polling_alert_active",
   "sender_details_section",
   "sender_vat_id",
   "sender_fiscal_code",
@@ -115,6 +118,12 @@
    "reqd": 1
   },
   {
+   "description": "Comma separated addresses warned when a polling job stops running. Enabled System Managers are used when this is empty.",
+   "fieldname": "polling_alert_recipients",
+   "fieldtype": "Small Text",
+   "label": "Polling Alert Recipients"
+  },
+  {
    "fieldname": "automatic_refresh_status_section",
    "fieldtype": "Section Break",
    "label": "Automatic Refresh Status"
@@ -139,6 +148,20 @@
    "fieldname": "last_notification_polling_at",
    "fieldtype": "Datetime",
    "label": "Last Notification Polling At",
+   "read_only": 1
+  },
+  {
+   "fieldname": "last_polling_alert_sent_at",
+   "fieldtype": "Datetime",
+   "label": "Last Polling Alert Sent At",
+   "read_only": 1
+  },
+  {
+   "default": "0",
+   "fieldname": "polling_alert_active",
+   "fieldtype": "Check",
+   "hidden": 1,
+   "label": "Polling Alert Active",
    "read_only": 1
   },
   {
@@ -260,7 +283,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2026-09-06 10:00:00.000000",
+ "modified": "2026-09-07 09:00:00.000000",
  "modified_by": "Administrator",
  "module": "FAB Italy E-Invoicing",
  "name": "EDI Configuration",
