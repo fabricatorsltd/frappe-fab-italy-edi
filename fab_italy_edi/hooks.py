@@ -159,8 +159,14 @@ after_migrate = ["fab_italy_edi.install.after_migrate"]
 
 doc_events = {
 	"Sales Invoice": {
-		"before_validate": "fab_italy_edi.install.scrub_missing_legacy_einvoice_type_link_values",
-		"validate": "fab_italy_edi.sales_invoice_edi.fill_payment_schedule_bank_account",
+		"before_validate": [
+			"fab_italy_edi.install.scrub_missing_legacy_einvoice_type_link_values",
+			"fab_italy_edi.sales_invoice_edi.keep_manual_due_date",
+		],
+		"validate": [
+			"fab_italy_edi.sales_invoice_edi.set_due_date_from_payment_schedule",
+			"fab_italy_edi.sales_invoice_edi.fill_payment_schedule_bank_account",
+		],
 	},
 	"Purchase Invoice": {
 		"before_validate": "fab_italy_edi.install.scrub_missing_legacy_einvoice_type_link_values",

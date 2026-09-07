@@ -3,11 +3,147 @@ from __future__ import annotations
 from typing import Any
 
 import frappe
+from frappe.utils import getdate
+
+from erpnext.controllers.accounts_controller import get_payment_terms
 
 from fab_italy_edi.fatturapa.regional_compat import is_italian_company
 
 
 ATTENTION_STATES = {"rejected", "failed", "cancelled"}
+
+
+def keep_manual_due_date(document: Any, method: str | None = None) -> None:
+	"""Make the Payment Terms Template and the due date override each other.
+
+	``AccountsController.validate_invoice_documents_schedule`` reads the due date back from the
+	payment schedule, rebuilds that schedule only when it is empty, and then validates the date
+	against the template, so a date or a template changed on its own is either dropped or throws.
+	All of it happens before the ``validate`` hook, hence the work here, on the document as it was
+	sent: whichever of the two the caller moved wins, and the loser follows.
+	"""
+	if document.get("is_pos") or document.get("is_return"):
+		return
+
+	# terms taken from a linked order or from an import are not ours to manage, and ERPNext
+	# already exempts them from its own due date checks
+	if document.get("ignore_default_payment_terms_template"):
+		return
+
+	schedule = document.get("payment_schedule") or []
+	if not schedule or not all(row.get("due_date") for row in schedule):
+		return
+
+	if is_schedule_as_stored(document, schedule):
+		if is_payment_terms_template_replaced(document):
+			# the schedule is rebuilt from the template only when there is none, so make room,
+			# and let set_missing_values date the invoice off the template that just arrived
+			document.set("payment_schedule", [])
+			document.due_date = None
+			return
+
+		if is_due_date_typed_by_hand(document):
+			schedule = apply_manual_due_date(document, schedule)
+
+	drop_payment_terms_template_off_manual_schedule(document, schedule)
+
+
+def is_schedule_as_stored(document: Any, schedule: list[Any]) -> bool:
+	"""True when this save leaves the payment schedule exactly as it was stored.
+
+	A schedule that moved is the caller's own: the form refetches it whenever the template, the
+	posting date or the party change, so only an untouched one follows the header fields.
+	"""
+	stored = document.get_doc_before_save()
+	if not stored:
+		return False
+
+	stored_due_dates = {row.name: row.due_date for row in stored.get("payment_schedule") or []}
+	if len(stored_due_dates) != len(schedule):
+		return False
+
+	return all(
+		stored_due_dates.get(row.name) and getdate(stored_due_dates[row.name]) == getdate(row.due_date)
+		for row in schedule
+	)
+
+
+def is_payment_terms_template_replaced(document: Any) -> bool:
+	template = document.get("payment_terms_template")
+	return bool(template) and template != document.get_doc_before_save().get("payment_terms_template")
+
+
+def is_due_date_typed_by_hand(document: Any) -> bool:
+	stored = document.get_doc_before_save()
+	if not document.get("due_date") or not stored.get("due_date"):
+		return False
+
+	return getdate(stored.due_date) != getdate(document.due_date)
+
+
+def apply_manual_due_date(document: Any, schedule: list[Any]) -> list[Any]:
+	"""Move the schedule row that carries the document due date, which is the last one, onto it.
+
+	An instalment falling on or after the typed date would outlive the date it is meant to end on,
+	and would trip the duplicate due date check when the two dates meet, so there the typed date
+	replaces the schedule with the row that carried it, mode of payment and bank details included.
+	"""
+	due_date = getdate(document.due_date)
+	last_row = max(schedule, key=lambda row: getdate(row.due_date))
+	last_row.due_date = due_date
+	clear_payment_term(last_row)
+
+	if any(row is not last_row and getdate(row.due_date) >= due_date for row in schedule):
+		last_row.idx = 1
+		last_row.invoice_portion = 100
+		document.set("payment_schedule", [last_row])
+
+	return document.get("payment_schedule")
+
+
+def clear_payment_term(row: Any) -> None:
+	"""Take the Payment Term, and the delay it counts, off a row that no longer follows it."""
+	row.payment_term = None
+	row.due_date_based_on = None
+	row.credit_days = 0
+	row.credit_months = 0
+
+
+def drop_payment_terms_template_off_manual_schedule(document: Any, schedule: list[Any]) -> None:
+	"""Unlink the template, and the terms behind it, once the schedule dates are not its own.
+
+	Only the template link is cleared: ``ignore_default_payment_terms_template`` would also skip
+	the payment schedule amount validation, and the rows keep their mode of payment because that
+	is what the invoice prints.
+	"""
+	if not document.get("payment_terms_template"):
+		return
+
+	term_due_dates = [
+		getdate(term.due_date)
+		for term in get_payment_terms(document.payment_terms_template, document.get("posting_date")) or []
+	]
+	if sorted(getdate(row.due_date) for row in schedule) == sorted(term_due_dates):
+		return
+
+	document.payment_terms_template = None
+	for row in schedule:
+		if getdate(row.due_date) not in term_due_dates:
+			clear_payment_term(row)
+
+
+def set_due_date_from_payment_schedule(document: Any, method: str | None = None) -> None:
+	"""Put the document due date back on the last payment schedule row.
+
+	``AccountsController.set_due_date`` runs before ``set_payment_schedule``, so on the save that
+	first builds the schedule the due date is still whatever the document carried. Applying the
+	same rule again, once the schedule is final, is what makes a template set the date.
+	"""
+	due_dates = [
+		getdate(row.due_date) for row in document.get("payment_schedule") or [] if row.get("due_date")
+	]
+	if due_dates:
+		document.due_date = max(due_dates)
 
 
 def fill_payment_schedule_bank_account(document: Any, method: str | None = None) -> None:
