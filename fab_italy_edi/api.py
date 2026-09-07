@@ -457,9 +457,12 @@ def read_site_file(file_url: str) -> str:
 def generate_sales_invoice_xml(invoice):
 	from erpnext.regional.italy.utils import prepare_and_attach_invoice
 
+	from fab_italy_edi.fatturapa.procurement import apply_procurement_reference
+
 	validate_vat_summary(invoice)
 	validate_natura_sub_codes(invoice)
-	return prepare_and_attach_invoice(invoice, replace=True)
+	validate_procurement_reference(invoice)
+	return apply_procurement_reference(prepare_and_attach_invoice(invoice, replace=True), invoice)
 
 
 def validate_vat_summary(invoice) -> None:
@@ -498,6 +501,46 @@ def validate_natura_sub_codes(invoice) -> None:
 			"Natura {0} is no longer accepted on its own. Pick the Tax Exemption Reason carrying the sub-code (for example N2.1 or N3.1) on the Sales Taxes and Charges rows; on a submitted invoice that means cancelling and amending it, because the field is not editable after submission."
 		).format(code)
 	)
+
+
+def validate_procurement_reference(invoice) -> None:
+	"""The CIG only reaches SDI inside DatiOrdineAcquisto, whose IdDocumento is mandatory.
+
+	A public administration invoice carrying a code with no document to hang it on would be
+	transmitted without the code and refused as unpayable, so refuse it here instead. A public
+	administration invoice with no CIG at all is left alone: not every public supply carries one.
+	"""
+	from fab_italy_edi.fatturapa.procurement import (
+		MAX_DOCUMENT_ID_LENGTH,
+		MAX_PROCUREMENT_CODE_LENGTH,
+	)
+
+	document_id = cstr(invoice.get("po_no")).strip()
+	cig = cstr(invoice.get("fab_edi_cig")).strip()
+	cup = cstr(invoice.get("fab_edi_cup")).strip()
+	if not cig and not cup:
+		return
+
+	if not document_id:
+		if not frappe.db.get_value("Customer", invoice.get("customer"), "is_public_administration"):
+			return
+		raise ValidationError(
+			_(
+				"This invoice carries a CIG or a CUP but no referenced document, so the code would not reach the e-invoice at all. Put the determina or the order it comes from in Customer's Order or Determina, with its date."
+			)
+		)
+
+	for label, value, max_length in (
+		(_("Customer's Order or Determina"), document_id, MAX_DOCUMENT_ID_LENGTH),
+		(_("CUP"), cup, MAX_PROCUREMENT_CODE_LENGTH),
+		(_("CIG"), cig, MAX_PROCUREMENT_CODE_LENGTH),
+	):
+		if len(value) > max_length:
+			raise ValidationError(
+				_("{0} is {1} characters long: SDI refuses the file over {2}.").format(
+					label, len(value), max_length
+				)
+			)
 
 
 def append_transmission_attempt(

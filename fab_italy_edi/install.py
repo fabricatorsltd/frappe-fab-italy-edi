@@ -108,6 +108,7 @@ EDI_TRACKING_FIELDS = {
 def after_install():
 	ensure_custom_fields()
 	ensure_vat_collectability_is_per_invoice()
+	ensure_order_reference_fields()
 	ensure_seed_records()
 	ensure_standard_inbound_tax_setup()
 	ensure_workspace_navigation()
@@ -116,6 +117,7 @@ def after_install():
 def after_migrate():
 	ensure_custom_fields()
 	ensure_vat_collectability_is_per_invoice()
+	ensure_order_reference_fields()
 	ensure_seed_records()
 	ensure_standard_inbound_tax_setup()
 	normalize_seeded_records()
@@ -147,6 +149,49 @@ def ensure_vat_collectability_is_per_invoice():
 		return
 
 	make_property_setter(doctype, fieldname, "fetch_if_empty", 1, "Check", validate_fields_for_doctype=False)
+
+
+def ensure_order_reference_fields():
+	"""Name the customer order fields for what a public administration invoice puts in them.
+
+	``po_no`` and ``po_date`` are what reaches DatiOrdineAcquisto beside the CIG, and there the
+	referenced document is usually a determina rather than a purchase order, so the stock labels
+	would send the operator looking for a field that does not exist. ``no_copy`` comes off
+	``po_no`` so the four fields of the block travel together: a credit note kept the date and
+	the CIG and dropped the document they refer to, which is the one combination we refuse.
+	"""
+	properties = (
+		(
+			"po_no",
+			_("Customer's Order or Determina"),
+			_("Sent as DatiOrdineAcquisto/IdDocumento, which is what carries the CIG. Maximum 20 characters."),
+		),
+		(
+			"po_date",
+			_("Customer's Order or Determina Date"),
+			_("Date of the document above, sent as DatiOrdineAcquisto/Data."),
+		),
+	)
+
+	for fieldname, label, description in properties:
+		set_field_property("Sales Invoice", fieldname, "label", label, "Data")
+		set_field_property("Sales Invoice", fieldname, "description", description, "Text")
+
+	set_field_property("Sales Invoice", "po_no", "no_copy", "0", "Check")
+
+
+def set_field_property(doctype: str, fieldname: str, property_name: str, value: str, property_type: str):
+	current = frappe.db.get_value(
+		"Property Setter",
+		{"doc_type": doctype, "field_name": fieldname, "property": property_name},
+		"value",
+	)
+	if cstr(current) == value:
+		return
+
+	make_property_setter(
+		doctype, fieldname, property_name, value, property_type, validate_fields_for_doctype=False
+	)
 
 
 def ensure_seed_records():
@@ -1009,6 +1054,7 @@ def get_sales_invoice_custom_fields() -> list[dict[str, object]]:
 			"fieldtype": "Data",
 			"insert_after": "fab_edi_receipt_state",
 			"allow_on_submit": 1,
+			"description": _("Sent with the determina or order named under Customer PO Details, which the code needs to reach the e-invoice."),
 		},
 		{
 			"fieldname": "fab_edi_cup",
@@ -1016,6 +1062,7 @@ def get_sales_invoice_custom_fields() -> list[dict[str, object]]:
 			"fieldtype": "Data",
 			"insert_after": "fab_edi_cig",
 			"allow_on_submit": 1,
+			"description": _("Sent with the determina or order named under Customer PO Details, which the code needs to reach the e-invoice."),
 		},
 	]
 

@@ -485,11 +485,23 @@ msgstr "Creata la bozza di Fattura di Acquisto {0} da questa fattura fornitore E
 msgid "Currency"
 msgstr "Valuta"
 
+#: fab_italy_edi/install.py:164
+msgid "Customer's Order or Determina"
+msgstr "Ordine o determina del cliente"
+
+#: fab_italy_edi/install.py:169
+msgid "Customer's Order or Determina Date"
+msgstr "Data dell'ordine o della determina del cliente"
+
 #: fab_italy_edi/fab_italy_e_invoicing/page/autofatture/autofatture.js:198
 #: fab_italy_edi/fab_italy_e_invoicing/page/autofatture/autofatture.js:455
 #: fab_italy_edi/public/js/edi_document.js:200
 msgid "Date"
 msgstr "Data"
+
+#: fab_italy_edi/install.py:170
+msgid "Date of the document above, sent as DatiOrdineAcquisto/Data."
+msgstr "Data del documento sopra, inviata come DatiOrdineAcquisto/Data."
 
 #. Description of the 'Autofattura Naming Series' (Data) field in DocType 'EDI
 #. Configuration'
@@ -1631,6 +1643,14 @@ msgstr "Invio in corso"
 #: fab_italy_edi/fab_italy_e_invoicing/doctype/autofattura/autofattura.js:163
 msgid "Sent"
 msgstr "Inviata"
+
+#: fab_italy_edi/install.py:165
+msgid "Sent as DatiOrdineAcquisto/IdDocumento, which is what carries the CIG. Maximum 20 characters."
+msgstr "Inviato come DatiOrdineAcquisto/IdDocumento, il blocco che porta il CIG. Massimo 20 caratteri."
+
+#: fab_italy_edi/install.py:1053 fab_italy_edi/install.py:1061
+msgid "Sent with the determina or order named under Customer PO Details, which the code needs to reach the e-invoice."
+msgstr "Inviato con la determina o l'ordine indicati in Dettagli ordine cliente, senza i quali il codice non arriva alla fattura elettronica."
 
 #: fab_italy_edi/autofattura.py:150
 #, python-brace-format

@@ -400,6 +400,38 @@ class TestNaturaSubCodes(unittest.TestCase):
 		api.validate_natura_sub_codes(frappe._dict(items=[], taxes=[], item_wise_tax_details=[]))
 
 
+class TestProcurementReference(unittest.TestCase):
+	def run_validation(self, *, is_public_administration=1, **fields):
+		invoice = frappe._dict(customer="Comune di Pompiano", **fields)
+		get_value = Mock(return_value=is_public_administration)
+		with patch.object(api.frappe, "db", new=SimpleNamespace(get_value=get_value)):
+			api.validate_procurement_reference(invoice)
+
+	def test_public_administration_cig_without_referenced_document_is_refused(self):
+		with self.assertRaises(ValidationError) as caught:
+			self.run_validation(fab_edi_cig="B8DEFEDC66", po_no="")
+		self.assertIn("CIG", str(caught.exception))
+
+	def test_public_administration_without_a_code_passes(self):
+		self.run_validation(fab_edi_cig="", fab_edi_cup="", po_no="")
+
+	def test_referenced_document_lets_the_code_through(self):
+		self.run_validation(fab_edi_cig="B8DEFEDC66", po_no="Det. 222/2025")
+
+	def test_private_customer_keeps_generating_without_a_referenced_document(self):
+		self.run_validation(is_public_administration=0, fab_edi_cig="B8DEFEDC66", po_no="")
+
+	def test_referenced_document_over_twenty_characters_is_refused(self):
+		with self.assertRaises(ValidationError) as caught:
+			self.run_validation(fab_edi_cig="B8DEFEDC66", po_no="Repertorio Generale n. 222 del 03/11/2025")
+		self.assertIn("20", str(caught.exception))
+
+	def test_code_over_fifteen_characters_is_refused(self):
+		with self.assertRaises(ValidationError) as caught:
+			self.run_validation(fab_edi_cig="B8DEFEDC66B8DEFEDC66", po_no="Det. 222/2025")
+		self.assertIn("15", str(caught.exception))
+
+
 class TestOpenAPICallback(unittest.TestCase):
 	def test_receive_openapi_callback_uses_automation_user_for_notifications(self):
 		document = SimpleNamespace(name="EDI-DOC-0001")

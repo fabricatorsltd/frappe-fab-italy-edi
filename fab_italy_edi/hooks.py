@@ -167,6 +167,8 @@ doc_events = {
 			"fab_italy_edi.sales_invoice_edi.set_due_date_from_payment_schedule",
 			"fab_italy_edi.sales_invoice_edi.fill_payment_schedule_bank_account",
 		],
+		# runs after erpnext.regional.italy.utils.sales_invoice_on_submit, which attaches the XML
+		"on_submit": "fab_italy_edi.fatturapa.procurement.attach_procurement_reference",
 	},
 	"Purchase Invoice": {
 		"before_validate": "fab_italy_edi.install.scrub_missing_legacy_einvoice_type_link_values",
@@ -212,9 +214,12 @@ scheduler_events = {
 # Overriding Methods
 # ------------------------------
 #
-# override_whitelisted_methods = {
-# 	"frappe.desk.doctype.event.event.get_events": "fab_italy_edi.event.get_events"
-# }
+override_whitelisted_methods = {
+	# ERPNext's Generate E-Invoice button rewrites the attachment from the core template, which
+	# would drop the CIG off an invoice already carrying one
+	"erpnext.regional.italy.utils.generate_single_invoice": "fab_italy_edi.fatturapa.procurement.generate_single_invoice",
+}
+
 #
 # each overriding function accepts a `data` argument;
 # generated from the base implementation of the doctype dashboard,
