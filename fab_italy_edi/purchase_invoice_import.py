@@ -114,6 +114,10 @@ def build_purchase_invoice_review_draft(
 
 	if existing_purchase_invoice:
 		pi = frappe.get_doc("Purchase Invoice", existing_purchase_invoice)
+		if pi.docstatus:
+			# booked or cancelled: the document is no longer ours to rewrite, and trying
+			# would fail every migrate on the remarks alone
+			return {"purchase_invoice": pi.name, "created": False, "updated": False}
 		changed = False
 		if supplier_name and pi.supplier != supplier_name:
 			pi.supplier = supplier_name
@@ -246,6 +250,10 @@ def build_purchase_invoice_payload(
 		"bill_date": invoice.get("bill_date"),
 		"due_date": invoice.get("due_date"),
 		"currency": invoice.get("currency"),
+		# the terms of a supplier invoice are the supplier's, so the company default
+		# template must not be applied to it nor cap its due date: ERPNext otherwise
+		# refuses a document that simply grants us more days than our own template
+		"ignore_default_payment_terms_template": 1,
 		"is_return": 1 if invoice.get("is_return") else 0,
 		"disable_rounded_total": 1,
 		"remarks": build_purchase_invoice_remarks(
