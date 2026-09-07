@@ -6,6 +6,7 @@ from contextlib import contextmanager
 from types import SimpleNamespace
 from unittest.mock import Mock, call, patch
 
+import frappe
 from frappe.exceptions import ValidationError
 
 from fab_italy_edi import api
@@ -369,6 +370,34 @@ class TestSendSalesInvoiceToSDI(unittest.TestCase):
 				),
 			],
 		)
+
+
+class TestNaturaSubCodes(unittest.TestCase):
+	def run_validation(self, summary):
+		invoice = frappe._dict(items=[], taxes=[frappe._dict(rate=0)], item_wise_tax_details=[])
+		with patch("erpnext.regional.italy.utils.get_invoice_summary", return_value=summary):
+			api.validate_natura_sub_codes(invoice)
+
+	def test_bare_first_level_code_is_refused(self):
+		with self.assertRaises(ValidationError) as caught:
+			self.run_validation({"0.0": {"tax_exemption_reason": "N2-Non Soggette"}})
+		self.assertIn("N2", str(caught.exception))
+
+	def test_sub_coded_reason_passes(self):
+		self.run_validation(
+			{"0.0": {"tax_exemption_reason": "N2.1-Non soggette ex artt. da 7 a 7-septies"}}
+		)
+
+	def test_standalone_code_passes(self):
+		self.run_validation({"0.0": {"tax_exemption_reason": "N1-Escluse ex art. 15"}})
+
+	def test_stale_reason_outside_the_zero_rate_bucket_is_ignored(self):
+		# the field keeps its value when a row stops being zero rate, and only the
+		# zero rate bucket reaches <Natura>
+		self.run_validation({"22.0": {"tax_exemption_reason": "N2-Non Soggette"}})
+
+	def test_invoice_without_taxes_passes(self):
+		api.validate_natura_sub_codes(frappe._dict(items=[], taxes=[], item_wise_tax_details=[]))
 
 
 class TestOpenAPICallback(unittest.TestCase):

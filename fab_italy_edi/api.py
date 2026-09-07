@@ -6,7 +6,7 @@ from pathlib import Path
 import frappe
 from frappe import _
 from frappe.exceptions import ValidationError
-from frappe.utils import cint
+from frappe.utils import cint, cstr
 
 from fab_italy_edi.automation import automation_user_context
 from fab_italy_edi.backends import get_adapter_class, get_provider_adapter
@@ -33,6 +33,8 @@ from fab_italy_edi.sales_invoice_edi import (
 
 ACTIVE_TRANSMISSION_STATES = {"queued", "sending", "sent", "delivered", "accepted"}
 OUTBOUND_SEND_QUEUE = "long"
+# Natura codes SDI stopped accepting without a sub-code on 1 January 2021.
+BARE_NATURA_CODES = {"N2", "N3", "N6"}
 
 
 @frappe.whitelist()
@@ -456,6 +458,7 @@ def generate_sales_invoice_xml(invoice):
 	from erpnext.regional.italy.utils import prepare_and_attach_invoice
 
 	validate_vat_summary(invoice)
+	validate_natura_sub_codes(invoice)
 	return prepare_and_attach_invoice(invoice, replace=True)
 
 
@@ -474,6 +477,26 @@ def validate_vat_summary(invoice) -> None:
 		_(
 			"The VAT on this invoice is booked as a fixed amount, so the e-invoice would carry no VAT summary. Use a Sales Taxes and Charges Template with a VAT rate (for example IVA 22) instead."
 		)
+	)
+
+
+def validate_natura_sub_codes(invoice) -> None:
+	"""SDI has refused a bare N2, N3 or N6 since 1 January 2021. ERPNext writes the
+	exemption reason of the zero rate bucket into <Natura> up to the first dash, so
+	read that same bucket and refuse the first level codes here rather than collect
+	the rejection receipt."""
+	from erpnext.regional.italy.utils import get_invoice_summary
+
+	if not invoice.taxes:
+		return
+	summary = get_invoice_summary(invoice.items, invoice.taxes, invoice.get("item_wise_tax_details") or [])
+	code = cstr((summary.get("0.0") or {}).get("tax_exemption_reason")).split("-")[0].strip()
+	if code not in BARE_NATURA_CODES:
+		return
+	raise ValidationError(
+		_(
+			"Natura {0} is no longer accepted on its own. Pick the Tax Exemption Reason carrying the sub-code (for example N2.1 or N3.1) on the Sales Taxes and Charges rows; on a submitted invoice that means cancelling and amending it, because the field is not editable after submission."
+		).format(code)
 	)
 
 
