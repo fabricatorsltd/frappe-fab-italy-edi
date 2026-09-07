@@ -119,6 +119,11 @@ def build_purchase_invoice_review_draft(
 			# would fail every migrate on the remarks alone
 			return {"purchase_invoice": pi.name, "created": False, "updated": False}
 		changed = False
+		if not pi.get("ignore_default_payment_terms_template"):
+			# drafts imported before this flag existed still carry our own template and
+			# would be refused on save whenever the supplier grants more days than it
+			pi.ignore_default_payment_terms_template = 1
+			changed = True
 		if supplier_name and pi.supplier != supplier_name:
 			pi.supplier = supplier_name
 			changed = True
