@@ -168,7 +168,7 @@ doc_events = {
 			"fab_italy_edi.sales_invoice_edi.fill_payment_schedule_bank_account",
 		],
 		# runs after erpnext.regional.italy.utils.sales_invoice_on_submit, which attaches the XML
-		"on_submit": "fab_italy_edi.fatturapa.procurement.attach_procurement_reference",
+		"on_submit": "fab_italy_edi.fatturapa.rendered_invoice.patch_attached_invoice",
 	},
 	"Purchase Invoice": {
 		"before_validate": "fab_italy_edi.install.scrub_missing_legacy_einvoice_type_link_values",
@@ -216,8 +216,8 @@ scheduler_events = {
 #
 override_whitelisted_methods = {
 	# ERPNext's Generate E-Invoice button rewrites the attachment from the core template, which
-	# would drop the CIG off an invoice already carrying one
-	"erpnext.regional.italy.utils.generate_single_invoice": "fab_italy_edi.fatturapa.procurement.generate_single_invoice",
+	# would drop the CIG and the split payment amount off an invoice already carrying them
+	"erpnext.regional.italy.utils.generate_single_invoice": "fab_italy_edi.fatturapa.rendered_invoice.generate_single_invoice",
 }
 
 #

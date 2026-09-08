@@ -134,39 +134,3 @@ class TestInsertProcurementBlock(unittest.TestCase):
 	def test_xml_without_the_anchor_is_refused(self):
 		with self.assertRaises(ValidationError):
 			self.patched(invoice_xml="<p:FatturaElettronica/>")
-
-
-class FakeAttachment:
-	def __init__(self, content):
-		self.name = "file-0001"
-		self.file_name = "IT04266880980_00001.xml"
-		self._content = content
-		self.written = None
-		self.save_calls = 0
-
-	def get_content(self):
-		return self._content
-
-	def save_file(self, content=None, ignore_existing_file_check=False, overwrite=False):
-		self.written = content
-		self.overwrite = overwrite
-
-	def save(self):
-		self.save_calls += 1
-
-
-class TestApplyProcurementReference(unittest.TestCase):
-	def test_an_invoice_without_a_code_keeps_the_attachment_erpnext_wrote(self):
-		attachment = FakeAttachment(RENDERED_INVOICE)
-		invoice = frappe._dict(doctype="Sales Invoice", name="FATT/2026/00034", po_no="PO-42")
-		self.assertIs(procurement.apply_procurement_reference(attachment, invoice), attachment)
-		self.assertIsNone(attachment.written)
-
-	def test_the_patched_xml_is_written_over_the_same_attachment(self):
-		attachment = FakeAttachment(RENDERED_INVOICE)
-		result = procurement.apply_procurement_reference(attachment, public_administration_invoice())
-		self.assertIs(result, attachment)
-		self.assertEqual(attachment.save_calls, 1)
-		self.assertTrue(attachment.overwrite)
-		self.assertIn("<CodiceCIG>B8DEFEDC66</CodiceCIG>", attachment.written)
-		ElementTree.fromstring(attachment.written)

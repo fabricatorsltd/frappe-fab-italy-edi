@@ -457,12 +457,12 @@ def read_site_file(file_url: str) -> str:
 def generate_sales_invoice_xml(invoice):
 	from erpnext.regional.italy.utils import prepare_and_attach_invoice
 
-	from fab_italy_edi.fatturapa.procurement import apply_procurement_reference
+	from fab_italy_edi.fatturapa.rendered_invoice import patch_attachment
 
 	validate_vat_summary(invoice)
 	validate_natura_sub_codes(invoice)
 	validate_procurement_reference(invoice)
-	return apply_procurement_reference(prepare_and_attach_invoice(invoice, replace=True), invoice)
+	return patch_attachment(prepare_and_attach_invoice(invoice, replace=True), invoice)
 
 
 def validate_vat_summary(invoice) -> None:

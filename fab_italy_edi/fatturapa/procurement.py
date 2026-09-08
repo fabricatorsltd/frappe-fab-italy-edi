@@ -6,6 +6,9 @@ no CodiceCIG and no CodiceCUP anywhere in that template. The codes are written i
 attachment instead of into a template of our own, because a copy of that template would silently
 rot on every ERPNext release, while the insertion point here is fixed by the FatturaPA schema,
 where DatiOrdineAcquisto is the first element allowed after DatiGeneraliDocumento.
+
+``rendered_invoice`` is what writes the block into the attachment, along with every other
+correction we make to the rendered file.
 """
 
 from __future__ import annotations
@@ -14,14 +17,9 @@ import re
 from typing import Any
 from xml.sax.saxutils import escape
 
-import frappe
 from frappe import _
 from frappe.exceptions import ValidationError
 from frappe.utils import cstr, getdate
-
-from erpnext.regional.italy.utils import get_e_invoice_attachments
-
-from fab_italy_edi.fatturapa.regional_compat import is_italian_company
 
 # DatiGeneraliDocumento is the only element the schema puts before DatiOrdineAcquisto, and it
 # occurs once, so its closing tag is the anchor.
@@ -101,72 +99,3 @@ def find_rendered_order_block(invoice_xml: str, document_id: str) -> str | None:
 		(match.group(0) for match in ORDER_BLOCK_PATTERN.finditer(invoice_xml) if wanted in match.group(0)),
 		None,
 	)
-
-
-def apply_procurement_reference(attachment: Any, invoice: Any) -> Any:
-	"""Put the CIG on the e-invoice ERPNext just rendered, and return the attachment to use."""
-	reference = build_procurement_reference(invoice)
-	if not reference:
-		return attachment
-
-	invoice_xml = cstr(attachment.get_content())
-	patched = insert_procurement_block(invoice_xml, reference)
-	if patched == invoice_xml:
-		return attachment
-
-	return rewrite_attachment(attachment, patched)
-
-
-def rewrite_attachment(attachment: Any, invoice_xml: str) -> Any:
-	"""Write the patched XML over the attachment, keeping the File row it is already on.
-
-	The file name carries the progressive number SDI tracks the transmission by, and the invoice
-	timeline should show one attachment, so the blob is overwritten rather than replaced by a
-	second File. ``ignore_existing_file_check`` skips the deduplication by content hash, which
-	only applies to new files anyway.
-	"""
-	attachment.save_file(content=invoice_xml, ignore_existing_file_check=True, overwrite=True)
-	attachment.save()
-
-	return attachment
-
-
-def attach_procurement_reference(invoice: Any, method: str | None = None) -> None:
-	"""Put the CIG on the e-invoice ERPNext attached on submit.
-
-	``erpnext.regional.italy.utils.sales_invoice_on_submit`` renders and attaches the XML from
-	the hook registered before this one, and the send path regenerates it with ``replace=True``;
-	both end up in ``apply_procurement_reference``, so the attachment and the transmitted file
-	say the same thing.
-	"""
-	if not is_italian_company(invoice.get("company")):
-		return
-
-	if not build_procurement_reference(invoice):
-		return
-
-	attachments = get_e_invoice_attachments(invoice) or []
-	if not attachments:
-		return
-
-	apply_procurement_reference(frappe.get_doc("File", attachments[0].name), invoice)
-
-
-@frappe.whitelist()
-def generate_single_invoice(docname: str) -> str:
-	"""ERPNext's Generate E-Invoice button, with the codes put back on the file it writes.
-
-	Overridden in ``hooks.py`` because ERPNext regenerates the attachment from the core template
-	alone: one click would replace the transmitted file with one carrying no CIG, under the same
-	progressive number, and the file downloaded from the button would say the same.
-	"""
-	from erpnext.regional.italy.utils import prepare_and_attach_invoice
-
-	from fab_italy_edi.api import validate_procurement_reference
-
-	invoice = frappe.get_doc("Sales Invoice", docname)
-	frappe.has_permission("Sales Invoice", doc=invoice, throw=True)
-
-	validate_procurement_reference(invoice)
-
-	return apply_procurement_reference(prepare_and_attach_invoice(invoice, True), invoice).file_url
