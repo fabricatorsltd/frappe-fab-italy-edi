@@ -165,7 +165,7 @@ def prepare_autofattura_from_purchase_invoice(
 	autofattura.supplier_name = purchase_invoice.supplier_name or purchase_invoice.supplier
 	autofattura.document_type = document_type
 	autofattura.document_date = document_date
-	autofattura.naming_series = context["autofattura_naming_series"]
+	autofattura.document_naming_series = context["autofattura_naming_series"]
 	if normalize_text(autofattura.transmission_state) not in ACTIVE_TRANSMISSION_STATES:
 		autofattura.validation_state = "draft"
 		autofattura.transmission_state = "draft"
@@ -221,7 +221,7 @@ def get_autofattura_dashboard(docname: str | None = None) -> dict[str, Any]:
 			"document_type",
 			"document_date",
 			"document_number",
-			"naming_series",
+			"document_naming_series",
 			"validation_state",
 			"transmission_state",
 			"latest_receipt_state",
@@ -269,7 +269,7 @@ def serialize_autofattura_document(document) -> dict[str, Any]:
 			"autofattura_document_type": document.document_type,
 			"autofattura_document_date": document.document_date,
 			"autofattura_document_number": document.document_number,
-			"autofattura_naming_series": document.naming_series,
+			"autofattura_naming_series": document.document_naming_series,
 			"autofattura_reference_invoice_number": document.supplier_invoice_number,
 			"autofattura_reference_invoice_date": document.supplier_invoice_date,
 			"autofattura_currency": document.currency,
@@ -656,7 +656,7 @@ def sync_transport_document_from_autofattura(document, autofattura):
 	document.autofattura_document_type = autofattura.document_type
 	document.autofattura_document_date = autofattura.document_date
 	document.autofattura_document_number = autofattura.document_number
-	document.autofattura_naming_series = autofattura.naming_series
+	document.autofattura_naming_series = autofattura.document_naming_series
 	document.autofattura_reference_invoice_number = autofattura.supplier_invoice_number
 	document.autofattura_reference_invoice_date = autofattura.supplier_invoice_date
 	document.autofattura_currency = autofattura.currency
@@ -884,7 +884,7 @@ def backfill_autofatture():
 				autofattura.supplier_name = purchase_invoice.supplier_name or purchase_invoice.supplier
 				autofattura.document_type = normalize_text(getattr(document, "autofattura_document_type", None)) or "TD17"
 				autofattura.document_date = normalize_text(getattr(document, "autofattura_document_date", None)) or normalize_text(getattr(purchase_invoice, "posting_date", None)) or nowdate()
-				autofattura.naming_series = normalize_text(getattr(document, "autofattura_naming_series", None))
+				autofattura.document_naming_series = normalize_text(getattr(document, "autofattura_naming_series", None))
 				autofattura.document_number = normalize_text(getattr(document, "autofattura_document_number", None))
 				autofattura.supplier_invoice_number = normalize_text(getattr(document, "autofattura_reference_invoice_number", None)) or normalize_text(getattr(purchase_invoice, "bill_no", None))
 				autofattura.supplier_invoice_date = normalize_text(getattr(document, "autofattura_reference_invoice_date", None)) or normalize_text(getattr(purchase_invoice, "bill_date", None))

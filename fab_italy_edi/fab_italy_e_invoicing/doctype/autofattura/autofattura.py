@@ -16,6 +16,7 @@ class Autofattura(Document):
 		company: DF.Link
 		currency: DF.Link
 		document_date: DF.Date
+		document_naming_series: DF.Data | None
 		document_number: DF.Data | None
 		document_type: DF.Select
 		generated_xml: DF.Attach | None
@@ -24,7 +25,7 @@ class Autofattura(Document):
 		latest_receipt_state: DF.Select | None
 		lines: DF.Table[EDIAutofatturaLine]
 		linked_edi_document: DF.Link | None
-		naming_series: DF.Data | None
+		naming_series: DF.Literal["AUTOFATT/.YYYY./.#####"]
 		net_total: DF.Currency
 		source_purchase_invoice: DF.Link
 		supplier: DF.Link

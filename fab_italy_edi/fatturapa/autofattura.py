@@ -160,7 +160,9 @@ def get_supplier_address_data(supplier_name: str):
 
 def get_or_allocate_autofattura_document_number(document) -> str:
 	number_field = "document_number" if hasattr(document, "document_number") else "autofattura_document_number"
-	series_field = "naming_series" if hasattr(document, "naming_series") else "autofattura_naming_series"
+	series_field = (
+		"document_naming_series" if hasattr(document, "document_naming_series") else "autofattura_naming_series"
+	)
 	existing = cstr(getattr(document, number_field, "")).strip()
 	if existing:
 		return existing

@@ -156,6 +156,13 @@ class TestInstall(unittest.TestCase):
 		doctype = json.loads(doctype_path.read_text())
 		fields = {field["fieldname"]: field for field in doctype["fields"]}
 
+		self.assertEqual(doctype["autoname"], "naming_series:")
+		self.assertEqual(doctype["field_order"][0], "naming_series")
+		self.assertEqual(fields["naming_series"]["fieldtype"], "Select")
+		self.assertEqual(fields["naming_series"]["options"], "AUTOFATT/.YYYY./.#####")
+		self.assertEqual(fields["naming_series"]["default"], "AUTOFATT/.YYYY./.#####")
+		self.assertEqual(fields["naming_series"]["no_copy"], 1)
+		self.assertEqual(fields["document_naming_series"]["fieldtype"], "Data")
 		self.assertEqual(fields["source_purchase_invoice"]["options"], "Purchase Invoice")
 		self.assertEqual(fields["linked_edi_document"]["options"], "EDI Document")
 		self.assertEqual(fields["document_type"]["fieldtype"], "Select")

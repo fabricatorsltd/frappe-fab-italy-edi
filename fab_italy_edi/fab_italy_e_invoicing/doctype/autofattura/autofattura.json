@@ -1,12 +1,13 @@
 {
  "actions": [],
   "allow_import": 1,
-  "autoname": "hash",
+  "autoname": "naming_series:",
   "creation": "2026-04-25 19:10:00.000000",
   "doctype": "DocType",
   "document_type": "Document",
   "engine": "InnoDB",
   "field_order": [
+   "naming_series",
    "overview_section",
    "source_purchase_invoice",
    "supplier",
@@ -21,7 +22,7 @@
    "column_break_document",
    "document_number",
    "supplier_invoice_date",
-   "naming_series",
+   "document_naming_series",
    "validation_state",
    "column_break_status",
    "transmission_state",
@@ -42,6 +43,17 @@
    "last_error"
   ],
   "fields": [
+   {
+    "default": "AUTOFATT/.YYYY./.#####",
+    "fieldname": "naming_series",
+    "fieldtype": "Select",
+    "label": "Series",
+    "no_copy": 1,
+    "options": "AUTOFATT/.YYYY./.#####",
+    "print_hide": 1,
+    "read_only": 1,
+    "reqd": 1
+   },
    {
     "fieldname": "overview_section",
     "fieldtype": "Section Break"
@@ -76,7 +88,6 @@
    {
     "fieldname": "company",
     "fieldtype": "Link",
-    "in_list_view": 1,
     "label": "Company",
     "options": "Company",
     "reqd": 1
@@ -95,7 +106,6 @@
    {
     "fieldname": "document_type",
     "fieldtype": "Select",
-    "in_list_view": 1,
     "label": "Document Type",
     "options": "\nTD17\nTD18\nTD19",
     "reqd": 1
@@ -103,7 +113,6 @@
    {
     "fieldname": "document_date",
     "fieldtype": "Date",
-    "in_list_view": 1,
     "label": "Autofattura Date",
     "reqd": 1
    },
@@ -120,6 +129,7 @@
    {
     "fieldname": "document_number",
     "fieldtype": "Data",
+    "in_list_view": 1,
     "label": "Autofattura Number",
     "read_only": 1
    },
@@ -130,16 +140,15 @@
     "reqd": 1
    },
    {
-    "fieldname": "naming_series",
+    "fieldname": "document_naming_series",
     "fieldtype": "Data",
-    "label": "Naming Series",
+    "label": "Autofattura Number Series",
     "read_only": 1
    },
    {
     "default": "draft",
     "fieldname": "validation_state",
     "fieldtype": "Select",
-    "in_list_view": 1,
     "label": "Review State",
     "options": "\ndraft\nnot_validated\nvalid\ninvalid\nvalidation_failed",
     "read_only": 1
@@ -297,6 +306,5 @@
  "sort_field": "modified",
  "sort_order": "DESC",
  "states": [],
- "title_field": "document_number",
  "track_changes": 1
 }

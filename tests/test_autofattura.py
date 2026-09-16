@@ -126,7 +126,7 @@ class TestAutofattura(unittest.TestCase):
 		self.assertEqual(result["edi_document"], "EDI-AUTO-0001")
 		self.assertEqual(autofattura_doc.document_type, "TD17")
 		self.assertEqual(autofattura_doc.document_date, "2026-04-30")
-		self.assertEqual(autofattura_doc.naming_series, "AUTO-.YYYY.-")
+		self.assertEqual(autofattura_doc.document_naming_series, "AUTO-.YYYY.-")
 		self.assertEqual(autofattura_doc.supplier_invoice_number, "INV-001")
 		self.assertEqual(autofattura_doc.supplier_invoice_date, "2026-04-29")
 		self.assertEqual(autofattura_doc.currency, "USD")
@@ -305,7 +305,7 @@ class TestAutofattura(unittest.TestCase):
 			document_type="TD17",
 			document_date="2026-04-25",
 			document_number=None,
-			naming_series="AUTO-.YYYY.-",
+			document_naming_series="AUTO-.YYYY.-",
 			supplier_invoice_number="INV-001",
 			supplier_invoice_date="2026-04-19",
 			currency="USD",
@@ -343,7 +343,7 @@ class TestAutofattura(unittest.TestCase):
 						"document_type": "TD17",
 						"document_date": "2026-04-25",
 						"document_number": None,
-						"naming_series": "AUTO-.YYYY.-",
+						"document_naming_series": "AUTO-.YYYY.-",
 						"validation_state": "draft",
 						"transmission_state": "draft",
 						"latest_receipt_state": None,

@@ -4,3 +4,4 @@
 
 [post_model_sync]
 # Patches added in this section will be executed after doctypes are migrated
+fab_italy_edi.patches.v16.name_autofatture_by_series
