@@ -1,17 +1,20 @@
 from __future__ import annotations
 
 import unittest
-from unittest.mock import patch
+from types import SimpleNamespace
+from unittest.mock import Mock, patch
 
 import frappe
 from frappe.utils import getdate
 
+from fab_italy_edi import sales_invoice_edi
 from fab_italy_edi.sales_invoice_edi import keep_manual_due_date, set_due_date_from_payment_schedule
 
 
 POSTING_DATE = "2026-09-07"
 TEMPLATE_DUE_DATE = "2026-10-07"
 TEMPLATE = "Bonifico 30 gg d.f."
+SPLIT_PAYMENT = "S-Scissione dei Pagamenti"
 
 
 class FakeDocument(frappe._dict):
@@ -330,6 +333,119 @@ class TestSalesInvoiceDueDate(unittest.TestCase):
 		self.assertEqual(row.payment_term, "Rimessa diretta 100%")
 		self.assertEqual(row.credit_days, 15)
 		self.assertEqual(str(invoice.due_date), "2026-09-17")
+
+
+class TestSplitPaymentCollectability(unittest.TestCase):
+	def run_rule(
+		self, *, is_public_administration=0, italian=True, company_default="I-Immediata", in_import=False, **fields
+	):
+		invoice = FakeDocument(
+			doctype="Sales Invoice",
+			docstatus=0,
+			company="FABRICATORS S.R.L.",
+			customer="Comune di Pompiano",
+		)
+		invoice.update(fields)
+
+		get_value = Mock(return_value=is_public_administration)
+		with (
+			patch.object(sales_invoice_edi.frappe, "db", new=SimpleNamespace(get_value=get_value)),
+			patch.object(
+				sales_invoice_edi.frappe,
+				"flags",
+				new=SimpleNamespace(in_import=in_import, in_migrate=False),
+			),
+			patch.object(sales_invoice_edi.frappe, "get_cached_value", return_value=company_default),
+			patch.object(sales_invoice_edi, "is_italian_company", return_value=italian),
+		):
+			sales_invoice_edi.set_split_payment_collectability(invoice)
+
+		self.customer_lookup = get_value
+		return invoice
+
+	def test_public_administration_customer_is_marked_as_split_payment(self):
+		invoice = self.run_rule(is_public_administration=1, vat_collectability="")
+		self.assertEqual(invoice.vat_collectability, SPLIT_PAYMENT)
+		self.customer_lookup.assert_called_once_with(
+			"Customer", "Comune di Pompiano", "is_public_administration"
+		)
+
+	def test_company_default_on_a_public_administration_invoice_is_replaced(self):
+		invoice = self.run_rule(is_public_administration=1, vat_collectability="I-Immediata")
+		self.assertEqual(invoice.vat_collectability, SPLIT_PAYMENT)
+
+	def test_deferred_collectability_chosen_on_the_document_survives(self):
+		invoice = self.run_rule(is_public_administration=1, vat_collectability="D-Differita")
+		self.assertEqual(invoice.vat_collectability, "D-Differita")
+
+	def test_a_company_defaulting_to_deferred_still_raises_a_pa_invoice(self):
+		"""Unchosen means whatever the company hands out, not I-Immediata specifically."""
+		invoice = self.run_rule(
+			is_public_administration=1, vat_collectability="D-Differita", company_default="D-Differita"
+		)
+		self.assertEqual(invoice.vat_collectability, SPLIT_PAYMENT)
+
+	def test_immediate_chosen_against_a_deferred_company_default_survives(self):
+		invoice = self.run_rule(
+			is_public_administration=1, vat_collectability="I-Immediata", company_default="D-Differita"
+		)
+		self.assertEqual(invoice.vat_collectability, "I-Immediata")
+
+	def test_split_payment_tax_category_marks_a_customer_without_the_flag(self):
+		invoice = self.run_rule(vat_collectability="", tax_category="Scissione dei pagamenti (PA)")
+		self.assertEqual(invoice.vat_collectability, SPLIT_PAYMENT)
+
+	def test_tax_category_named_for_the_body_is_not_guessed_at(self):
+		"""Only the regime in the title decides: the customer flag covers the rest."""
+		invoice = self.run_rule(vat_collectability="", tax_category="Enti pubblici")
+		self.assertEqual(invoice.vat_collectability, "")
+
+	def test_ordinary_tax_category_is_left_alone(self):
+		invoice = self.run_rule(vat_collectability="I-Immediata", tax_category="Estero")
+		self.assertEqual(invoice.vat_collectability, "I-Immediata")
+
+	def test_credit_note_to_a_public_administration_is_marked_too(self):
+		"""A return carries the VAT of the invoice it credits, so it carries its regime."""
+		invoice = self.run_rule(is_public_administration=1, vat_collectability="", is_return=1)
+		self.assertEqual(invoice.vat_collectability, SPLIT_PAYMENT)
+
+	def test_invoice_without_a_customer_yet_reads_no_flag(self):
+		invoice = self.run_rule(vat_collectability="", customer=None)
+		self.assertEqual(invoice.vat_collectability, "")
+		self.customer_lookup.assert_not_called()
+
+	def test_submit_save_still_sets_it(self):
+		"""The desk sends a new invoice straight to submit, so validate runs at docstatus 1."""
+		invoice = self.run_rule(is_public_administration=1, vat_collectability="", docstatus=1)
+		self.assertEqual(invoice.vat_collectability, SPLIT_PAYMENT)
+
+	def test_replayed_odoo_invoice_keeps_the_collectability_it_was_issued_with(self):
+		invoice = self.run_rule(
+			is_public_administration=1,
+			vat_collectability="I-Immediata",
+			remarks="Imported from Odoo account.move 25. Source number: FATT/2025/00001.",
+		)
+		self.assertEqual(invoice.vat_collectability, "I-Immediata")
+		self.customer_lookup.assert_not_called()
+
+	def test_bulk_import_flag_stops_the_rule(self):
+		invoice = self.run_rule(is_public_administration=1, vat_collectability="", in_import=True)
+		self.assertEqual(invoice.vat_collectability, "")
+		self.customer_lookup.assert_not_called()
+
+	def test_ordinary_customer_without_a_tax_category_is_left_alone(self):
+		invoice = self.run_rule(vat_collectability="")
+		self.assertEqual(invoice.vat_collectability, "")
+
+	def test_foreign_company_is_left_alone_even_with_every_split_payment_signal(self):
+		invoice = self.run_rule(
+			is_public_administration=1,
+			vat_collectability="",
+			tax_category="Scissione dei pagamenti (PA)",
+			italian=False,
+		)
+		self.assertEqual(invoice.vat_collectability, "")
+		self.customer_lookup.assert_not_called()
 
 
 if __name__ == "__main__":

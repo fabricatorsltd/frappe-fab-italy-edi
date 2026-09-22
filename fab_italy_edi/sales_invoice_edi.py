@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import Any
 
 import frappe
-from frappe.utils import getdate
+from frappe.utils import cstr, getdate
 
 from erpnext.controllers.accounts_controller import get_payment_terms
 
@@ -11,6 +11,12 @@ from fab_italy_edi.fatturapa.regional_compat import is_italian_company
 
 
 ATTENTION_STATES = {"rejected", "failed", "cancelled"}
+
+SPLIT_PAYMENT_COLLECTABILITY = "S-Scissione dei Pagamenti"
+# the split payment tax category is named in Italian here and in English upstream
+SPLIT_PAYMENT_MARKERS = ("scissione", "split payment")
+# fab.odoo_erpnext_import.build_remarks stamps every invoice it replays
+ODOO_IMPORT_MARKER = "Imported from Odoo account.move"
 
 
 def keep_manual_due_date(document: Any, method: str | None = None) -> None:
@@ -208,6 +214,78 @@ def get_company_bank_account(company: str) -> str | None:
 		return default_accounts[0]
 
 	return bank_accounts[0]["name"] if len(bank_accounts) == 1 else None
+
+
+def set_split_payment_collectability(document: Any, method: str | None = None) -> None:
+	"""Mark an invoice to a public administration as split of payments.
+
+	Art. 17-ter puts the VAT of a public supply on the buyer, so EsigibilitaIVA has to read S
+	and DatiPagamento the net amount: an invoice sent as I is paid in full and has to be
+	credited. The customer flag is the rule, the split payment tax category the second signal
+	for a body that is not flagged, and only a value nobody has chosen is replaced, so a D set
+	on the document survives the next save. It runs on the submit save too: the desk sends a
+	new invoice straight to submit, and the field is not allow_on_submit, so this is the last
+	save that can still write it.
+	"""
+	company = document.get("company")
+	if not is_italian_company(company):
+		return
+
+	if is_replayed_document(document):
+		return
+
+	if not is_unchosen_collectability(document, company):
+		return
+
+	if not is_split_payment_invoice(document):
+		return
+
+	document.vat_collectability = SPLIT_PAYMENT_COLLECTABILITY
+
+
+def is_unchosen_collectability(document: Any, company: str) -> bool:
+	"""True while the field still carries what the company hands every invoice.
+
+	Anything else is a choice made on the document, deferred collectability above all, and
+	stays. Reading the company rather than assuming I-Immediata keeps the rule alive for a
+	company that defaults to something else.
+	"""
+	current = cstr(document.get("vat_collectability")).strip()
+	if not current:
+		return True
+
+	return current == cstr(frappe.get_cached_value("Company", company, "vat_collectability")).strip()
+
+
+def is_replayed_document(document: Any) -> bool:
+	"""True for an invoice a bulk import is replaying rather than one being issued now.
+
+	A historical invoice was sent with the collectability it was sent with; restating it here
+	would put a regime on paper that the SdI never received.
+	"""
+	if frappe.flags.in_import or frappe.flags.in_migrate:
+		return True
+
+	return cstr(document.get("remarks")).strip().startswith(ODOO_IMPORT_MARKER)
+
+
+def is_split_payment_invoice(document: Any) -> bool:
+	customer = document.get("customer")
+	if customer and frappe.db.get_value("Customer", customer, "is_public_administration"):
+		return True
+
+	return is_split_payment_tax_category(document.get("tax_category"))
+
+
+def is_split_payment_tax_category(tax_category: str | None) -> bool:
+	"""True when the category is the one the operator picks for a split payment supply.
+
+	Only the title is read. Walking the Tax Rules to the accounts behind the category would
+	cross companies, and a body invoiced under art. 17-ter carries the customer flag anyway,
+	which is the signal that decides.
+	"""
+	lowered = cstr(tax_category).lower()
+	return any(marker in lowered for marker in SPLIT_PAYMENT_MARKERS)
 
 
 def sync_sales_invoice_tracking(document: Any, *, activity_message: str | None = None) -> None:

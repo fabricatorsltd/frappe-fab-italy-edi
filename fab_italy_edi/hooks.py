@@ -166,6 +166,7 @@ doc_events = {
 		"validate": [
 			"fab_italy_edi.sales_invoice_edi.set_due_date_from_payment_schedule",
 			"fab_italy_edi.sales_invoice_edi.fill_payment_schedule_bank_account",
+			"fab_italy_edi.sales_invoice_edi.set_split_payment_collectability",
 		],
 		# runs after erpnext.regional.italy.utils.sales_invoice_on_submit, which attaches the XML
 		"on_submit": "fab_italy_edi.fatturapa.rendered_invoice.patch_attached_invoice",
