@@ -1,6 +1,10 @@
 from __future__ import annotations
 
+from functools import wraps
 from typing import Any, Mapping
+
+import frappe
+from frappe.exceptions import ValidationError
 
 
 def normalize_identifier(value: Any) -> str | None:
@@ -48,3 +52,18 @@ def get_document_secret(document: Mapping[str, Any] | Any, fieldname: str) -> An
 	if callable(get_password):
 		return get_password(fieldname, raise_exception=False)
 	return get_document_value(document, fieldname)
+
+
+def surface_validation_errors(fn):
+	# A bare ValidationError reaches the desk as a 417 with no message, so the click looks like a no-op.
+	@wraps(fn)
+	def wrapper(*args, **kwargs):
+		try:
+			return fn(*args, **kwargs)
+		except ValidationError as exc:
+			message_log = getattr(frappe.local, "message_log", None)
+			if message_log == [] and str(exc):
+				frappe.msgprint(str(exc), title=frappe._("Error"), indicator="red")
+			raise
+
+	return wrapper

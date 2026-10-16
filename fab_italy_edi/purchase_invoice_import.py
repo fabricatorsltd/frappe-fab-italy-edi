@@ -12,6 +12,7 @@ from frappe import _
 from frappe.exceptions import ValidationError
 from frappe.utils import flt, getdate, is_valid_iban, nowdate
 
+from fab_italy_edi.document_utils import surface_validation_errors
 from fab_italy_edi.inbound_tax_setup import ensure_inbound_natura_account_enabled
 
 try:
@@ -33,12 +34,14 @@ QUARANTINED_INBOUND_SUPPLIER_PREFIX = "Quarantined stale inbound supplier placeh
 
 
 @frappe.whitelist()
+@surface_validation_errors
 def get_incoming_supplier_invoice_preview(docname: str) -> dict[str, Any]:
 	document = get_incoming_supplier_document(docname)
 	return build_incoming_supplier_invoice_preview(document)
 
 
 @frappe.whitelist()
+@surface_validation_errors
 def create_purchase_invoice_draft_from_edi_document(
 	docname: str, supplier: str | None = None, tax_account: str | None = None
 ) -> dict[str, Any]:

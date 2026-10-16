@@ -10,7 +10,7 @@ from frappe.utils import cint, cstr
 
 from fab_italy_edi.automation import automation_user_context
 from fab_italy_edi.backends import get_adapter_class, get_provider_adapter
-from fab_italy_edi.document_utils import normalize_identifier
+from fab_italy_edi.document_utils import normalize_identifier, surface_validation_errors
 from fab_italy_edi.edi_lifecycle import (
 	append_edi_receipt,
 	build_receipt_message_id,
@@ -38,6 +38,7 @@ BARE_NATURA_CODES = {"N2", "N3", "N6"}
 
 
 @frappe.whitelist()
+@surface_validation_errors
 def send_sales_invoice_to_sdi(docname: str) -> dict[str, str]:
 	invoice = frappe.get_doc("Sales Invoice", docname)
 	frappe.has_permission("Sales Invoice", doc=invoice, throw=True)

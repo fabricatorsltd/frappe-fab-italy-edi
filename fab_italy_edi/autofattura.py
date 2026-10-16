@@ -17,6 +17,7 @@ from fab_italy_edi.api import (
 	get_enabled_provider,
 	raise_if_document_already_transmitting,
 )
+from fab_italy_edi.document_utils import surface_validation_errors
 from fab_italy_edi.fatturapa.autofattura import (
 	build_autofattura_editor_lines,
 	build_autofattura_editor_tax_summaries,
@@ -48,12 +49,14 @@ ACTIVE_TRANSMISSION_STATES = {"queued", "sending", "sent", "delivered", "accepte
 
 
 @frappe.whitelist()
+@surface_validation_errors
 def get_purchase_invoice_autofattura_context(docname: str) -> dict[str, Any]:
 	purchase_invoice = get_purchase_invoice_for_autofattura(docname)
 	return build_autofattura_context(purchase_invoice)
 
 
 @frappe.whitelist()
+@surface_validation_errors
 def confirm_autofattura_review(docname: str) -> dict[str, Any]:
 	autofattura = get_autofattura(docname)
 	frappe.has_permission("Autofattura", doc=autofattura, throw=True)
@@ -77,6 +80,7 @@ def confirm_autofattura_review(docname: str) -> dict[str, Any]:
 
 
 @frappe.whitelist()
+@surface_validation_errors
 def send_autofattura_to_sdi(docname: str) -> dict[str, Any]:
 	autofattura = get_autofattura(docname)
 	frappe.has_permission("Autofattura", doc=autofattura, throw=True)
@@ -88,7 +92,11 @@ def send_autofattura_to_sdi(docname: str) -> dict[str, Any]:
 	purchase_invoice = get_purchase_invoice_for_autofattura(autofattura.source_purchase_invoice)
 	blockers = collect_autofattura_send_blockers(purchase_invoice, autofattura)
 	if blockers:
-		raise ValidationError(_("Resolve the autofattura send blockers before sending this draft to SDI."))
+		raise ValidationError(
+			_("Resolve the autofattura send blockers before sending this draft to SDI.")
+			+ "<br><br>"
+			+ "<br>".join(frappe.utils.escape_html(blocker) for blocker in blockers)
+		)
 
 	configuration = get_enabled_edi_configuration(autofattura.company)
 	provider = get_enabled_provider(configuration.default_provider)
@@ -131,6 +139,7 @@ def send_autofattura_to_sdi(docname: str) -> dict[str, Any]:
 
 
 @frappe.whitelist()
+@surface_validation_errors
 def prepare_autofattura_from_purchase_invoice(
 	docname: str, document_type: str, document_date: str | None = None
 ) -> dict[str, Any]:
@@ -205,6 +214,7 @@ def prepare_autofattura_from_purchase_invoice(
 
 
 @frappe.whitelist()
+@surface_validation_errors
 def get_autofattura_dashboard(docname: str | None = None) -> dict[str, Any]:
 	selected_document = None
 	if docname:
