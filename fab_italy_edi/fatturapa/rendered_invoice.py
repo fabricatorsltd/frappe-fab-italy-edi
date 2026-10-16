@@ -20,6 +20,7 @@ from frappe.utils import cstr
 
 from erpnext.regional.italy.utils import get_e_invoice_attachments
 
+from fab_italy_edi.document_utils import surface_validation_errors
 from fab_italy_edi.fatturapa.procurement import build_procurement_reference, insert_procurement_block
 from fab_italy_edi.fatturapa.regional_compat import is_italian_company
 from fab_italy_edi.fatturapa.split_payment import state_net_amount_due
@@ -77,6 +78,7 @@ def patch_attached_invoice(invoice: Any, method: str | None = None) -> None:
 
 
 @frappe.whitelist()
+@surface_validation_errors
 def generate_single_invoice(docname: str) -> str:
 	"""ERPNext's Generate E-Invoice button, with our corrections put back on the file it writes.
 
