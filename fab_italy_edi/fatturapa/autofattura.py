@@ -167,7 +167,14 @@ def get_or_allocate_autofattura_document_number(document) -> str:
 	if existing:
 		return existing
 
-	number = frappe.model.naming.make_autoname(getattr(document, series_field))
+	series = cstr(getattr(document, series_field, "")).strip()
+	if series:
+		number = frappe.model.naming.make_autoname(series)
+	elif document.doctype == "Autofattura" and not document.is_new():
+		# no separate series configured: the AUTOFATT/.YYYY./.##### name is the number
+		number = document.name
+	else:
+		raise ValidationError(_("Set the Autofattura Naming Series on the EDI Configuration."))
 	setattr(document, number_field, number)
 	return number
 

@@ -104,7 +104,8 @@ def send_autofattura_to_sdi(docname: str) -> dict[str, Any]:
 	try:
 		rendered_file = render_and_attach_autofattura_xml(autofattura, purchase_invoice, configuration)
 	except Exception as exc:
-		transport.validation_state = "validation_failed"
+		# EDI Document has no "validation_failed" state
+		transport.validation_state = "invalid"
 		transport.last_error = str(exc)
 		transport.save(ignore_permissions=True)
 		autofattura.validation_state = "validation_failed"

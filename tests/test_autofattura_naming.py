@@ -50,3 +50,29 @@ class TestAutofatturaRenamePlan(unittest.TestCase):
 	def test_series_prefix_matches_the_naming_series_key(self):
 		self.assertEqual(naming_patch.get_series_prefix(2026), "AUTOFATT/2026/")
 		self.assertEqual(naming_patch.format_series_name(2026, 9), "AUTOFATT/2026/00009")
+
+
+class TestAutofatturaDocumentNumber(unittest.TestCase):
+	def make_document(self, series=None, number=None, is_new=False):
+		from types import SimpleNamespace
+
+		return SimpleNamespace(
+			doctype="Autofattura",
+			name="AUTOFATT/2026/00001",
+			document_number=number,
+			document_naming_series=series,
+			is_new=lambda: is_new,
+		)
+
+	def test_name_is_the_number_without_a_configured_series(self):
+		from fab_italy_edi.fatturapa.autofattura import get_or_allocate_autofattura_document_number
+
+		document = self.make_document()
+		self.assertEqual(get_or_allocate_autofattura_document_number(document), "AUTOFATT/2026/00001")
+		self.assertEqual(document.document_number, "AUTOFATT/2026/00001")
+
+	def test_existing_number_is_kept(self):
+		from fab_italy_edi.fatturapa.autofattura import get_or_allocate_autofattura_document_number
+
+		document = self.make_document(number="AF-7")
+		self.assertEqual(get_or_allocate_autofattura_document_number(document), "AF-7")
