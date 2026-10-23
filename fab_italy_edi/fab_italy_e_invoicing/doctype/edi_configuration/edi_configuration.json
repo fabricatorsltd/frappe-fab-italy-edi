@@ -19,6 +19,7 @@
   "column_break_automatic_refresh",
   "notification_polling_interval_mins",
   "polling_alert_recipients",
+  "rejection_alert_recipients",
   "automatic_refresh_status_section",
   "last_outbound_status_polling_at",
   "last_incoming_invoice_polling_at",
@@ -122,6 +123,13 @@
    "fieldname": "polling_alert_recipients",
    "fieldtype": "Small Text",
    "label": "Polling Alert Recipients"
+  },
+  {
+   "default": "pietro@fabricators.ltd, billing@fabricators.ltd",
+   "description": "Comma or newline separated emails alerted when SdI rejects a document",
+   "fieldname": "rejection_alert_recipients",
+   "fieldtype": "Small Text",
+   "label": "SdI Rejection Alert Recipients"
   },
   {
    "fieldname": "automatic_refresh_status_section",
@@ -283,7 +291,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2026-09-07 09:00:00.000000",
+ "modified": "2026-10-23 09:00:00.000000",
  "modified_by": "Administrator",
  "module": "FAB Italy E-Invoicing",
  "name": "EDI Configuration",

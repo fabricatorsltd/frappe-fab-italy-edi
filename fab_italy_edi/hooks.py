@@ -181,7 +181,10 @@ doc_events = {
 		"on_update": "fab_italy_edi.autofattura.sync_purchase_invoice_links_from_autofattura",
 	},
 	"EDI Document": {
-		"on_update": "fab_italy_edi.autofattura.sync_linked_autofattura_from_edi_document",
+		"on_update": [
+			"fab_italy_edi.autofattura.sync_linked_autofattura_from_edi_document",
+			"fab_italy_edi.rejection_alert.alert_on_rejection",
+		],
 	}
 }
 

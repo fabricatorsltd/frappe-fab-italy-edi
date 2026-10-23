@@ -93,6 +93,7 @@ ITALIAN_PAYMENT_TERMS_TEMPLATES = (
 )
 
 DEFAULT_ITALIAN_PAYMENT_TERMS_TEMPLATE = "Bonifico 30 gg d.f."
+DEFAULT_REJECTION_ALERT_RECIPIENTS = "pietro@fabricators.ltd, billing@fabricators.ltd"
 
 # Fields describing the transmission of one specific document, per doctype
 EDI_TRACKING_FIELDS = {
@@ -201,6 +202,7 @@ def ensure_seed_records():
 	ensure_mode_of_payment_codes()
 	ensure_italian_payment_terms()
 	ensure_company_payment_defaults()
+	ensure_rejection_alert_recipients()
 
 
 def normalize_seeded_records():
@@ -337,6 +339,20 @@ def ensure_company_payment_defaults():
 		pluck="name",
 	):
 		frappe.db.set_value("Company", company, "payment_terms", DEFAULT_ITALIAN_PAYMENT_TERMS_TEMPLATE)
+
+
+def ensure_rejection_alert_recipients():
+	# fills only an empty field, so the recipients set on a configuration are kept
+	for configuration in frappe.get_all(
+		"EDI Configuration", filters={"rejection_alert_recipients": ["is", "not set"]}, pluck="name"
+	):
+		frappe.db.set_value(
+			"EDI Configuration",
+			configuration,
+			"rejection_alert_recipients",
+			DEFAULT_REJECTION_ALERT_RECIPIENTS,
+			update_modified=False,
+		)
 
 
 def backfill_bank_account_swift_numbers():

@@ -2531,3 +2531,34 @@ msgstr "Impossibile controllare lo stato del polling e-fatturazione"
 #: fab_italy_edi/fab_italy_e_invoicing/doctype/autofattura/autofattura.js
 msgid "SDI error: {0}"
 msgstr "Errore SDI: {0}"
+
+#, python-brace-format
+msgid "[SdI rejected] {0} - {1}"
+msgstr "[Scartata SdI] {0} - {1}"
+
+msgid "SdI rejected an e-invoice, it has to be corrected and sent again."
+msgstr "Lo SdI ha scartato una fattura elettronica, va corretta e inviata di nuovo."
+
+msgid "SdI identifier"
+msgstr "Identificativo SdI"
+
+msgid "Receipt type"
+msgstr "Tipo ricevuta"
+
+msgid "Reason"
+msgstr "Motivo"
+
+msgid "Open the document"
+msgstr "Apri il documento"
+
+msgid "Unable to send the SdI rejection alert"
+msgstr "Impossibile inviare l'avviso di scarto SdI"
+
+msgid "No recipient for the SdI rejection alert"
+msgstr "Nessun destinatario per l'avviso di scarto SdI"
+
+msgid "SdI Rejection Alert Recipients"
+msgstr "Destinatari avviso scarto SdI"
+
+msgid "Comma or newline separated emails alerted when SdI rejects a document"
+msgstr "Email separate da virgola o a capo, avvisate quando lo SdI scarta un documento"
