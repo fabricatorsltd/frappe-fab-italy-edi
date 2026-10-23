@@ -202,7 +202,6 @@ def ensure_seed_records():
 	ensure_mode_of_payment_codes()
 	ensure_italian_payment_terms()
 	ensure_company_payment_defaults()
-	ensure_rejection_alert_recipients()
 
 
 def normalize_seeded_records():
@@ -342,7 +341,7 @@ def ensure_company_payment_defaults():
 
 
 def ensure_rejection_alert_recipients():
-	# fills only an empty field, so the recipients set on a configuration are kept
+	# run once by a patch, so a list emptied on purpose stays empty
 	for configuration in frappe.get_all(
 		"EDI Configuration", filters={"rejection_alert_recipients": ["is", "not set"]}, pluck="name"
 	):

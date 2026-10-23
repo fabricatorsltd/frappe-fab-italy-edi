@@ -2529,8 +2529,12 @@ msgid "Unable to check the e-invoicing polling health"
 msgstr "Impossibile controllare lo stato del polling e-fatturazione"
 
 #: fab_italy_edi/fab_italy_e_invoicing/doctype/autofattura/autofattura.js
-msgid "SDI error: {0}"
-msgstr "Errore SDI: {0}"
+msgid "Rejected by SdI: {0}"
+msgstr "Scartata dallo SdI: {0}"
+
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/autofattura/autofattura.js
+msgid "Send error: {0}"
+msgstr "Errore di invio: {0}"
 
 #, python-brace-format
 msgid "[SdI rejected] {0} - {1}"
