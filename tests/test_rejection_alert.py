@@ -61,8 +61,16 @@ class TestAlertOnRejection(unittest.TestCase):
 		# the resend puts both states back to queued
 		self.assertEqual(self.alerts(edi_document("rejected", "rejected", previous=edi_document("queued", "queued"))), 1)
 
-	def test_a_failed_transmission_is_not_an_sdi_rejection(self):
-		self.assertEqual(self.alerts(edi_document("failed", previous=edi_document("sending"))), 0)
+	def test_a_failed_send_alerts_once(self):
+		self.assertEqual(self.alerts(edi_document("failed", previous=edi_document("sending"))), 1)
+		self.assertEqual(self.alerts(edi_document("failed", "failed", previous=edi_document("failed", "failed"))), 0)
+
+	def test_a_failed_send_has_its_own_subject(self):
+		with patch.object(rejection_alert, "get_url_to_form", return_value="https://x/app/sales-invoice/S"):
+			document = edi_document("failed", previous=edi_document("sending"))
+			document.update(source_doctype="Sales Invoice", source_name="S", last_error="proxy down")
+			subject, _message = rejection_alert.build_rejection_alert(document)
+		self.assertTrue(subject.startswith("[SdI send failed]"))
 
 	def test_a_mail_failure_is_logged_and_never_raised(self):
 		with (

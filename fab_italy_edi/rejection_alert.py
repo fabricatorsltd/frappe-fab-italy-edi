@@ -8,11 +8,13 @@ from fab_italy_edi.edi_lifecycle import normalize_state
 from fab_italy_edi.polling_watchdog import ALERT_DATETIME_FORMAT, get_system_manager_recipients, parse_recipients
 
 REJECTED_STATE = "rejected"
+# failed is a send that never reached SdI (provider or transport error)
+ALERT_STATES = {REJECTED_STATE, "failed"}
 ALERT_HEADERS = {"X-Auto-Generated": "edi-rejection-alert"}
 
 
 def alert_on_rejection(document, method: str | None = None) -> None:
-	"""Mail the SdI rejection once, on the save that moves the EDI Document into it.
+	"""Mail an SdI rejection or a failed send once, on the save that moves the EDI Document into it.
 
 	Every channel and the provider polling save the EDI Document after reconciling its states, so
 	this hook covers them all, and comparing with the stored version keeps a later poll or edit of
@@ -42,11 +44,14 @@ def has_become_rejected(document) -> bool:
 
 
 def is_rejected(document) -> bool:
-	states = {
+	return bool(get_states(document) & ALERT_STATES)
+
+
+def get_states(document) -> set[str | None]:
+	return {
 		normalize_state(document.get("transmission_state")),
 		normalize_state(document.get("latest_receipt_state")),
 	}
-	return REJECTED_STATE in states
 
 
 def send_rejection_alert(document) -> bool:
@@ -99,8 +104,12 @@ def build_rejection_alert(document, branded: bool = False) -> tuple[str, str]:
 		(_("Date"), format_datetime(now_datetime(), ALERT_DATETIME_FORMAT)),
 	]
 	url = get_url_to_form(document.source_doctype, document.source_name)
-	intro = _("SdI rejected an e-invoice, it has to be corrected and sent again.")
-	subject = _("[SdI rejected] {0} - {1}").format(number, party)
+	if REJECTED_STATE in get_states(document):
+		intro = _("SdI rejected an e-invoice, it has to be corrected and sent again.")
+		subject = _("[SdI rejected] {0} - {1}").format(number, party)
+	else:
+		intro = _("An e-invoice could not be sent to SdI, check the error and send it again.")
+		subject = _("[SdI send failed] {0} - {1}").format(number, party)
 	title = f"{number} - {party}"
 
 	if not branded:

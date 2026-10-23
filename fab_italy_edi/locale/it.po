@@ -2566,3 +2566,11 @@ msgstr "Destinatari avviso scarto SdI"
 
 msgid "Comma or newline separated emails alerted when SdI rejects a document"
 msgstr "Email separate da virgola o a capo, avvisate quando lo SdI scarta un documento"
+
+#: fab_italy_edi/rejection_alert.py
+msgid "An e-invoice could not be sent to SdI, check the error and send it again."
+msgstr "Non è stato possibile inviare una fattura elettronica allo SdI, controlla l'errore e inviala di nuovo."
+
+#: fab_italy_edi/rejection_alert.py
+msgid "[SdI send failed] {0} - {1}"
+msgstr "[Invio SdI fallito] {0} - {1}"
