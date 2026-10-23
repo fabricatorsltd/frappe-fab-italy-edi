@@ -2527,3 +2527,7 @@ msgstr "Nessun destinatario per l'avviso di polling e-fatturazione"
 
 msgid "Unable to check the e-invoicing polling health"
 msgstr "Impossibile controllare lo stato del polling e-fatturazione"
+
+#: fab_italy_edi/fab_italy_e_invoicing/doctype/autofattura/autofattura.js
+msgid "SDI error: {0}"
+msgstr "Errore SDI: {0}"

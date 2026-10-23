@@ -150,6 +150,17 @@ function render_status_headline(frm) {
 	]
 		.filter(Boolean)
 		.forEach((indicator) => frm.dashboard.add_indicator(indicator.label, indicator.color));
+
+	const rejected = [frm.doc.transmission_state, frm.doc.latest_receipt_state].some((state) =>
+		["rejected", "failed"].includes(state)
+	);
+	const reason = fab_italy_edi.get_sdi_error_reason(frm.doc.last_error);
+	if (rejected && reason) {
+		frm.dashboard.set_headline_alert(
+			__("SDI error: {0}", [frappe.utils.escape_html(reason)]),
+			"red"
+		);
+	}
 }
 
 function formatAutofatturaState(state) {

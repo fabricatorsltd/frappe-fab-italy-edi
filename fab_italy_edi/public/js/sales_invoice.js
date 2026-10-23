@@ -172,7 +172,7 @@ function get_fab_edi_status_message(status, deadline_context) {
 	}
 
 	if (FAB_EDI_ATTENTION_STATES.has(primary_state) && status.last_error) {
-		parts.push(first_line(status.last_error));
+		parts.push(frappe.utils.escape_html(fab_italy_edi.get_sdi_error_reason(status.last_error)));
 	}
 
 	// once the invoice reached SDI the 12 day transmission deadline is met:
@@ -262,10 +262,6 @@ function format_edi_state(state) {
 		.split("_")
 		.map((part) => part.charAt(0).toUpperCase() + part.slice(1))
 		.join(" ");
-}
-
-function first_line(text) {
-	return String(text || "").split("\n")[0];
 }
 
 function can_send_to_sdi(transmission_state) {

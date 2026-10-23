@@ -39,6 +39,20 @@ frappe.provide("fab_italy_edi");
 
 	fab_italy_edi.get_autofattura_sidebar = get_sidebar_from_route_context;
 
+	// SDI receipts reach last_error as "key: value" lines, and only the error ones say why
+	fab_italy_edi.get_sdi_error_reason = function (text) {
+		const lines = String(text || "")
+			.split("\n")
+			.map((line) => line.trim())
+			.filter(Boolean);
+		const errors = lines
+			.filter((line) => /^error:/i.test(line))
+			.map((line) => line.replace(/^error:\s*/i, ""))
+			.filter(Boolean);
+
+		return errors.length ? errors.join("; ") : lines[0] || "";
+	};
+
 	fab_italy_edi.apply_autofattura_sidebar = function () {
 		const route = frappe.get_route?.() || [];
 		if (route[0] !== "Form" || route[1] !== "Autofattura") {
