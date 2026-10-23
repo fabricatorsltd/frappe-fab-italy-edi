@@ -4,7 +4,8 @@
 ``replace=True`` on the Generate E-Invoice button and on the send path. Everything the core
 template cannot say is written into that rendered file here, so the attachment the invoice carries
 and the file transmitted under the same progressive number never disagree: the CIG block from
-``procurement`` and the payment amount from ``split_payment``.
+``procurement``, the payment amount from ``split_payment`` and the foreign CAP from
+``foreign_address``.
 
 Each correction stands on its own and reads the rendered file for what it needs, so an invoice
 under split payment carrying no procurement reference still has its payment amount restated, and a
@@ -21,17 +22,20 @@ from frappe.utils import cstr
 from erpnext.regional.italy.utils import get_e_invoice_attachments
 
 from fab_italy_edi.document_utils import surface_validation_errors
+from fab_italy_edi.fatturapa.foreign_address import restate_foreign_pincodes
 from fab_italy_edi.fatturapa.procurement import build_procurement_reference, insert_procurement_block
 from fab_italy_edi.fatturapa.regional_compat import is_italian_company
 from fab_italy_edi.fatturapa.split_payment import state_net_amount_due
 
 
 def patch_rendered_invoice(invoice_xml: str, invoice: Any) -> str:
-	"""Run every correction over the rendered XML. They touch different elements, so neither
-	depends on the other having run."""
+	"""Run every correction over the rendered XML. They touch different elements, so none
+	depends on another having run."""
 	reference = build_procurement_reference(invoice)
 	if reference:
 		invoice_xml = insert_procurement_block(invoice_xml, reference)
+
+	invoice_xml = restate_foreign_pincodes(invoice_xml)
 
 	return state_net_amount_due(invoice_xml)
 

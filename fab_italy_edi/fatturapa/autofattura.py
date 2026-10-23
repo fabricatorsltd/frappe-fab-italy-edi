@@ -16,6 +16,7 @@ from erpnext.regional.italy.utils import (
 	get_progressive_name_and_number,
 )
 
+from fab_italy_edi.fatturapa.foreign_address import get_foreign_pincode
 from fab_italy_edi.fatturapa.regional_compat import (
 	get_address_country_code,
 	get_attachment_progressive_name_and_number,
@@ -26,7 +27,6 @@ from frappe.contacts.doctype.address.address import get_default_address
 
 
 FOREIGN_ADDRESS_PROVINCE = "EE"
-FOREIGN_ADDRESS_PINCODE = "00000"
 
 
 @dataclass(slots=True)
@@ -444,8 +444,8 @@ def split_foreign_tax_identifier(tax_id: str | None, country_code: str | None) -
 def build_xml_address(address, *, foreign: bool) -> dict[str, Any]:
 	country_code = get_address_country_code(address)
 	pincode = cstr(address.get("pincode") or "").strip()
-	if foreign and len(pincode) != 5:
-		pincode = FOREIGN_ADDRESS_PINCODE
+	if foreign:
+		pincode = get_foreign_pincode(pincode)
 	if not pincode:
 		raise ValidationError(_("Address {0} is missing a postal code.").format(address.name))
 
