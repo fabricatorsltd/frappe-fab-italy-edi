@@ -2561,11 +2561,11 @@ msgstr "Impossibile inviare l'avviso di scarto SdI"
 msgid "No recipient for the SdI rejection alert"
 msgstr "Nessun destinatario per l'avviso di scarto SdI"
 
-msgid "SdI Rejection Alert Recipients"
-msgstr "Destinatari avviso scarto SdI"
+msgid "SdI Alert Recipients"
+msgstr "Destinatari avvisi SdI"
 
-msgid "Comma or newline separated emails alerted when SdI rejects a document"
-msgstr "Email separate da virgola o a capo, avvisate quando lo SdI scarta un documento"
+msgid "Comma or newline separated emails that get the SdI rejection alerts and the daily digest of the documents not yet sent to SdI"
+msgstr "Email separate da virgola o a capo, ricevono gli avvisi di scarto SdI e il riepilogo giornaliero dei documenti non ancora inviati allo SdI"
 
 #: fab_italy_edi/rejection_alert.py
 msgid "An e-invoice could not be sent to SdI, check the error and send it again."
@@ -2574,3 +2574,73 @@ msgstr "Non è stato possibile inviare una fattura elettronica allo SdI, control
 #: fab_italy_edi/rejection_alert.py
 msgid "[SdI send failed] {0} - {1}"
 msgstr "[Invio SdI fallito] {0} - {1}"
+
+msgid "Track Documents From"
+msgstr "Traccia i documenti dal"
+
+msgid "The daily SdI digest ignores documents dated before this day. Empty means the day this configuration was created"
+msgstr "Il riepilogo giornaliero SdI ignora i documenti con data precedente a questo giorno. Se vuoto vale il giorno di creazione di questa configurazione"
+
+#: fab_italy_edi/sdi_digest.py
+msgid "Unable to send the SdI digest"
+msgstr "Impossibile inviare il riepilogo SdI"
+
+#: fab_italy_edi/sdi_digest.py
+msgid "No recipient for the SdI digest"
+msgstr "Nessun destinatario per il riepilogo SdI"
+
+#: fab_italy_edi/sdi_digest.py
+msgid "Credit note"
+msgstr "Nota di credito"
+
+#: fab_italy_edi/sdi_digest.py
+#, python-brace-format
+msgid "Autofattura {0}"
+msgstr "Autofattura {0}"
+
+#: fab_italy_edi/sdi_digest.py
+msgid "Autofattura to prepare"
+msgstr "Autofattura da preparare"
+
+#: fab_italy_edi/sdi_digest.py
+msgid "Rejected by SdI"
+msgstr "Scartate dallo SdI"
+
+#: fab_italy_edi/sdi_digest.py
+msgid "Send overdue"
+msgstr "Invio scaduto"
+
+#: fab_italy_edi/sdi_digest.py
+msgid "To send within 2 days"
+msgstr "Da inviare entro 2 giorni"
+
+#: fab_italy_edi/sdi_digest.py
+msgid "To send"
+msgstr "Da inviare"
+
+#: fab_italy_edi/sdi_digest.py
+#, python-brace-format
+msgid "[Invoices to send to SdI] {0}"
+msgstr "[Fatture da inviare allo SdI] {0}"
+
+#: fab_italy_edi/sdi_digest.py
+msgid "These documents have not been sent to SdI yet."
+msgstr "Questi documenti non sono ancora stati inviati allo SdI."
+
+#: fab_italy_edi/sdi_digest.py
+msgid "Send failed"
+msgstr "Invio fallito"
+
+#: fab_italy_edi/sdi_digest.py
+msgid "overdue by 1 day"
+msgstr "scaduta da 1 giorno"
+
+#: fab_italy_edi/sdi_digest.py
+#, python-brace-format
+msgid "overdue by {0} days"
+msgstr "scaduta da {0} giorni"
+
+#: fab_italy_edi/sdi_digest.py
+#, python-brace-format
+msgid "due {0}"
+msgstr "scade il {0}"

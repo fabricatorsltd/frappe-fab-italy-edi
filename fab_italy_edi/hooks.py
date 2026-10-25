@@ -195,6 +195,10 @@ scheduler_events = {
 	"cron": {
 		"*/5 * * * *": [
 			"fab_italy_edi.polling.run_automatic_refresh_scheduler"
+		],
+		# weekdays at 08:00 in the system timezone
+		"0 8 * * 1-5": [
+			"fab_italy_edi.sdi_digest.run"
 		]
 	},
 	"hourly": [
