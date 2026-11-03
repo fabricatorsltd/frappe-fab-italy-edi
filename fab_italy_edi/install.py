@@ -69,6 +69,7 @@ PAYMENT_TERM_MODE_LABELS = {
 ITALIAN_PAYMENT_TERMS_TEMPLATES = (
 	("Rimessa diretta", "Wire Transfer", "d.f.", ((0, 100),)),
 	("Pagamento anticipato", "Wire Transfer", "d.f.", ((0, 100),)),
+	("Bonifico bancario vista fattura", "Wire Transfer", "d.f.", ((0, 100),)),
 	("Contanti alla consegna", "Cash", "d.f.", ((0, 100),)),
 	("Carta di credito", "Credit Card", "d.f.", ((0, 100),)),
 	("Bonifico 30 gg d.f.", "Wire Transfer", "d.f.", ((30, 100),)),
