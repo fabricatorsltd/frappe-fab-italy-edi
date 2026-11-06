@@ -17,6 +17,7 @@ from erpnext.regional.italy.utils import (
 )
 
 from fab_italy_edi.fatturapa.foreign_address import get_foreign_pincode
+from fab_italy_edi.fatturapa.latin1 import to_latin1
 from fab_italy_edi.fatturapa.regional_compat import (
 	get_address_country_code,
 	get_attachment_progressive_name_and_number,
@@ -44,7 +45,7 @@ def render_and_attach_autofattura_xml(document, purchase_invoice, configuration)
 		context=context,
 		is_path=True,
 	)
-	invoice_xml = invoice_xml.replace("&", "&amp;")
+	invoice_xml = to_latin1(invoice_xml.replace("&", "&amp;"))
 
 	file_doc = save_file(
 		context["xml_file_name"],
