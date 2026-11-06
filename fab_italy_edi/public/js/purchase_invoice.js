@@ -44,7 +44,13 @@ async function update_autofattura_actions(frm) {
 		return;
 	}
 
+	const docname = frm.doc.name;
 	const context = await get_autofattura_context(frm);
+	// the form is reused across invoices, so drop an answer for one already left
+	if (frm.doc.name !== docname) {
+		return;
+	}
+
 	if (context.autofattura) {
 		frm.add_custom_button(__("Open Autofattura"), () => {
 			open_autofattura_form(context.autofattura);
@@ -67,7 +73,12 @@ async function update_autofattura_actions(frm) {
 }
 
 async function update_inbound_invoice_intro(frm) {
+	const ediDocument = frm.doc.fab_edi_document;
 	const preview = await get_inbound_invoice_preview(frm);
+	if (frm.doc.fab_edi_document !== ediDocument) {
+		return;
+	}
+
 	apply_supplier_route_options(frm, preview);
 	const supplierName = preview.supplier?.display_name || __("Unknown Supplier");
 	const gross = format_currency(preview.invoice?.total_amount || 0, preview.invoice?.currency);
@@ -99,29 +110,32 @@ async function update_inbound_invoice_intro(frm) {
 }
 
 async function get_inbound_invoice_preview(frm) {
-	if (frm._fab_edi_preview) {
-		return frm._fab_edi_preview;
+	// keyed by document: the form object outlives the invoice it was opened on
+	const docname = frm.doc.fab_edi_document;
+	if (frm._fab_edi_preview?.docname === docname) {
+		return frm._fab_edi_preview.value;
 	}
 
 	const response = await frappe.call({
 		method: "fab_italy_edi.purchase_invoice_import.get_incoming_supplier_invoice_preview",
-		args: { docname: frm.doc.fab_edi_document },
+		args: { docname },
 	});
-	frm._fab_edi_preview = response.message;
+	frm._fab_edi_preview = { docname, value: response.message };
 	return response.message;
 }
 
 async function get_autofattura_context(frm) {
-	if (frm._fab_autofattura_context) {
-		return frm._fab_autofattura_context;
+	const docname = frm.doc.name;
+	if (frm._fab_autofattura_context?.docname === docname) {
+		return frm._fab_autofattura_context.value;
 	}
 
 	const response = await frappe.call({
 		method: "fab_italy_edi.autofattura.get_purchase_invoice_autofattura_context",
-		args: { docname: frm.doc.name },
+		args: { docname },
 	});
-	frm._fab_autofattura_context = response.message || {};
-	return frm._fab_autofattura_context;
+	frm._fab_autofattura_context = { docname, value: response.message || {} };
+	return frm._fab_autofattura_context.value;
 }
 
 function open_edi_configuration(frm, context) {

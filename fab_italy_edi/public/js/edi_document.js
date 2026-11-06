@@ -10,6 +10,11 @@ frappe.ui.form.on("EDI Document", {
 			return;
 		}
 
+		// the form is reused across documents, so forget another document's invoice
+		if (frm._fab_edi_preview?.docname !== frm.doc.name) {
+			frm._fab_edi_purchase_invoice = null;
+		}
+
 		frm.add_custom_button(__("Review Import Data"), async () => {
 			const preview = await get_supplier_invoice_preview(frm);
 			show_supplier_invoice_preview(preview);
@@ -104,15 +109,16 @@ function remember_autofattura_workspace() {
 }
 
 async function get_supplier_invoice_preview(frm, options = {}) {
-	if (!options.force && frm._fab_edi_preview) {
-		return frm._fab_edi_preview;
+	const docname = frm.doc.name;
+	if (!options.force && frm._fab_edi_preview?.docname === docname) {
+		return frm._fab_edi_preview.value;
 	}
 
 	const response = await frappe.call({
 		method: "fab_italy_edi.purchase_invoice_import.get_incoming_supplier_invoice_preview",
-		args: { docname: frm.doc.name },
+		args: { docname },
 	});
-	frm._fab_edi_preview = response.message;
+	frm._fab_edi_preview = { docname, value: response.message };
 	frm._fab_edi_purchase_invoice = response.message.purchase_invoice;
 	return response.message;
 }
