@@ -71,25 +71,31 @@ def send_digest(company: str, today: date | None = None) -> bool:
 		frappe.log_error(title=_("No recipient for the SdI digest"), message=f"Company: {company}")
 		return False
 
+	send_branded(recipients, lambda ink: build_digest(sections, today, ink=ink), DIGEST_HEADERS)
+	return True
+
+
+def send_branded(recipients: list[str], build, headers: dict) -> None:
+	"""Mail the subject and message `build(ink)` returns, in the helpdesk branded page when the
+	helpdesk is installed and in the site language."""
 	if "helpdesk" not in frappe.get_installed_apps():
-		subject, message = build_digest(sections, today)
-		frappe.sendmail(recipients=recipients, subject=subject, message=message, email_headers=DIGEST_HEADERS)
-		return True
+		subject, message = build(FALLBACK_INK)
+		frappe.sendmail(recipients=recipients, subject=subject, message=message, email_headers=headers)
+		return
 
 	from helpdesk.helpdesk.doctype.hd_settings.helpers import branded_email, get_default_language, mail_styles, use_language
 
 	with use_language(get_default_language()):
-		subject, message = build_digest(sections, today, ink=mail_styles().ink)
+		subject, message = build(mail_styles().ink)
 		email = branded_email(message, subject)
 
 	frappe.sendmail(
 		recipients=recipients,
 		subject=subject,
 		with_container=False,
-		email_headers=DIGEST_HEADERS,
+		email_headers=headers,
 		**email,
 	)
-	return True
 
 
 def collect_rows(company: str) -> list[frappe._dict]:

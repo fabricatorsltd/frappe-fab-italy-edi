@@ -196,9 +196,10 @@ scheduler_events = {
 		"*/5 * * * *": [
 			"fab_italy_edi.polling.run_automatic_refresh_scheduler"
 		],
-		# weekdays at 08:00 in the system timezone
-		"0 8 * * 1-5": [
-			"fab_italy_edi.sdi_digest.run"
+		# weekdays at 08:30 in the system timezone
+		"30 8 * * 1-5": [
+			"fab_italy_edi.sdi_digest.run",
+			"fab_italy_edi.payables_digest.run"
 		]
 	},
 	"hourly": [

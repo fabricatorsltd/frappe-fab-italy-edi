@@ -2644,3 +2644,58 @@ msgstr "scaduta da {0} giorni"
 #, python-brace-format
 msgid "due {0}"
 msgstr "scade il {0}"
+
+#: fab_italy_edi/payables_digest.py
+msgid "Unable to send the payables digest"
+msgstr "Impossibile inviare il riepilogo delle scadenze"
+
+#: fab_italy_edi/payables_digest.py
+msgid "No recipient for the payables digest"
+msgstr "Nessun destinatario per il riepilogo delle scadenze"
+
+#: fab_italy_edi/payables_digest.py
+#, python-brace-format
+msgid "Invoice {0}"
+msgstr "Fattura {0}"
+
+#: fab_italy_edi/payables_digest.py
+msgid "Tax calendar"
+msgstr "Calendario fiscale"
+
+#: fab_italy_edi/payables_digest.py
+msgid "Overdue supplier invoices"
+msgstr "Fatture fornitore scadute"
+
+#: fab_italy_edi/payables_digest.py
+msgid "Supplier invoices due within 7 days"
+msgstr "Fatture fornitore in scadenza entro 7 giorni"
+
+#: fab_italy_edi/payables_digest.py
+msgid "Supplier invoices due in 8 to 15 days"
+msgstr "Fatture fornitore in scadenza tra 8 e 15 giorni"
+
+#: fab_italy_edi/payables_digest.py
+msgid "Supplier invoices due in 16 to 31 days"
+msgstr "Fatture fornitore in scadenza tra 16 e 31 giorni"
+
+#: fab_italy_edi/payables_digest.py
+msgid "Overdue F24"
+msgstr "F24 scaduti"
+
+#: fab_italy_edi/payables_digest.py
+msgid "F24 due this month"
+msgstr "F24 in scadenza questo mese"
+
+#: fab_italy_edi/payables_digest.py
+#, python-brace-format
+msgid "[Payments due] {0}"
+msgstr "[Scadenze pagamenti] {0}"
+
+#: fab_italy_edi/payables_digest.py
+msgid "Supplier invoices and F24 still to pay."
+msgstr "Fatture fornitore e F24 ancora da pagare."
+
+#: fab_italy_edi/payables_digest.py
+#, python-brace-format
+msgid "overdue since {0}"
+msgstr "scaduto il {0}"
