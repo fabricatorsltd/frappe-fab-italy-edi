@@ -801,7 +801,7 @@ class TestPurchaseInvoiceImport(unittest.TestCase):
 					"tax_rate": 22.0,
 					"nature": None,
 					"description": "VAT 22%",
-					"label": "22.00%",
+					"label": "22%",
 				}
 			],
 		)
@@ -1203,7 +1203,8 @@ class TestOwnAutofatturaCopy(unittest.TestCase):
 		return {"invoice": {"document_type": document_type, "bill_no": bill_no}, "language": "en"}
 
 	def test_a_td17_carrying_our_number_is_our_own_autofattura(self):
-		with patch.object(purchase_invoice_import.frappe.db, "get_value", return_value="AUTOFATT/2026/00007") as get_value:
+		get_value = Mock(return_value="AUTOFATT/2026/00007")
+		with patch.object(purchase_invoice_import.frappe, "db", Mock(get_value=get_value)):
 			self.assertEqual(
 				purchase_invoice_import.find_own_autofattura("FABRICATORS S.R.L.", self.preview()), "AUTOFATT/2026/00007"
 			)
@@ -1212,7 +1213,8 @@ class TestOwnAutofatturaCopy(unittest.TestCase):
 		)
 
 	def test_an_ordinary_invoice_is_never_looked_up(self):
-		with patch.object(purchase_invoice_import.frappe.db, "get_value") as get_value:
+		get_value = Mock()
+		with patch.object(purchase_invoice_import.frappe, "db", Mock(get_value=get_value)):
 			self.assertIsNone(purchase_invoice_import.find_own_autofattura("FABRICATORS S.R.L.", self.preview("TD01")))
 		get_value.assert_not_called()
 
