@@ -67,40 +67,54 @@ def send_digest(company: str, today: date | None = None) -> bool:
 
 def get_invoice_rows(company: str) -> list[frappe._dict]:
 	"""Supplier invoices with something left to pay, from the start of the SdI tracking: the older
-	ones came from Odoo with their payments unreconciled."""
-	invoices = frappe.get_all(
-		"Purchase Invoice",
-		filters={
-			"docstatus": 1,
-			"company": company,
-			"is_return": 0,
-			"outstanding_amount": [">", 0],
-			"posting_date": [">=", get_tracking_start(company)],
-		},
-		fields=[
-			"name",
-			"supplier",
-			"supplier_name",
-			"bill_no",
-			"posting_date",
-			"due_date",
-			"outstanding_amount",
-			"party_account_currency",
-		],
-		order_by="due_date asc, name asc",
-	)
-	return [
-		frappe._dict(
-			doctype="Purchase Invoice",
-			name=invoice.name,
-			number=invoice.name,
-			party=invoice.supplier_name or invoice.supplier,
-			detail=_("Invoice {0}").format(invoice.bill_no) if invoice.bill_no else _("Invoice"),
-			amount=fmt_money(invoice.outstanding_amount, currency=invoice.party_account_currency),
-			deadline=getdate(invoice.due_date or invoice.posting_date),
-		)
-		for invoice in invoices
+	ones came from Odoo with their payments unreconciled.
+
+	Drafts are listed too, at their full amount: an invoice received from SdI stays a draft until
+	it is booked, and it falls due all the same.
+	"""
+	fields = [
+		"name",
+		"docstatus",
+		"supplier",
+		"supplier_name",
+		"bill_no",
+		"posting_date",
+		"due_date",
+		"grand_total",
+		"outstanding_amount",
+		"currency",
+		"party_account_currency",
 	]
+	common = {"company": company, "is_return": 0, "posting_date": [">=", get_tracking_start(company)]}
+	submitted = frappe.get_all(
+		"Purchase Invoice", filters={**common, "docstatus": 1, "outstanding_amount": [">", 0]}, fields=fields
+	)
+	drafts = frappe.get_all("Purchase Invoice", filters={**common, "docstatus": 0, "grand_total": [">", 0]}, fields=fields)
+	# SdI hands back our own autofatture as inbound invoices: their supplier invoice is already listed
+	own = set(frappe.get_all("Autofattura", filters={"company": company}, pluck="document_number")) if drafts else set()
+
+	rows = []
+	for invoice in [*submitted, *drafts]:
+		draft = invoice.docstatus == 0
+		if draft and invoice.bill_no in own:
+			continue
+		detail = _("Invoice {0}").format(invoice.bill_no) if invoice.bill_no else _("Invoice")
+		rows.append(
+			frappe._dict(
+				doctype="Purchase Invoice",
+				name=invoice.name,
+				number=invoice.name,
+				party=invoice.supplier_name or invoice.supplier,
+				detail=f"{detail} \u00b7 {_('Draft')}" if draft else detail,
+				amount=(
+					fmt_money(invoice.grand_total, currency=invoice.currency)
+					if draft
+					else fmt_money(invoice.outstanding_amount, currency=invoice.party_account_currency)
+				),
+				deadline=getdate(invoice.due_date or invoice.posting_date),
+			)
+		)
+	return rows
 
 
 def get_f24_rows(company: str) -> list[frappe._dict]:

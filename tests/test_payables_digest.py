@@ -78,6 +78,36 @@ class TestBuckets(unittest.TestCase):
 		self.assertEqual(payables_digest.bucket_f24([], TODAY), [])
 
 
+class TestInvoiceRows(unittest.TestCase):
+	def test_drafts_are_listed_at_their_total_but_not_our_own_autofatture(self):
+		def invoice(name, docstatus, bill_no, total, outstanding):
+			return frappe._dict(
+				name=name, docstatus=docstatus, supplier="Hetzner Online GmbH", supplier_name="Hetzner Online GmbH",
+				bill_no=bill_no, posting_date=date(2026, 10, 1), due_date=date(2026, 10, 31), grand_total=total,
+				outstanding_amount=outstanding, currency="EUR", party_account_currency="EUR",
+			)
+
+		submitted = [invoice("ACQ/2026/00251", 1, "089001200940", 24.38, 24.38)]
+		drafts = [
+			invoice("ACQ/2026/00257", 0, "AUTOFATT/2026/00007", 24.38, 24.38),
+			invoice("ACQ/2026/00278", 0, "6251297474", 615.73, 615.73),
+		]
+
+		def get_all(doctype, filters=None, **kwargs):
+			if doctype == "Autofattura":
+				return ["AUTOFATT/2026/00007"]
+			return submitted if filters["docstatus"] == 1 else drafts
+
+		with (
+			patch.object(payables_digest, "get_tracking_start", return_value=date(2026, 8, 7)),
+			patch.object(payables_digest.frappe, "get_all", side_effect=get_all),
+		):
+			rows = payables_digest.get_invoice_rows("FABRICATORS S.R.L.")
+		self.assertEqual([r.name for r in rows], ["ACQ/2026/00251", "ACQ/2026/00278"])
+		self.assertIn("Draft", rows[1].detail)
+		self.assertNotIn("Draft", rows[0].detail)
+
+
 class TestF24Rows(unittest.TestCase):
 	def test_a_calendar_deadline_covered_by_a_draft_f24_is_listed_once(self):
 		drafts = [
