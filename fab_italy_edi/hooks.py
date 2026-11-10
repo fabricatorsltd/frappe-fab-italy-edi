@@ -175,6 +175,7 @@ doc_events = {
 		"before_validate": "fab_italy_edi.install.scrub_missing_legacy_einvoice_type_link_values",
 	},
 	"Supplier": {
+		"validate": "fab_italy_edi.purchase_invoice_import.validate_supplier_expense_accounts",
 		"after_insert": "fab_italy_edi.purchase_invoice_import.materialize_inbound_supplier_links",
 	},
 	"Autofattura": {

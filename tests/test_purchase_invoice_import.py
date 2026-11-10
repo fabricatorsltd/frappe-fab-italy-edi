@@ -1238,3 +1238,80 @@ class TestOwnAutofatturaCopy(unittest.TestCase):
 		document.save.assert_called_once_with(ignore_permissions=True)
 		find_linked.assert_not_called()
 		get_doc.assert_not_called()
+
+
+class TestSupplierDefaultExpenseAccount(unittest.TestCase):
+	ACCOUNTS = {
+		"Services - A": {"company": "Company A", "is_group": 0, "root_type": "Expense"},
+		"Services - B": {"company": "Company B", "is_group": 0, "root_type": "Expense"},
+	}
+
+	def build_rows(self, supplier_rows, company="Company A"):
+		def get_cached_value(doctype, name, fields, as_dict=False):
+			values = self.ACCOUNTS.get(name)
+			return frappe._dict(values) if values else None
+
+		with (
+			patch.object(purchase_invoice_import, "get_default_uom", return_value="Nos"),
+			patch.object(purchase_invoice_import, "get_default_expense_account", return_value="Company Default - A"),
+			patch.object(purchase_invoice_import, "get_default_cost_center", return_value="Main - A"),
+			patch.object(purchase_invoice_import, "ensure_uom", return_value="Nos"),
+			patch.object(purchase_invoice_import, "get_inbound_tax_mapping_rows", return_value=[]),
+			patch.object(purchase_invoice_import, "get_inbound_item_tax_template_for_item", return_value=None),
+			patch.object(purchase_invoice_import.frappe, "get_all", return_value=supplier_rows) as get_all,
+			patch.object(purchase_invoice_import.frappe, "get_cached_value", side_effect=get_cached_value),
+		):
+			rows = purchase_invoice_import.build_purchase_invoice_items(
+				{"items": [{"item_name": "Service", "description": "Service", "amount": 100}]},
+				company=company,
+				supplier="Supplier X",
+			)
+		return rows, get_all
+
+	def test_uses_the_supplier_default_for_the_invoice_company(self):
+		rows, get_all = self.build_rows(
+			[
+				{"company": "Company B", "expense_account": "Services - B"},
+				{"company": "Company A", "expense_account": "Services - A"},
+			]
+		)
+
+		self.assertEqual(rows[0]["expense_account"], "Services - A")
+		self.assertEqual(get_all.call_args.kwargs["filters"]["parent"], "Supplier X")
+
+	def test_falls_back_to_the_company_default(self):
+		rows, _get_all = self.build_rows([])
+
+		self.assertEqual(rows[0]["expense_account"], "Company Default - A")
+
+	def test_ignores_the_account_set_for_another_company(self):
+		rows, _get_all = self.build_rows([{"company": "Company B", "expense_account": "Services - B"}])
+
+		self.assertEqual(rows[0]["expense_account"], "Company Default - A")
+
+	def test_ignores_a_row_whose_account_belongs_to_another_company(self):
+		rows, _get_all = self.build_rows([{"company": "Company A", "expense_account": "Services - B"}])
+
+		self.assertEqual(rows[0]["expense_account"], "Company Default - A")
+
+	def test_without_a_supplier_the_company_default_is_used(self):
+		with (
+			patch.object(purchase_invoice_import.frappe, "get_all") as get_all,
+		):
+			self.assertIsNone(purchase_invoice_import.get_supplier_default_expense_account(None, "Company A"))
+		get_all.assert_not_called()
+
+	def test_validation_refuses_an_account_of_another_company(self):
+		doc = frappe._dict(
+			fab_edi_expense_accounts=[frappe._dict(idx=1, company="Company A", expense_account="Services - B")]
+		)
+		with (
+			patch.object(
+				purchase_invoice_import.frappe,
+				"get_cached_value",
+				return_value=frappe._dict(self.ACCOUNTS["Services - B"]),
+			),
+			patch.object(purchase_invoice_import.frappe, "throw", side_effect=frappe.ValidationError),
+			self.assertRaises(frappe.ValidationError),
+		):
+			purchase_invoice_import.validate_supplier_expense_accounts(doc)

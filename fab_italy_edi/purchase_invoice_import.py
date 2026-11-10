@@ -33,6 +33,8 @@ IMPORTED_EDI_BANK_NAME = "Imported EDI Bank"
 QUARANTINED_INBOUND_SUPPLIER_PREFIX = "Quarantined stale inbound supplier placeholder"
 # as in autofattura.py, which imports this module through api.py and cannot be imported back
 AUTOFATTURA_DOCUMENT_TYPES = ("TD17", "TD18", "TD19")
+SUPPLIER_EXPENSE_ACCOUNT_DOCTYPE = "Supplier Expense Account"
+SUPPLIER_EXPENSE_ACCOUNTS_FIELD = "fab_edi_expense_accounts"
 
 
 @frappe.whitelist()
@@ -244,7 +246,7 @@ def build_purchase_invoice_payload(
 	supplier: str | None,
 	tax_account: str | None,
 ) -> dict[str, Any]:
-	item_rows = build_purchase_invoice_items(preview, company=document.company)
+	item_rows = build_purchase_invoice_items(preview, company=document.company, supplier=supplier)
 	if not item_rows:
 		raise ValidationError(_("The inbound supplier invoice does not contain any importable lines."))
 
@@ -1015,9 +1017,16 @@ def find_matching_suppliers(supplier: Mapping[str, Any]) -> list[dict[str, str]]
 	return candidates
 
 
-def build_purchase_invoice_items(preview: Mapping[str, Any], *, company: str) -> list[dict[str, Any]]:
+def build_purchase_invoice_items(
+	preview: Mapping[str, Any], *, company: str, supplier: str | None = None
+) -> list[dict[str, Any]]:
 	default_uom = get_default_uom()
-	default_expense_account = get_default_expense_account(company)
+	# the lines carry no item_code, so ERPNext keeps this account on validate: supplier
+	# default for the company, else company default. Picking an item later replaces it
+	# with the Item, Item Group or Brand account, else the company default
+	default_expense_account = get_supplier_default_expense_account(supplier, company) or (
+		get_default_expense_account(company)
+	)
 	default_cost_center = get_default_cost_center(company)
 	mapping_rows = get_inbound_tax_mapping_rows(company)
 	# credit notes (TD04) map to a return Purchase Invoice, which ERPNext requires
@@ -1542,6 +1551,56 @@ def get_default_uom() -> str:
 	if not default_uom:
 		raise ValidationError(_("Set the default Stock UOM before importing supplier invoices."))
 	return default_uom
+
+
+def get_supplier_default_expense_account(supplier: str | None, company: str) -> str | None:
+	if not supplier:
+		return None
+
+	rows = frappe.get_all(
+		SUPPLIER_EXPENSE_ACCOUNT_DOCTYPE,
+		filters={"parenttype": "Supplier", "parent": supplier, "parentfield": SUPPLIER_EXPENSE_ACCOUNTS_FIELD},
+		fields=["company", "expense_account"],
+		order_by="idx asc",
+	)
+	for row in rows:
+		if row.get("company") == company and is_company_expense_account(row.get("expense_account"), company):
+			return row["expense_account"]
+	return None
+
+
+def is_company_expense_account(account: str | None, company: str) -> bool:
+	if not account:
+		return False
+	values = frappe.get_cached_value(
+		"Account", account, ["company", "is_group", "root_type", "disabled"], as_dict=True
+	)
+	return bool(
+		values
+		and values.company == company
+		and not values.is_group
+		and not values.disabled
+		and values.root_type == "Expense"
+	)
+
+
+def validate_supplier_expense_accounts(doc, method=None) -> None:
+	companies = set()
+	for row in doc.get(SUPPLIER_EXPENSE_ACCOUNTS_FIELD) or []:
+		if not (row.company and row.expense_account):
+			# left to the mandatory check
+			continue
+		if row.company in companies:
+			frappe.throw(
+				_("Row {0}: company {1} already has a default expense account.").format(row.idx, row.company)
+			)
+		companies.add(row.company)
+		if not is_company_expense_account(row.expense_account, row.company):
+			frappe.throw(
+				_("Row {0}: {1} must be an enabled, non-group Expense account of company {2}.").format(
+					row.idx, row.expense_account, row.company
+				)
+			)
 
 
 def get_default_expense_account(company: str) -> str:

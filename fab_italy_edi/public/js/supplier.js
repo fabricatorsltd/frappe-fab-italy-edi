@@ -1,4 +1,14 @@
 frappe.ui.form.on("Supplier", {
+	setup(frm) {
+		frm.set_query("expense_account", "fab_edi_expense_accounts", (doc, cdt, cdn) => {
+			const filters = { is_group: 0, root_type: "Expense" };
+			if (locals[cdt][cdn].company) {
+				filters.company = locals[cdt][cdn].company;
+			}
+			return { filters };
+		});
+	},
+
 	refresh(frm) {
 		if (!frm.is_new()) {
 			return;

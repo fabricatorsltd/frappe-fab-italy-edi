@@ -1206,4 +1206,14 @@ def get_supplier_custom_fields() -> list[dict[str, object]]:
 			"read_only": 1,
 			"no_copy": 1,
 		},
+		{
+			"fieldname": "fab_edi_expense_accounts",
+			"label": _("Default Expense Account per Company"),
+			"fieldtype": "Table",
+			"options": "Supplier Expense Account",
+			"insert_after": "accounts",
+			"description": _(
+				"Expense account of the lines of the purchase invoice drafts imported from this supplier's e-invoices."
+			),
+		},
 	]

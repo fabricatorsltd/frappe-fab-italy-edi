@@ -2705,3 +2705,24 @@ msgstr "scaduto il {0}"
 #, python-brace-format
 msgid "This is the copy SdI delivered of our Autofattura {0}, no Purchase Invoice is created from it."
 msgstr "Questa è la copia della nostra Autofattura {0} consegnata dallo SdI, non se ne crea una Fattura di Acquisto."
+
+#: fab_italy_edi/install.py
+msgid "Default Expense Account per Company"
+msgstr "Conto di costo predefinito per azienda"
+
+#: fab_italy_edi/install.py
+msgid "Expense account of the lines of the purchase invoice drafts imported from this supplier's e-invoices."
+msgstr "Conto di costo delle righe delle bozze di fattura di acquisto importate dalle fatture elettroniche di questo fornitore."
+
+#: fab_italy_edi/purchase_invoice_import.py
+#, python-brace-format
+msgid "Row {0}: company {1} already has a default expense account."
+msgstr "Riga {0}: l'azienda {1} ha già un conto di costo predefinito."
+
+#: fab_italy_edi/purchase_invoice_import.py
+#, python-brace-format
+msgid "Row {0}: {1} must be an enabled, non-group Expense account of company {2}."
+msgstr "Riga {0}: {1} deve essere un conto di costo attivo e non di gruppo dell'azienda {2}."
+
+msgid "Supplier Expense Account"
+msgstr "Conto di costo fornitore"
