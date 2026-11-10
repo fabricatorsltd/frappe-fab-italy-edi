@@ -1584,10 +1584,16 @@ def repoint_supplier_default_expense_accounts(
 	keeps it.
 	"""
 	company_default = get_default_expense_account(company)
-	previous_defaults = {company_default, get_supplier_default_expense_account(previous_supplier, company)}
+	previous_defaults = {company_default}
+	previous_supplier_default = get_supplier_default_expense_account(previous_supplier, company)
+	if previous_supplier_default:
+		previous_defaults.add(previous_supplier_default)
 	new_default = get_supplier_default_expense_account(supplier, company) or company_default
 	for item in pi.get("items") or []:
-		if not item.get("item_code") and item.get("expense_account") in previous_defaults:
+		if item.get("item_code"):
+			continue
+		# a line left without an account takes the default too
+		if not item.get("expense_account") or item.get("expense_account") in previous_defaults:
 			item.expense_account = new_default
 
 

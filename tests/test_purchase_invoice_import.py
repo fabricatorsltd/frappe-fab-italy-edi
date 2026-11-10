@@ -1347,6 +1347,33 @@ class TestSupplierDefaultExpenseAccount(unittest.TestCase):
 			["Services - A", "Services - A", "Picked By Hand - A", "Company Default - A"],
 		)
 
+	def test_a_new_supplier_without_default_sends_lines_back_to_the_company_default(self):
+		pi = frappe._dict(
+			items=[
+				frappe._dict(item_code=None, expense_account="Old Services - A"),
+				frappe._dict(item_code=None, expense_account=None),
+				frappe._dict(item_code=None, expense_account=""),
+				frappe._dict(item_code=None, expense_account="Picked By Hand - A"),
+			],
+		)
+
+		with (
+			patch.object(purchase_invoice_import, "get_default_expense_account", return_value="Company Default - A"),
+			patch.object(
+				purchase_invoice_import,
+				"get_supplier_default_expense_account",
+				side_effect=lambda supplier, company: "Old Services - A" if supplier == "Old Supplier" else None,
+			),
+		):
+			purchase_invoice_import.repoint_supplier_default_expense_accounts(
+				pi, "Old Supplier", "New Supplier", "Company A"
+			)
+
+		self.assertEqual(
+			[item.expense_account for item in pi["items"]],
+			["Company Default - A", "Company Default - A", "Company Default - A", "Picked By Hand - A"],
+		)
+
 	def test_an_existing_draft_follows_the_new_supplier_default(self):
 		pi = Mock(
 			docstatus=0,
