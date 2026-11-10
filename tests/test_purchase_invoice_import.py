@@ -1196,3 +1196,45 @@ class TestPurchaseInvoiceImport(unittest.TestCase):
 		self.assertEqual(bank_account.branch_code, "03293")
 		self.assertEqual(bank_account.bank_account_no, "100000018562")
 		bank_account.save.assert_called_once_with(ignore_permissions=True)
+
+
+class TestOwnAutofatturaCopy(unittest.TestCase):
+	def preview(self, document_type="TD17", bill_no="AUTOFATT/2026/00007"):
+		return {"invoice": {"document_type": document_type, "bill_no": bill_no}, "language": "en"}
+
+	def test_a_td17_carrying_our_number_is_our_own_autofattura(self):
+		with patch.object(purchase_invoice_import.frappe.db, "get_value", return_value="AUTOFATT/2026/00007") as get_value:
+			self.assertEqual(
+				purchase_invoice_import.find_own_autofattura("FABRICATORS S.R.L.", self.preview()), "AUTOFATT/2026/00007"
+			)
+		get_value.assert_called_once_with(
+			"Autofattura", {"company": "FABRICATORS S.R.L.", "document_number": "AUTOFATT/2026/00007"}, "name"
+		)
+
+	def test_an_ordinary_invoice_is_never_looked_up(self):
+		with patch.object(purchase_invoice_import.frappe.db, "get_value") as get_value:
+			self.assertIsNone(purchase_invoice_import.find_own_autofattura("FABRICATORS S.R.L.", self.preview("TD01")))
+		get_value.assert_not_called()
+
+	def test_no_draft_is_created_from_our_own_autofattura(self):
+		document = SimpleNamespace(
+			name="4vkurmqmsr",
+			company="FABRICATORS S.R.L.",
+			document_kind="supplier_invoice_import",
+			last_error=None,
+			source_doctype=None,
+			source_name=None,
+			save=Mock(),
+			add_comment=Mock(),
+		)
+		with (
+			patch.object(purchase_invoice_import, "find_own_autofattura", return_value="AUTOFATT/2026/00007"),
+			patch.object(purchase_invoice_import, "find_linked_purchase_invoice") as find_linked,
+			patch.object(purchase_invoice_import.frappe, "get_doc") as get_doc,
+		):
+			result = purchase_invoice_import.build_purchase_invoice_review_draft(document, preview=self.preview())
+		self.assertEqual(result, {"purchase_invoice": None, "autofattura": "AUTOFATT/2026/00007", "created": False})
+		self.assertEqual((document.source_doctype, document.source_name), ("Autofattura", "AUTOFATT/2026/00007"))
+		document.save.assert_called_once_with(ignore_permissions=True)
+		find_linked.assert_not_called()
+		get_doc.assert_not_called()

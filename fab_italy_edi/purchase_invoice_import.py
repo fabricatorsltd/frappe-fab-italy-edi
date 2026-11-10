@@ -31,6 +31,8 @@ INBOUND_SUPPLIER_PREVIEW_FIELD = "fab_edi_supplier_preview_json"
 INBOUND_SUPPLIER_PAYMENTS_FIELD = "fab_edi_payments_preview_json"
 IMPORTED_EDI_BANK_NAME = "Imported EDI Bank"
 QUARANTINED_INBOUND_SUPPLIER_PREFIX = "Quarantined stale inbound supplier placeholder"
+# as in autofattura.py, which imports this module through api.py and cannot be imported back
+AUTOFATTURA_DOCUMENT_TYPES = ("TD17", "TD18", "TD19")
 
 
 @frappe.whitelist()
@@ -110,6 +112,11 @@ def build_purchase_invoice_review_draft(
 			)
 		)
 	preview = preview or build_incoming_supplier_invoice_preview(document)
+	own_autofattura = find_own_autofattura(document.company, preview)
+	if own_autofattura:
+		link_own_autofattura_copy(document, own_autofattura)
+		return {"purchase_invoice": None, "autofattura": own_autofattura, "created": False}
+
 	existing_purchase_invoice = find_linked_purchase_invoice(document.name)
 	supplier_name = normalize_text(supplier) or preview.get("default_supplier")
 	if supplier_name and not frappe.db.exists("Supplier", supplier_name):
@@ -286,6 +293,32 @@ def sync_edi_document_purchase_invoice_link(document, purchase_invoice) -> None:
 		changed = True
 	if changed:
 		document.save(ignore_permissions=True)
+
+
+def find_own_autofattura(company: str | None, preview: Mapping[str, Any]) -> str | None:
+	"""The autofattura of ours this inbound document is a copy of, if it is one.
+
+	SdI delivers a TD17/TD18/TD19 to the buyer too, and on an autofattura we are the buyer: the
+	file comes back carrying our own number. The supplier invoice behind it is already booked.
+	"""
+	invoice = preview.get("invoice") or {}
+	if invoice.get("document_type") not in AUTOFATTURA_DOCUMENT_TYPES or not invoice.get("bill_no"):
+		return None
+	return frappe.db.get_value("Autofattura", {"company": company, "document_number": invoice["bill_no"]}, "name")
+
+
+def link_own_autofattura_copy(document, autofattura: str) -> None:
+	if document.source_doctype == "Autofattura" and document.source_name == autofattura:
+		return
+	document.source_doctype = "Autofattura"
+	document.source_name = autofattura
+	document.save(ignore_permissions=True)
+	document.add_comment(
+		"Comment",
+		_("This is the copy SdI delivered of our Autofattura {0}, no Purchase Invoice is created from it.").format(
+			autofattura
+		),
+	)
 
 
 def find_linked_purchase_invoice(edi_document_name: str) -> str | None:

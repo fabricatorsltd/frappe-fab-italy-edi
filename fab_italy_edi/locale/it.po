@@ -2699,3 +2699,9 @@ msgstr "Fatture fornitore e F24 ancora da pagare."
 #, python-brace-format
 msgid "overdue since {0}"
 msgstr "scaduto il {0}"
+
+#: fab_italy_edi/purchase_invoice_import.py
+#: fab_italy_edi/public/js/edi_document.js
+#, python-brace-format
+msgid "This is the copy SdI delivered of our Autofattura {0}, no Purchase Invoice is created from it."
+msgstr "Questa è la copia della nostra Autofattura {0} consegnata dallo SdI, non se ne crea una Fattura di Acquisto."

@@ -10,6 +10,21 @@ frappe.ui.form.on("EDI Document", {
 			return;
 		}
 
+		if (frm.doc.source_doctype === "Autofattura" && frm.doc.source_name) {
+			// SdI delivers our own autofatture back to us, there is nothing to import
+			frm.set_intro(
+				__("This is the copy SdI delivered of our Autofattura {0}, no Purchase Invoice is created from it.", [
+					`<strong>${frappe.utils.escape_html(frm.doc.source_name)}</strong>`,
+				]),
+				"blue"
+			);
+			frm.add_custom_button(__("Open Autofattura"), () => {
+				remember_autofattura_workspace();
+				frappe.set_route("Form", "Autofattura", frm.doc.source_name);
+			}, __("FAB EDI"));
+			return;
+		}
+
 		// the form is reused across documents, so forget another document's invoice
 		if (frm._fab_edi_preview?.docname !== frm.doc.name) {
 			frm._fab_edi_purchase_invoice = null;
