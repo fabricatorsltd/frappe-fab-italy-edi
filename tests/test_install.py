@@ -35,6 +35,7 @@ class TestInstall(unittest.TestCase):
 				"Company",
 				"Address",
 				"Customer",
+				"Bank Account",
 			},
 		)
 		self.assertGreaterEqual(
@@ -470,6 +471,7 @@ class TestInstall(unittest.TestCase):
 				exists=Mock(side_effect=mock_exists),
 				get_value=Mock(side_effect=mock_get_value),
 				set_value=Mock(),
+				has_column=Mock(return_value=True),
 			),
 			get_all=Mock(
 				side_effect=[
@@ -490,26 +492,6 @@ class TestInstall(unittest.TestCase):
 				]
 			),
 		)
-
-	def test_scrub_missing_legacy_einvoice_type_link_values_clears_document_fields(self):
-		document = SimpleNamespace(
-			doctype="Sales Invoice",
-			custom_tipo_di_documento="customer.custom_tipo_fattura_elettronica",
-			custom_descrizione_tipo_documento="Fattura",
-		)
-
-		def mock_exists(doctype, name):
-			if doctype == "DocType" and name == install.LEGACY_EINVOICE_TYPE_DOCTYPE:
-				return False
-			return True
-
-		frappe_stub = SimpleNamespace(db=SimpleNamespace(exists=Mock(side_effect=mock_exists)))
-
-		with patch.object(install, "frappe", new=frappe_stub):
-			install.scrub_missing_legacy_einvoice_type_link_values(document)
-
-		self.assertIsNone(document.custom_tipo_di_documento)
-		self.assertIsNone(document.custom_descrizione_tipo_documento)
 
 		with patch.object(install, "frappe", new=frappe_stub):
 			install.neutralize_missing_legacy_einvoice_type_links()
@@ -566,3 +548,23 @@ class TestInstall(unittest.TestCase):
 			,
 			any_order=True,
 		)
+
+	def test_scrub_missing_legacy_einvoice_type_link_values_clears_document_fields(self):
+		document = SimpleNamespace(
+			doctype="Sales Invoice",
+			custom_tipo_di_documento="customer.custom_tipo_fattura_elettronica",
+			custom_descrizione_tipo_documento="Fattura",
+		)
+
+		def mock_exists(doctype, name):
+			if doctype == "DocType" and name == install.LEGACY_EINVOICE_TYPE_DOCTYPE:
+				return False
+			return True
+
+		frappe_stub = SimpleNamespace(db=SimpleNamespace(exists=Mock(side_effect=mock_exists)))
+
+		with patch.object(install, "frappe", new=frappe_stub):
+			install.scrub_missing_legacy_einvoice_type_link_values(document)
+
+		self.assertIsNone(document.custom_tipo_di_documento)
+		self.assertIsNone(document.custom_descrizione_tipo_documento)
