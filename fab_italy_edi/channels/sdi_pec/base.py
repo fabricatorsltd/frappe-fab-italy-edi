@@ -23,7 +23,9 @@ from fab_italy_edi.sales_invoice_edi import sync_sales_invoice_tracking
 
 XML_FILENAME_PATTERN = re.compile(r"\b[A-Z0-9][A-Z0-9._-]*\.xml(?:\.p7m)?\b", re.IGNORECASE)
 MESSAGE_ID_PATTERN = re.compile(r"<([^>]+)>")
-RECEIPT_CODE_PATTERN = re.compile(r"\b(NS|RC|MC|NE|DT|AT|EC)\b", re.IGNORECASE)
+# SdI names its notification files IT01234567890_00001_NS_001.xml, and the underscore
+# is a word character, so a plain word boundary would never see the code there
+RECEIPT_CODE_PATTERN = re.compile(r"(?<![A-Z0-9])(NS|RC|MC|NE|DT|AT|EC)(?![A-Z0-9])", re.IGNORECASE)
 PEC_REQUIRED_CONFIGURATION_FIELDS = {
 	"pec_username": _("PEC Username"),
 	"pec_password": _("PEC Password"),
@@ -394,6 +396,8 @@ def detect_receipt_type(message: Message) -> str | None:
 		return "pec_acceptance"
 	if "avvenuta consegna" in text or "consegna" in text:
 		return "pec_delivery"
+	if "notifica di scarto" in text:
+		return "NS"
 
 	match = RECEIPT_CODE_PATTERN.search(text.upper())
 	if match:

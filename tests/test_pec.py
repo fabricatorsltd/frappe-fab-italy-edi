@@ -7,10 +7,14 @@ from unittest.mock import Mock, patch
 
 from frappe.exceptions import ValidationError
 
-from fab_italy_edi.channels.sdi_pec.base import SDIPECChannel
+from fab_italy_edi.channels.sdi_pec.base import SDIPECChannel, detect_receipt_type
 from fab_italy_edi.fab_italy_e_invoicing.doctype.edi_configuration.edi_configuration import (
 	validate_pec_mailbox_settings,
 )
+
+
+def raise_validation_error(message):
+	raise ValidationError(message)
 
 
 class StubConfiguration(SimpleNamespace):
@@ -41,7 +45,7 @@ class TestPECMailboxValidation(unittest.TestCase):
 			db=SimpleNamespace(
 				get_value=Mock(return_value={"channel": "sdi_pec", "adapter_key": "sdi_pec"})
 			),
-			throw=Mock(side_effect=ValidationError),
+			throw=Mock(side_effect=lambda message, *args, **kwargs: raise_validation_error(message)),
 		)
 
 		with (
@@ -55,6 +59,16 @@ class TestPECMailboxValidation(unittest.TestCase):
 
 
 class TestPECAdapter(unittest.TestCase):
+	def test_detect_receipt_type_reads_the_code_in_an_sdi_notification_file_name(self):
+		message = EmailMessage()
+		message["Subject"] = "POSTA CERTIFICATA: Invio File 123"
+		message.set_content("In allegato la notifica.")
+		message.add_attachment(
+			b"<xml/>", maintype="application", subtype="xml", filename="IT01234567890_00001_NS_001.xml"
+		)
+
+		self.assertEqual(detect_receipt_type(message), "NS")
+
 	def test_submit_outbound_invoice_sends_message_via_smtp(self):
 		adapter = SDIPECChannel()
 		configuration = StubConfiguration(
