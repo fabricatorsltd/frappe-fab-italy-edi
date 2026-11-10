@@ -7,6 +7,7 @@ import frappe
 from fab_italy_edi import payables_digest
 
 TODAY = date(2026, 11, 10)
+real_get_all = frappe.get_all
 
 
 def row(number, deadline, doctype="Purchase Invoice"):
@@ -96,6 +97,9 @@ class TestInvoiceRows(unittest.TestCase):
 		def get_all(doctype, filters=None, **kwargs):
 			if doctype == "Autofattura":
 				return ["AUTOFATT/2026/00007"]
+			if doctype != "Purchase Invoice":
+				# the money formatting may load a doctype meta, which reads its permissions
+				return real_get_all(doctype, filters=filters, **kwargs)
 			return submitted if filters["docstatus"] == 1 else drafts
 
 		with (
@@ -119,7 +123,11 @@ class TestF24Rows(unittest.TestCase):
 		]
 
 		def get_all(doctype, **kwargs):
-			return drafts if doctype == "F24 Payment" else events
+			if doctype == "F24 Payment":
+				return drafts
+			if doctype == "Tax Calendar Event":
+				return events
+			return real_get_all(doctype, **kwargs)
 
 		with (
 			patch.object(payables_digest.frappe.db, "exists", return_value=True),
