@@ -1303,7 +1303,9 @@ class TestSupplierDefaultExpenseAccount(unittest.TestCase):
 
 	def test_validation_refuses_an_account_of_another_company(self):
 		doc = frappe._dict(
-			fab_edi_expense_accounts=[frappe._dict(idx=1, company="Company A", expense_account="Services - B")]
+			fab_edi_expense_accounts=[
+				frappe._dict(idx=1, company="Company A", expense_account="Services - B"),
+			]
 		)
 		with (
 			patch.object(
@@ -1315,3 +1317,69 @@ class TestSupplierDefaultExpenseAccount(unittest.TestCase):
 			self.assertRaises(frappe.ValidationError),
 		):
 			purchase_invoice_import.validate_supplier_expense_accounts(doc)
+
+	def test_changing_the_supplier_of_a_draft_repoints_lines_on_a_default(self):
+		pi = frappe._dict(
+			supplier="Old Supplier",
+			items=[
+				frappe._dict(item_code=None, expense_account="Company Default - A"),
+				frappe._dict(item_code=None, expense_account="Old Services - A"),
+				frappe._dict(item_code=None, expense_account="Picked By Hand - A"),
+				frappe._dict(item_code="ITEM-1", expense_account="Company Default - A"),
+			],
+		)
+		supplier_defaults = {"Old Supplier": "Old Services - A", "New Supplier": "Services - A"}
+
+		with (
+			patch.object(purchase_invoice_import, "get_default_expense_account", return_value="Company Default - A"),
+			patch.object(
+				purchase_invoice_import,
+				"get_supplier_default_expense_account",
+				side_effect=lambda supplier, company: supplier_defaults.get(supplier),
+			),
+		):
+			purchase_invoice_import.repoint_supplier_default_expense_accounts(
+				pi, "Old Supplier", "New Supplier", "Company A"
+			)
+
+		self.assertEqual(
+			[item.expense_account for item in pi["items"]],
+			["Services - A", "Services - A", "Picked By Hand - A", "Company Default - A"],
+		)
+
+	def test_an_existing_draft_follows_the_new_supplier_default(self):
+		pi = Mock(
+			docstatus=0,
+			supplier="Old Supplier",
+			supplier_name="Old Supplier",
+			remarks="",
+			items=[frappe._dict(item_code=None, expense_account="Company Default - A")],
+		)
+		fields = {"ignore_default_payment_terms_template": 1, "items": pi.items, "taxes": []}
+		pi.get.side_effect = lambda field, default=None: fields.get(field, default)
+		document = SimpleNamespace(name="EDI-DOC-0001", company="Company A")
+
+		with (
+			patch.object(purchase_invoice_import, "is_quarantined_incoming_supplier_document", return_value=False),
+			patch.object(purchase_invoice_import, "find_own_autofattura", return_value=None),
+			patch.object(purchase_invoice_import, "find_linked_purchase_invoice", return_value="PINV-0001"),
+			patch.object(purchase_invoice_import.frappe, "db", Mock(exists=Mock(return_value=True))),
+			patch.object(purchase_invoice_import.frappe, "get_doc", return_value=pi),
+			patch.object(purchase_invoice_import, "build_purchase_invoice_taxes", return_value=([], [])),
+			patch.object(purchase_invoice_import, "build_purchase_invoice_remarks", return_value=""),
+			patch.object(purchase_invoice_import, "prepare_purchase_invoice_exact_taxes"),
+			patch.object(purchase_invoice_import, "sync_edi_document_purchase_invoice_link"),
+			patch.object(purchase_invoice_import, "get_default_expense_account", return_value="Company Default - A"),
+			patch.object(
+				purchase_invoice_import,
+				"get_supplier_default_expense_account",
+				side_effect=lambda supplier, company: "Services - A" if supplier == "New Supplier" else None,
+			),
+		):
+			purchase_invoice_import.build_purchase_invoice_review_draft(
+				document, preview={"invoice": {}}, supplier="New Supplier"
+			)
+
+		self.assertEqual(pi.supplier, "New Supplier")
+		self.assertEqual(pi.items[0].expense_account, "Services - A")
+		pi.save.assert_called_once()

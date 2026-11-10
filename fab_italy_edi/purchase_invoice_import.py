@@ -137,6 +137,7 @@ def build_purchase_invoice_review_draft(
 			pi.ignore_default_payment_terms_template = 1
 			changed = True
 		if supplier_name and pi.supplier != supplier_name:
+			repoint_supplier_default_expense_accounts(pi, pi.supplier, supplier_name, document.company)
 			pi.supplier = supplier_name
 			changed = True
 		if (preview.get("supplier") or {}).get("display_name") and pi.supplier_name != preview["supplier"]["display_name"]:
@@ -1559,7 +1560,11 @@ def get_supplier_default_expense_account(supplier: str | None, company: str) -> 
 
 	rows = frappe.get_all(
 		SUPPLIER_EXPENSE_ACCOUNT_DOCTYPE,
-		filters={"parenttype": "Supplier", "parent": supplier, "parentfield": SUPPLIER_EXPENSE_ACCOUNTS_FIELD},
+		filters={
+			"parenttype": "Supplier",
+			"parent": supplier,
+			"parentfield": SUPPLIER_EXPENSE_ACCOUNTS_FIELD,
+		},
 		fields=["company", "expense_account"],
 		order_by="idx asc",
 	)
@@ -1567,6 +1572,23 @@ def get_supplier_default_expense_account(supplier: str | None, company: str) -> 
 		if row.get("company") == company and is_company_expense_account(row.get("expense_account"), company):
 			return row["expense_account"]
 	return None
+
+
+def repoint_supplier_default_expense_accounts(
+	pi, previous_supplier: str | None, supplier: str, company: str
+) -> None:
+	"""Move the lines still on a default account to the new supplier's default.
+
+	A line on the company default or on the previous supplier's default followed the
+	default and follows it again; one with an item_code or an account picked by hand
+	keeps it.
+	"""
+	company_default = get_default_expense_account(company)
+	previous_defaults = {company_default, get_supplier_default_expense_account(previous_supplier, company)}
+	new_default = get_supplier_default_expense_account(supplier, company) or company_default
+	for item in pi.get("items") or []:
+		if not item.get("item_code") and item.get("expense_account") in previous_defaults:
+			item.expense_account = new_default
 
 
 def is_company_expense_account(account: str | None, company: str) -> bool:
